@@ -1,15 +1,34 @@
 .section {
-  max-width: 420px;
-  margin: 0 auto;
-  padding: 24px 24px 56px;
+  position: relative;
+  max-width: 380px;
+  margin: 10px auto 56px;
+  padding: 32px 26px 26px;
   text-align: center;
+  background: var(--surface);
+  border-radius: 2px;
+  transform: rotate(-1deg);
+  box-shadow: 0 20px 40px -16px rgba(0, 0, 0, 0.5);
+}
+
+.section::before {
+  content: '';
+  position: absolute;
+  top: -9px;
+  left: 50%;
+  translate: -50% 0;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 30%, color-mix(in srgb, var(--pin-red) 70%, #fff), var(--pin-red));
+  box-shadow: 0 3px 5px rgba(0, 0, 0, 0.4);
 }
 
 .lead {
-  font-size: 12.5px;
+  font-family: 'Gaegu', cursive;
+  font-size: 15px;
   font-weight: 700;
-  color: var(--ink-soft);
-  margin-bottom: 14px;
+  color: var(--ink);
+  margin-bottom: 16px;
 }
 
 .row {

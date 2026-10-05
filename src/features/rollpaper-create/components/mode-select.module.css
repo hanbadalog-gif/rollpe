@@ -9,17 +9,31 @@
 .card {
   text-align: left;
   background: var(--surface);
-  border: 1px solid var(--line);
-  border-radius: 16px;
+  border: none;
+  border-radius: 2px;
   padding: 18px 20px;
   cursor: pointer;
   display: flex;
   flex-direction: column;
   gap: 4px;
+  box-shadow: 0 10px 20px -10px rgba(0, 0, 0, 0.4);
+  transition: transform 0.15s ease;
+}
+
+.grid .card:nth-child(1) {
+  transform: rotate(-1deg);
+}
+
+.grid .card:nth-child(2) {
+  transform: rotate(0.8deg);
+}
+
+.grid .card:nth-child(3) {
+  transform: rotate(-0.6deg);
 }
 
 .card:hover {
-  border-color: var(--accent);
+  transform: rotate(0deg) scale(1.01);
 }
 
 .card strong {
@@ -42,7 +56,7 @@
 
 .note {
   font-size: 11px;
-  color: var(--ink-soft);
+  color: var(--cork-ink-soft);
   line-height: 1.6;
   text-align: center;
   padding: 0 8px;

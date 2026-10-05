@@ -1,14 +1,29 @@
+/* 코르크보드에 핀으로 고정된 메모카드 — BottomCTA .section과 동일 패턴 */
 .form {
+  position: relative;
   display: flex;
   flex-direction: column;
   gap: 16px;
-  max-width: 420px;
-  margin: 44px auto;
+  width: 100%;
+  max-width: 380px;
   background: var(--surface);
-  border: 1px solid var(--line);
-  border-radius: 18px;
-  padding: 28px;
-  box-shadow: var(--shadow);
+  border-radius: 2px;
+  padding: 34px 26px 28px;
+  box-shadow: 0 20px 40px -16px rgba(0, 0, 0, 0.5);
+  transform: rotate(-1deg);
+}
+
+.form::before {
+  content: '';
+  position: absolute;
+  top: -9px;
+  left: 50%;
+  translate: -50% 0;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 30%, color-mix(in srgb, var(--pin-red) 70%, #fff), var(--pin-red));
+  box-shadow: 0 3px 5px rgba(0, 0, 0, 0.4);
 }
 
 .field label {
@@ -22,8 +37,8 @@
 .field input {
   width: 100%;
   font-size: 13px;
-  padding: 11px 12px;
-  border-radius: 10px;
+  padding: 12px 12px;
+  border-radius: 8px;
   border: 1px solid var(--line);
   background: var(--surface-2);
   color: var(--ink);
@@ -38,8 +53,8 @@
 
 .submit {
   width: 100%;
-  padding: 13px 16px;
-  border-radius: 11px;
+  padding: 14px 16px;
+  border-radius: 8px;
   border: none;
   font-weight: 700;
   font-size: 13px;

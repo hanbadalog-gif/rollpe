@@ -9,16 +9,28 @@
 
 .point {
   background: var(--surface);
-  border: 1px solid var(--line);
-  border-radius: 16px;
+  border-radius: 4px;
   padding: 20px 22px;
+  box-shadow: 0 10px 20px -10px rgba(0, 0, 0, 0.4);
+}
+
+.tiltLeft {
+  transform: rotate(-1.5deg);
+}
+
+.tiltRight {
+  transform: rotate(1.5deg);
 }
 
 .badge {
-  font-size: 10px;
-  font-weight: 800;
-  letter-spacing: 0.08em;
+  display: inline-block;
+  font-family: 'Gaegu', cursive;
+  font-size: 13px;
+  font-weight: 700;
   color: var(--accent-deep);
+  background: var(--accent-soft);
+  padding: 2px 10px;
+  border-radius: 999px;
 }
 
 .point h2 {

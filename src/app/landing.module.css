@@ -1,24 +1,25 @@
-/* glimory.co.kr 실측: 히어로/헤더류는 블랙 섹션, 액센트(#6c7fb7)는 강조 텍스트·버튼 포인트로만 사용 */
+/* glimory.co.kr 실측: 히어로/헤더류는 블랙 섹션, 액센트(#6c7fb7)는 강조 텍스트·버튼 포인트로만 사용.
+   2026-10 — 왼쪽 텍스트/오른쪽 메모 2단(수정\6.png 레퍼런스)로 변경. 텍스트는 모바일에서도 왼쪽 정렬 유지
+   (가운데 정렬 + 영상 위 겹침으로 가독성 나빴던 문제 수정, 수정\7.png 피드백). 메모 장식은 FloatingNotes에서
+   900px 이상일 때만 표시(좁은 화면엔 둘 공간이 없음). */
 .hero {
   position: relative;
   min-height: 100dvh;
   display: flex;
   flex-direction: column;
-  align-items: center;
   justify-content: center;
-  text-align: center;
   padding: 48px 24px;
   color: var(--brand-dark-ink);
   background: var(--brand-dark);
   overflow: hidden;
 }
 
-/* 배경 영상 위 가독성용 어둡게 깔기 (HeroVideo는 z-index:0) */
+/* 배경 영상 위 가독성용 — 왼쪽(텍스트 쪽)만 짙게, 오른쪽(메모 장식 쪽)은 영상이 보이게 */
 .heroOverlay {
   position: absolute;
   inset: 0;
   z-index: 1;
-  background: linear-gradient(180deg, rgba(10, 10, 10, 0.55) 0%, rgba(10, 10, 10, 0.75) 100%);
+  background: linear-gradient(90deg, rgba(8, 8, 8, 0.82) 0%, rgba(8, 8, 8, 0.6) 45%, rgba(8, 8, 8, 0.25) 100%);
 }
 
 .themeToggle {
@@ -28,12 +29,23 @@
   z-index: 2;
 }
 
-.heroContent {
+.heroGrid {
   position: relative;
   z-index: 2;
   display: flex;
-  flex-direction: column;
   align-items: center;
+  gap: 32px;
+  max-width: 1120px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+.heroContent {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  text-align: left;
+  max-width: 480px;
 }
 
 .eyebrow {
@@ -69,7 +81,6 @@
   gap: 10px;
   width: 100%;
   max-width: 320px;
-  margin-inline: auto;
 }
 
 .btnAccent,
@@ -93,15 +104,31 @@
   border: 1px solid rgba(255, 255, 255, 0.55);
 }
 
+/* 히어로 아래 "코르크보드" 존 — 5개 시안 중 "폴라로이드 콜라주" 채택 */
+.corkboard {
+  position: relative;
+  padding-top: 8px;
+  background:
+    radial-gradient(circle at 15% 20%, rgba(255, 255, 255, 0.08), transparent 35%),
+    radial-gradient(circle at 85% 70%, rgba(0, 0, 0, 0.08), transparent 35%),
+    var(--cork);
+}
+
 @media (min-width: 760px) {
   .ctaRow {
     flex-direction: row;
-    justify-content: center;
+    justify-content: flex-start;
     width: auto;
     max-width: 440px;
   }
 
   .title {
     font-size: 40px;
+  }
+}
+
+@media (min-width: 900px) {
+  .title {
+    font-size: 46px;
   }
 }

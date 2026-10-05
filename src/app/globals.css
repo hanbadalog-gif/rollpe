@@ -31,6 +31,13 @@
   --warn-bg: #fff1cf;
   --warn-ink: #8a6400;
 
+  /* 코르크보드/폴라로이드 존 (랜딩 히어로 아래 섹션) — "5 제안 중 폴라로이드 콜라주" 채택분 */
+  --cork: #c9a876;
+  --cork-2: #b8945f;
+  --cork-ink: #3a2f22;
+  --cork-ink-soft: #7a6a52;
+  --pin-red: #c23a3a;
+
   --shadow: 0 10px 28px -14px rgba(20, 20, 20, 0.18);
   color-scheme: light;
 }
@@ -62,6 +69,12 @@
     --warn-bg: #4a3c13;
     --warn-ink: #f3d27c;
 
+    --cork: #4a3b26;
+    --cork-2: #3c3020;
+    --cork-ink: #f3ead6;
+    --cork-ink-soft: #c2b393;
+    --pin-red: #d6534f;
+
     --shadow: 0 10px 28px -14px rgba(0, 0, 0, 0.6);
     color-scheme: dark;
   }
@@ -92,6 +105,12 @@
   --mood-dark: #0d0a18;
   --warn-bg: #4a3c13;
   --warn-ink: #f3d27c;
+
+  --cork: #4a3b26;
+  --cork-2: #3c3020;
+  --cork-ink: #f3ead6;
+  --cork-ink-soft: #c2b393;
+  --pin-red: #d6534f;
 
   --shadow: 0 10px 28px -14px rgba(0, 0, 0, 0.6);
   color-scheme: dark;
