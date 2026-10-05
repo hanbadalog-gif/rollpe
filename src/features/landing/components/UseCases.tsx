@@ -15,26 +15,35 @@ const CASES = [
   { photo: "newyear", label: "새해·연말 덕담" },
 ];
 
-/** Epic 1 Story 1.2 — "이럴 때 사용해요" 포토 카드 (dh2labs.kr "Real result" 참고) */
+function Card({ c }: { c: (typeof CASES)[number] }) {
+  return (
+    <div className={styles.card}>
+      <div className={styles.photoWrap}>
+        {/* eslint-disable-next-line @next/next/no-img-element -- 고정 정적 에셋, next/image 설정 부담 대비 단순 img로 충분 */}
+        <img src={`/images/usecases/${c.photo}.jpg`} alt={c.label} className={styles.photo} loading="lazy" />
+      </div>
+      <span className={styles.label}>{c.label}</span>
+    </div>
+  );
+}
+
+/** Epic 1 Story 1.2 — "이럴 때 사용해요" 좌→우 무한 마퀴 (youandus.co.kr "Materials" 참고) */
 export function UseCases() {
   return (
     <section className={styles.section}>
       <h3 className={styles.heading}>이럴 때 사용해요</h3>
-      <div className={styles.grid}>
-        {CASES.map((c) => (
-          <div key={c.label} className={styles.card}>
-            <div className={styles.photoWrap}>
-              {/* eslint-disable-next-line @next/next/no-img-element -- 고정 11장 정적 에셋, next/image 설정 부담 대비 단순 img로 충분 */}
-              <img
-                src={`/images/usecases/${c.photo}.jpg`}
-                alt={c.label}
-                className={styles.photo}
-                loading="lazy"
-              />
-            </div>
-            <span className={styles.label}>{c.label}</span>
+      <div className={styles.marqueeViewport}>
+        <div className={styles.marqueeTrack}>
+          {CASES.map((c) => (
+            <Card key={`a-${c.label}`} c={c} />
+          ))}
+          {/* 끊김 없이 이어지도록 동일 목록을 한 번 더 — aria-hidden으로 스크린리더 중복 방지 */}
+          <div className={styles.marqueeDup} aria-hidden="true">
+            {CASES.map((c) => (
+              <Card key={`b-${c.label}`} c={c} />
+            ))}
           </div>
-        ))}
+        </div>
       </div>
     </section>
   );
