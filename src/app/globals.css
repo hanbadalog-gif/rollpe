@@ -1,0 +1,117 @@
+/* ROLLPE by GLIMORY — 전역 테마 토큰
+   출처: ROLLPE_TRD.md §4-1 (라이트/다크 모드), 메인 컬러 #6C7FB7 (PRD §8 확정)
+*/
+
+:root {
+  --bg: #f4f1fb;
+  --surface: #ffffff;
+  --surface-2: #f8f6ff;
+  --ink: #2a2240;
+  --ink-soft: #6b6382;
+  --line: #e4ddf7;
+
+  --accent: #6c7fb7;
+  --accent-ink: #ffffff;
+  --accent-soft: #e9ecf6;
+  --accent-deep: #4f5f94;
+
+  --paper-a: #fff6d8;
+  --paper-b: #ffe3ea;
+  --paper-c: #dcf3ff;
+  --paper-d: #e4ffe0;
+
+  --mood-dark: #1c1630;
+  --warn-bg: #fff1cf;
+  --warn-ink: #8a6400;
+
+  --shadow: 0 10px 28px -14px rgba(60, 40, 120, 0.35);
+  color-scheme: light;
+}
+
+/* 시스템이 다크 + 사용자가 수동으로 라이트를 고르지 않은 경우 */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme='light']) {
+    --bg: #15121f;
+    --surface: #1e1a2e;
+    --surface-2: #231d38;
+    --ink: #f1edfb;
+    --ink-soft: #a79fc4;
+    --line: #352c52;
+
+    --accent: #9aa8d9;
+    --accent-ink: #1c1333;
+    --accent-soft: #2a2f42;
+    --accent-deep: #c0c9ea;
+
+    --paper-a: #4a4326;
+    --paper-b: #4a2c35;
+    --paper-c: #1f3a45;
+    --paper-d: #223a24;
+
+    --mood-dark: #0d0a18;
+    --warn-bg: #4a3c13;
+    --warn-ink: #f3d27c;
+
+    --shadow: 0 10px 28px -14px rgba(0, 0, 0, 0.6);
+    color-scheme: dark;
+  }
+}
+
+/* 사용자가 수동으로 다크를 고른 경우 — 시스템 설정 무시 */
+:root[data-theme='dark'] {
+  --bg: #15121f;
+  --surface: #1e1a2e;
+  --surface-2: #231d38;
+  --ink: #f1edfb;
+  --ink-soft: #a79fc4;
+  --line: #352c52;
+
+  --accent: #9aa8d9;
+  --accent-ink: #1c1333;
+  --accent-soft: #2a2f42;
+  --accent-deep: #c0c9ea;
+
+  --paper-a: #4a4326;
+  --paper-b: #4a2c35;
+  --paper-c: #1f3a45;
+  --paper-d: #223a24;
+
+  --mood-dark: #0d0a18;
+  --warn-bg: #4a3c13;
+  --warn-ink: #f3d27c;
+
+  --shadow: 0 10px 28px -14px rgba(0, 0, 0, 0.6);
+  color-scheme: dark;
+}
+
+html {
+  height: 100%;
+}
+
+html,
+body {
+  max-width: 100vw;
+  overflow-x: hidden;
+}
+
+body {
+  min-height: 100%;
+  color: var(--ink);
+  background: var(--bg);
+  font-family:
+    'Noto Sans KR',
+    system-ui,
+    -apple-system,
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
