@@ -10,12 +10,30 @@
   padding: 48px 24px;
   color: var(--brand-dark-ink);
   background: var(--brand-dark);
+  overflow: hidden;
+}
+
+/* 배경 영상 위 가독성용 어둡게 깔기 (HeroVideo는 z-index:0) */
+.heroOverlay {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background: linear-gradient(180deg, rgba(10, 10, 10, 0.55) 0%, rgba(10, 10, 10, 0.75) 100%);
 }
 
 .themeToggle {
   position: absolute;
   top: calc(16px + env(safe-area-inset-top, 0px));
   right: 16px;
+  z-index: 2;
+}
+
+.heroContent {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 .eyebrow {

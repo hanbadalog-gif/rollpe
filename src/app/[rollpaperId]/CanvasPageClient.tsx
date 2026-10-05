@@ -14,8 +14,10 @@ import { hasBannerBeenSeen, markBannerSeen } from "@/features/share/lib/bannerSe
 import { downloadCanvasAsImage } from "@/features/share/lib/canvasExport";
 import { EnvelopeIntro } from "@/features/recipient/components/EnvelopeIntro";
 import { ThemeToggle } from "@/components/ThemeToggle";
+import { BgColorPanel } from "@/features/canvas/components/BgColorPanel";
+import { getOwnerToken } from "@/lib/editToken";
 
-type PanelKey = "write" | "sticker" | null;
+type PanelKey = "write" | "sticker" | "bg" | null;
 
 export function CanvasPageClient({
   rollpaperId,
@@ -24,7 +26,7 @@ export function CanvasPageClient({
   rollpaperId: string;
   recipientView?: boolean;
 }) {
-  const { rollpaper, loading, error, addNote, updateNote, moveNote, deleteNote } =
+  const { rollpaper, loading, error, addNote, updateNote, moveNote, deleteNote, updateBgColor } =
     useCanvasNotes(rollpaperId);
   const [openPanel, setOpenPanel] = useState<PanelKey>(null);
   const [showBanner, setShowBanner] = useState(false);
@@ -103,6 +105,13 @@ export function CanvasPageClient({
               >
                 <span className={styles.ic}>★</span>스티커
               </button>
+              <button
+                className={`${styles.tool} ${openPanel === "bg" ? styles.toolActive : ""}`}
+                disabled={!cfg.bgPickerEnabled || !getOwnerToken(rollpaperId)}
+                onClick={() => setOpenPanel(openPanel === "bg" ? null : "bg")}
+              >
+                <span className={styles.ic}>◐</span>배경색
+              </button>
             </>
           )}
           <button className={styles.tool} onClick={handleDownload} disabled={downloading}>
@@ -128,6 +137,11 @@ export function CanvasPageClient({
         {!recipientView && openPanel === "sticker" && (
           <div className={styles.sidePanel}>
             <StickerPanel onSubmit={addNote} />
+          </div>
+        )}
+        {!recipientView && openPanel === "bg" && (
+          <div className={styles.sidePanel}>
+            <BgColorPanel current={rollpaper.bgColor} onPick={updateBgColor} />
           </div>
         )}
       </div>

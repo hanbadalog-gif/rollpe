@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import { api } from "@/lib/api-client";
-import { getEditToken, saveEditToken, removeEditToken } from "@/lib/editToken";
+import { getEditToken, saveEditToken, removeEditToken, getOwnerToken } from "@/lib/editToken";
 import type { CreateNoteInput, NoteDTO, RollpaperDTO } from "../types";
 
 const POLL_INTERVAL_MS = 7000; // TRD §3 "5~10초 폴링으로 충분" (NFR3)
@@ -95,6 +95,21 @@ export function useCanvasNotes(rollpaperId: string) {
     [rollpaperId, refresh],
   );
 
+  const updateBgColor = useCallback(
+    async (bgColor: string) => {
+      const token = getOwnerToken(rollpaperId);
+      if (!token) throw new Error("NO_OWNER_TOKEN");
+      setRollpaper((prev) => (prev ? { ...prev, bgColor } : prev));
+      try {
+        await api.patch(`/api/rollpapers/${rollpaperId}`, { bgColor }, { "x-owner-token": token });
+      } catch {
+        await refresh();
+        throw new Error("BG_UPDATE_FAILED");
+      }
+    },
+    [rollpaperId, refresh],
+  );
+
   const deleteNote = useCallback(
     async (noteId: string, ownerToken?: string | null) => {
       const editTok = getEditToken(rollpaperId, noteId);
@@ -113,5 +128,5 @@ export function useCanvasNotes(rollpaperId: string) {
     [rollpaperId],
   );
 
-  return { rollpaper, loading, error, addNote, updateNote, moveNote, deleteNote, canEdit, refresh };
+  return { rollpaper, loading, error, addNote, updateNote, moveNote, deleteNote, updateBgColor, canEdit, refresh };
 }
