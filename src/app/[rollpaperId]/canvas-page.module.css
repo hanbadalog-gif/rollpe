@@ -10,14 +10,14 @@
   color: var(--ink-soft);
 }
 
+/* glimory.co.kr 실측 — 상단 바는 네비바처럼 메인 컬러로 채운다 (나머지 UI는 화이트/그레이 유지) */
 .appbar {
   display: flex;
   align-items: center;
   gap: 12px;
   padding: 10px 16px;
   padding-top: calc(10px + env(safe-area-inset-top, 0px));
-  background: var(--surface);
-  border-bottom: 1px solid var(--line);
+  background: var(--accent);
   flex: none;
 }
 
@@ -26,39 +26,27 @@
   align-items: center;
   gap: 5px;
   font-size: 11px;
-  color: var(--ink-soft);
+  color: var(--accent-ink);
+  opacity: 0.85;
   flex: 1;
   min-width: 0;
 }
 
 .toField b {
-  color: var(--ink);
+  color: var(--accent-ink);
+  opacity: 1;
   font-size: 13px;
 }
 
 .counter {
   font-size: 10px;
   font-weight: 700;
-  background: var(--accent-soft);
+  background: var(--surface);
   color: var(--accent-deep);
   padding: 4px 10px;
   border-radius: 999px;
   white-space: nowrap;
   font-variant-numeric: tabular-nums;
-}
-
-.iconBtn {
-  width: 30px;
-  height: 30px;
-  border-radius: 9px;
-  border: 1px solid var(--line);
-  background: var(--surface);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 13px;
-  cursor: pointer;
-  flex: none;
 }
 
 .capBanner {

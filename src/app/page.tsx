@@ -11,7 +11,7 @@ export default function HomePage() {
       <main className={styles.hero}>
         <div className={styles.eyebrow}>Rollpe by Glimory</div>
         <h1 className={styles.title}>
-          마음을 모은
+          <span className={styles.highlight}>마음을 모은</span>
           <br />
           감동 선물
         </h1>

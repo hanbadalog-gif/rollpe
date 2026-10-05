@@ -10,13 +10,15 @@ export default function NewRollpaperPage() {
           alignItems: "center",
           gap: 10,
           padding: "13px 16px",
-          borderBottom: "1px solid var(--line)",
+          background: "var(--accent)",
         }}
       >
-        <Link href="/" style={{ fontSize: 16, color: "var(--ink-soft)" }}>
+        <Link href="/" style={{ fontSize: 16, color: "var(--accent-ink)" }}>
           ←
         </Link>
-        <h3 style={{ fontSize: 13.5, margin: 0, fontWeight: 700 }}>롤링페이퍼 만들기</h3>
+        <h3 style={{ fontSize: 13.5, margin: 0, fontWeight: 700, color: "var(--accent-ink)" }}>
+          롤링페이퍼 만들기
+        </h3>
       </div>
       <ToInputForm />
     </div>

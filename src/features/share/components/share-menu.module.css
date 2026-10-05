@@ -3,12 +3,14 @@
   flex: none;
 }
 
+/* 상단 바가 메인 컬러로 채워져 있어(canvas-page.module.css .appbar) 그 위에서 보이게 흰 반투명으로 */
 .iconBtn {
   width: 30px;
   height: 30px;
   border-radius: 9px;
-  border: 1px solid var(--line);
-  background: var(--surface);
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  background: rgba(255, 255, 255, 0.16);
+  color: var(--accent-ink);
   display: flex;
   align-items: center;
   justify-content: center;
