@@ -30,6 +30,18 @@ export function ShareMenu({ mode, onOpenShare }: Props) {
     setOpen(false);
   }
 
+  async function copyRecipientLink() {
+    try {
+      const url = new URL(window.location.href);
+      url.searchParams.set("view", "recipient");
+      await navigator.clipboard.writeText(url.toString());
+      showToast("주인공에게 전달할 링크를 복사했어요");
+    } catch {
+      showToast("복사에 실패했어요");
+    }
+    setOpen(false);
+  }
+
   return (
     <div className={styles.wrap}>
       <button className={styles.iconBtn} onClick={toggle} aria-label="공유">
@@ -41,6 +53,9 @@ export function ShareMenu({ mode, onOpenShare }: Props) {
           <div className={styles.menu}>
             <button className={styles.item} onClick={copyLink}>
               🔗 링크 복사
+            </button>
+            <button className={styles.item} onClick={copyRecipientLink}>
+              💌 주인공에게 전달하기
             </button>
             {mode === "online" && (
               <Link href="/gift" className={styles.item} onClick={() => setOpen(false)}>

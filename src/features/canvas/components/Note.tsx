@@ -14,9 +14,11 @@ interface Props {
   onTap: () => void;
   onDelete: () => void;
   setRef?: (el: HTMLDivElement | null) => void;
+  /** 수신자 전용 화면(Epic 2 Story 2.2) — 드래그/삭제/재편집 전부 비활성 */
+  readOnly?: boolean;
 }
 
-export function Note({ note, canvasRef, editable, selected, onMoveEnd, onTap, onDelete, setRef }: Props) {
+export function Note({ note, canvasRef, editable, selected, onMoveEnd, onTap, onDelete, setRef, readOnly }: Props) {
   // 드래그 중에는 서버 왕복 없이 로컬 좌표만 바꿔 즉시 반응하게 한다 (실시간 이동 체감용)
   const [dragPos, setDragPos] = useState<{ x: number; y: number } | null>(null);
 
@@ -30,7 +32,7 @@ export function Note({ note, canvasRef, editable, selected, onMoveEnd, onTap, on
       onMoveEnd(x, y);
     },
     onTap,
-    disabled: !editable && note.type !== "sticker",
+    disabled: readOnly || (!editable && note.type !== "sticker"),
   });
 
   const posX = dragPos?.x ?? note.posX;
@@ -52,9 +54,11 @@ export function Note({ note, canvasRef, editable, selected, onMoveEnd, onTap, on
         onPointerUp={drag.onPointerUp}
       >
         {note.content}
-        <span className={styles.deleteBtn} onClick={onDelete}>
-          ✕
-        </span>
+        {!readOnly && (
+          <span className={styles.deleteBtn} onClick={onDelete}>
+            ✕
+          </span>
+        )}
       </div>
     );
   }
@@ -72,9 +76,11 @@ export function Note({ note, canvasRef, editable, selected, onMoveEnd, onTap, on
         {/* next/image는 스토리지 벤더 확정(TRD §1 미결정) 후 remotePatterns 설정과 함께 전환 */}
         {/* eslint-disable-next-line @next/next/no-img-element */}
         {note.photoUrl && <img src={note.photoUrl} alt="" />}
-        <span className={styles.deleteBtn} onClick={onDelete}>
-          ✕
-        </span>
+        {!readOnly && (
+          <span className={styles.deleteBtn} onClick={onDelete}>
+            ✕
+          </span>
+        )}
       </div>
     );
   }
@@ -100,9 +106,11 @@ export function Note({ note, canvasRef, editable, selected, onMoveEnd, onTap, on
       {note.photoUrl && <img className={styles.notePhoto} src={note.photoUrl} alt="" />}
       {note.content}
       <span className={styles.noteFrom}>— {note.fromName}</span>
-      <span className={styles.deleteBtn} onClick={onDelete}>
-        ✕
-      </span>
+      {!readOnly && (
+        <span className={styles.deleteBtn} onClick={onDelete}>
+          ✕
+        </span>
+      )}
     </div>
   );
 }

@@ -12,15 +12,23 @@ import { ShareMenu } from "@/features/share/components/ShareMenu";
 import { ConversionBanner } from "@/features/share/components/ConversionBanner";
 import { hasBannerBeenSeen, markBannerSeen } from "@/features/share/lib/bannerSeen";
 import { downloadCanvasAsImage } from "@/features/share/lib/canvasExport";
+import { EnvelopeIntro } from "@/features/recipient/components/EnvelopeIntro";
 
 type PanelKey = "write" | "sticker" | null;
 
-export function CanvasPageClient({ rollpaperId }: { rollpaperId: string }) {
+export function CanvasPageClient({
+  rollpaperId,
+  recipientView = false,
+}: {
+  rollpaperId: string;
+  recipientView?: boolean;
+}) {
   const { rollpaper, loading, error, addNote, updateNote, moveNote, deleteNote } =
     useCanvasNotes(rollpaperId);
   const [openPanel, setOpenPanel] = useState<PanelKey>(null);
   const [showBanner, setShowBanner] = useState(false);
   const [downloading, setDownloading] = useState(false);
+  const [showEnvelope, setShowEnvelope] = useState(recipientView);
   const canvasExportRef = useRef<HTMLDivElement>(null);
 
   if (loading) return <div className={styles.loading}>불러오는 중…</div>;
@@ -51,6 +59,9 @@ export function CanvasPageClient({ rollpaperId }: { rollpaperId: string }) {
 
   return (
     <div className={styles.app}>
+      {showEnvelope && (
+        <EnvelopeIntro toName={rollpaper.toName} onDone={() => setShowEnvelope(false)} />
+      )}
       <div className={styles.appbar}>
         <div className={styles.toField}>
           <span>To.</span>
@@ -59,12 +70,14 @@ export function CanvasPageClient({ rollpaperId }: { rollpaperId: string }) {
         <span className={styles.counter}>
           {isFinite(cfg.capacity) ? `${noteCount} / ${cfg.capacity}명` : `${noteCount}명 작성`}
         </span>
-        <ShareMenu mode={rollpaper.mode as RollpaperMode} onOpenShare={handleOpenShare} />
+        {!recipientView && (
+          <ShareMenu mode={rollpaper.mode as RollpaperMode} onOpenShare={handleOpenShare} />
+        )}
       </div>
 
       {showBanner && <ConversionBanner onClose={() => setShowBanner(false)} />}
 
-      {atCap && isFinite(cfg.capacity) && (
+      {!recipientView && atCap && isFinite(cfg.capacity) && (
         <div className={styles.capBanner}>
           정원이 다 찼어요 ({cfg.capacity}명). 더 큰 사이즈로 바꾸면 계속 받을 수 있어요.
         </div>
@@ -72,20 +85,24 @@ export function CanvasPageClient({ rollpaperId }: { rollpaperId: string }) {
 
       <div className={styles.body}>
         <div className={styles.toolbar}>
-          <button
-            className={`${styles.tool} ${openPanel === "write" ? styles.toolActive : ""}`}
-            disabled={atCap && isFinite(cfg.capacity)}
-            onClick={() => setOpenPanel(openPanel === "write" ? null : "write")}
-          >
-            <span className={styles.ic}>✎</span>글쓰기
-          </button>
-          <button
-            className={`${styles.tool} ${openPanel === "sticker" ? styles.toolActive : ""}`}
-            disabled={!cfg.stickerEnabled}
-            onClick={() => setOpenPanel(openPanel === "sticker" ? null : "sticker")}
-          >
-            <span className={styles.ic}>★</span>스티커
-          </button>
+          {!recipientView && (
+            <>
+              <button
+                className={`${styles.tool} ${openPanel === "write" ? styles.toolActive : ""}`}
+                disabled={atCap && isFinite(cfg.capacity)}
+                onClick={() => setOpenPanel(openPanel === "write" ? null : "write")}
+              >
+                <span className={styles.ic}>✎</span>글쓰기
+              </button>
+              <button
+                className={`${styles.tool} ${openPanel === "sticker" ? styles.toolActive : ""}`}
+                disabled={!cfg.stickerEnabled}
+                onClick={() => setOpenPanel(openPanel === "sticker" ? null : "sticker")}
+              >
+                <span className={styles.ic}>★</span>스티커
+              </button>
+            </>
+          )}
           <button className={styles.tool} onClick={handleDownload} disabled={downloading}>
             <span className={styles.ic}>⬇</span>{downloading ? "저장 중…" : "저장"}
           </button>
@@ -98,14 +115,15 @@ export function CanvasPageClient({ rollpaperId }: { rollpaperId: string }) {
           moveNote={moveNote}
           deleteNote={deleteNote}
           canvasRef={canvasExportRef}
+          readOnly={recipientView}
         />
 
-        {openPanel === "write" && (
+        {!recipientView && openPanel === "write" && (
           <div className={styles.sidePanel}>
             <WritePanel mode={rollpaper.mode as RollpaperMode} onSubmit={addNote} onDone={() => setOpenPanel(null)} />
           </div>
         )}
-        {openPanel === "sticker" && (
+        {!recipientView && openPanel === "sticker" && (
           <div className={styles.sidePanel}>
             <StickerPanel onSubmit={addNote} />
           </div>

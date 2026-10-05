@@ -17,13 +17,15 @@ interface Props {
   deleteNote: (noteId: string, ownerToken?: string | null) => Promise<void>;
   /** 이미지 다운로드(Epic 7 Story 7.2)가 캔버스 DOM을 export할 수 있도록 노출 */
   canvasRef?: React.RefObject<HTMLDivElement | null>;
+  /** 수신자 전용 화면(Epic 2 Story 2.2) — 전체를 읽기 전용으로 표시 */
+  readOnly?: boolean;
 }
 
 /**
  * 캔버스 코어 엔진 — Epic 3 (Story 3.1~3.5).
  * 상태(useCanvasNotes)는 page에서 끌어올려 write-panel/stickers/share와 공유한다.
  */
-export function CanvasBoard({ rollpaperId, rollpaper, updateNote, moveNote, deleteNote, canvasRef: externalRef }: Props) {
+export function CanvasBoard({ rollpaperId, rollpaper, updateNote, moveNote, deleteNote, canvasRef: externalRef, readOnly }: Props) {
   const ownRef = useRef<HTMLDivElement>(null);
   const canvasRef = externalRef ?? ownRef;
   const noteRefs = useRef<Record<string, HTMLDivElement | null>>({});
@@ -73,12 +75,13 @@ export function CanvasBoard({ rollpaperId, rollpaper, updateNote, moveNote, dele
             note={note}
             canvasRef={canvasRef}
             editable
+            readOnly={readOnly}
             selected={note.id === selectedNoteId}
             setRef={(el) => {
               noteRefs.current[note.id] = el;
             }}
             onMoveEnd={(posX, posY) => moveNote(note.id, posX, posY, note.rotation)}
-            onTap={() => openPopoverFor(note.id)}
+            onTap={() => !readOnly && openPopoverFor(note.id)}
             onDelete={() => handleDelete(note.id)}
           />
         ))}

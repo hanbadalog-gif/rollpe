@@ -1,0 +1,53 @@
+.section {
+  max-width: 420px;
+  margin: 0 auto;
+  padding: 24px 24px 56px;
+  text-align: center;
+}
+
+.lead {
+  font-size: 12.5px;
+  font-weight: 700;
+  color: var(--ink-soft);
+  margin-bottom: 14px;
+}
+
+.row {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.btnAccent,
+.btnOutline {
+  display: block;
+  font-weight: 700;
+  font-size: 13px;
+  border-radius: 12px;
+  padding: 14px 18px;
+  text-align: center;
+}
+
+.btnAccent {
+  background: var(--accent);
+  color: var(--accent-ink);
+}
+
+.btnOutline {
+  background: var(--surface);
+  color: var(--accent-deep);
+  border: 1px solid var(--accent);
+}
+
+@media (min-width: 760px) {
+  .row {
+    flex-direction: row;
+    justify-content: center;
+  }
+
+  .btnAccent,
+  .btnOutline {
+    flex: none;
+    min-width: 200px;
+  }
+}
