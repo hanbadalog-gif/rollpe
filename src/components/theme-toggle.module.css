@@ -1,0 +1,15 @@
+/* 블랙 히어로/메인컬러 바 양쪽에서 다 읽히도록 반투명 화이트로 통일 */
+.btn {
+  flex: none;
+  width: 30px;
+  height: 30px;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  background: rgba(255, 255, 255, 0.16);
+  color: #fff;
+  font-size: 13px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}

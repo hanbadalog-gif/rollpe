@@ -3,12 +3,14 @@ import styles from "./landing.module.css";
 import { PointSection } from "@/features/landing/components/PointSection";
 import { UseCases } from "@/features/landing/components/UseCases";
 import { BottomCTA } from "@/features/landing/components/BottomCTA";
+import { ThemeToggle } from "@/components/ThemeToggle";
 
 // Epic 1 — 메인 랜딩 (Story 1.1 히어로 + 1.2 포인트/사용처 + 1.3 하단 CTA)
 export default function HomePage() {
   return (
     <>
       <main className={styles.hero}>
+        <ThemeToggle className={styles.themeToggle} />
         <div className={styles.eyebrow}>Rollpe by Glimory</div>
         <h1 className={styles.title}>
           <span className={styles.highlight}>마음을 모은</span>

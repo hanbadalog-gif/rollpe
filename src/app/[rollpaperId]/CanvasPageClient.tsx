@@ -13,6 +13,7 @@ import { ConversionBanner } from "@/features/share/components/ConversionBanner";
 import { hasBannerBeenSeen, markBannerSeen } from "@/features/share/lib/bannerSeen";
 import { downloadCanvasAsImage } from "@/features/share/lib/canvasExport";
 import { EnvelopeIntro } from "@/features/recipient/components/EnvelopeIntro";
+import { ThemeToggle } from "@/components/ThemeToggle";
 
 type PanelKey = "write" | "sticker" | null;
 
@@ -70,6 +71,7 @@ export function CanvasPageClient({
         <span className={styles.counter}>
           {isFinite(cfg.capacity) ? `${noteCount} / ${cfg.capacity}명` : `${noteCount}명 작성`}
         </span>
+        <ThemeToggle />
         {!recipientView && (
           <ShareMenu mode={rollpaper.mode as RollpaperMode} onOpenShare={handleOpenShare} />
         )}
