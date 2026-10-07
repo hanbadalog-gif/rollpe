@@ -127,6 +127,7 @@ body {
 }
 
 body {
+  margin: 0; /* 브라우저 기본 body margin(8px) 리셋 — 히어로 영상 가장자리에 여백 생기던 원인 */
   min-height: 100%;
   color: var(--ink);
   background: var(--bg);

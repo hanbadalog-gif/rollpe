@@ -105,7 +105,7 @@ export function Note({ note, canvasRef, editable, selected, onMoveEnd, onTap, on
       {/* eslint-disable-next-line @next/next/no-img-element */}
       {note.photoUrl && <img className={styles.notePhoto} src={note.photoUrl} alt="" />}
       {note.content}
-      <span className={styles.noteFrom}>— {note.fromName}</span>
+      <span className={styles.noteFrom}>- {note.fromName}</span>
       {!readOnly && (
         <span className={styles.deleteBtn} onClick={onDelete}>
           ✕

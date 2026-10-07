@@ -104,14 +104,14 @@
   border: 1px solid rgba(255, 255, 255, 0.55);
 }
 
-/* 히어로 아래 "코르크보드" 존 — 5개 시안 중 "폴라로이드 콜라주" 채택 */
+/* 히어로 아래 섹션 — 갈색 코르크 대신 화이트 바디 + 글리모리 브랜드컬러(#6c7fb7) 은은하게 (2026-10 피드백) */
 .corkboard {
   position: relative;
   padding-top: 8px;
   background:
-    radial-gradient(circle at 15% 20%, rgba(255, 255, 255, 0.08), transparent 35%),
-    radial-gradient(circle at 85% 70%, rgba(0, 0, 0, 0.08), transparent 35%),
-    var(--cork);
+    radial-gradient(circle at 12% 15%, var(--accent-soft), transparent 40%),
+    radial-gradient(circle at 88% 65%, var(--accent-soft), transparent 40%),
+    var(--surface);
 }
 
 @media (min-width: 760px) {

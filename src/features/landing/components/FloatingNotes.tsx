@@ -15,7 +15,7 @@ export function FloatingNotes() {
       {NOTES.map((n) => (
         <div key={n.from} className={`${styles.note} ${styles[n.className]} ${styles[`paper${n.paper}`]}`}>
           <p>{n.text}</p>
-          <span>— {n.from}</span>
+          <span>- {n.from}</span>
         </div>
       ))}
     </div>
