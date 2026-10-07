@@ -37,10 +37,10 @@ export default function HomePage() {
               </Link>
             </div>
           </div>
-          <FloatingNotes />
         </div>
       </main>
       <div className={styles.corkboard}>
+        <FloatingNotes />
         <PointSection />
         <UseCases />
         <BottomCTA />

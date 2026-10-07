@@ -8,7 +8,7 @@ const NOTES = [
   { from: "모두가", text: "오늘의 주인공\n꽃길만 걸어요", paper: "d", className: "n4" },
 ];
 
-/** 히어로 우측 장식(데스크톱 전용, 수정\6.png 레퍼런스) — 모바일은 CSS로 숨김 */
+/** 히어로 영상 아래 코르크보드 상단 장식 (수정\8.png 피드백 — 영상 위에 겹쳐있던 걸 아래로 이동) */
 export function FloatingNotes() {
   return (
     <div className={styles.wrap} aria-hidden>
