@@ -37,6 +37,8 @@ export function WritePanel({ mode, onSubmit, onDone }: Props) {
   const [bold, setBold] = useState(false);
   const [textColor, setTextColor] = useState(cfg.fixedTextColor ?? "#3a2f1c");
   const [bgColor, setBgColor] = useState("#fff6d8");
+  const [borderEnabled, setBorderEnabled] = useState(false);
+  const [borderColor, setBorderColor] = useState("#3a2f1c");
   const [submitting, setSubmitting] = useState(false);
   const [photoChosen, setPhotoChosen] = useState(false);
 
@@ -54,6 +56,7 @@ export function WritePanel({ mode, onSubmit, onDone }: Props) {
         bold,
         textColor: cfg.fixedTextColor ?? textColor,
         bgColor: cfg.bgPickerEnabled ? bgColor : undefined,
+        borderColor: borderEnabled ? borderColor : undefined,
       });
       showToast("캔버스에 추가했어요");
       setContent("");
@@ -93,6 +96,7 @@ export function WritePanel({ mode, onSubmit, onDone }: Props) {
           value={content}
           onChange={(e) => setContent(e.target.value)}
           placeholder="전하고 싶은 말을 적어보세요"
+          style={{ fontFamily: font }}
           required
         />
       </div>
@@ -101,7 +105,7 @@ export function WritePanel({ mode, onSubmit, onDone }: Props) {
         <label htmlFor="font">폰트</label>
         <select id="font" value={font} onChange={(e) => setFont(e.target.value)}>
           {FONTS.map((f) => (
-            <option key={f.value} value={f.value}>
+            <option key={f.value} value={f.value} style={{ fontFamily: f.value }}>
               {f.label}
             </option>
           ))}
@@ -156,6 +160,35 @@ export function WritePanel({ mode, onSubmit, onDone }: Props) {
               메모지 배경색
             </label>
             <input id="bgColor" type="color" value={bgColor} onChange={(e) => setBgColor(e.target.value)} />
+          </div>
+        )}
+      </div>
+
+      <div className={styles.row2}>
+        <div>
+          <label className={styles.miniLabel} htmlFor="borderEnabled">
+            테두리
+          </label>
+          <button
+            id="borderEnabled"
+            type="button"
+            className={`${styles.toggle} ${borderEnabled ? styles.toggleOn : ""}`}
+            onClick={() => setBorderEnabled((v) => !v)}
+          >
+            {borderEnabled ? "테두리 켜짐" : "테두리 없음"}
+          </button>
+        </div>
+        {borderEnabled && (
+          <div>
+            <label className={styles.miniLabel} htmlFor="borderColor">
+              테두리 색
+            </label>
+            <input
+              id="borderColor"
+              type="color"
+              value={borderColor}
+              onChange={(e) => setBorderColor(e.target.value)}
+            />
           </div>
         )}
       </div>

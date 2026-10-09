@@ -5,6 +5,7 @@ import styles from "./canvas-page.module.css";
 import { CanvasBoard } from "@/features/canvas/components/CanvasBoard";
 import { WritePanel } from "@/features/write-panel/components/WritePanel";
 import { StickerPanel } from "@/features/stickers/components/StickerPanel";
+import { DrawPanel } from "@/features/drawing/components/DrawPanel";
 import { useCanvasNotes } from "@/features/canvas/hooks/useCanvasNotes";
 import { MODE_CONFIG, type RollpaperMode } from "@/lib/theme";
 import { showToast } from "@/components/Toast";
@@ -17,7 +18,7 @@ import { ThemeToggle } from "@/components/ThemeToggle";
 import { BgColorPanel } from "@/features/canvas/components/BgColorPanel";
 import { getOwnerToken } from "@/lib/editToken";
 
-type PanelKey = "write" | "sticker" | "bg" | null;
+type PanelKey = "write" | "sticker" | "draw" | "bg" | null;
 
 export function CanvasPageClient({
   rollpaperId,
@@ -106,6 +107,13 @@ export function CanvasPageClient({
                 <span className={styles.ic}>★</span>스티커
               </button>
               <button
+                className={`${styles.tool} ${openPanel === "draw" ? styles.toolActive : ""}`}
+                disabled={atCap && isFinite(cfg.capacity)}
+                onClick={() => setOpenPanel(openPanel === "draw" ? null : "draw")}
+              >
+                <span className={styles.ic}>✏</span>그리기
+              </button>
+              <button
                 className={`${styles.tool} ${openPanel === "bg" ? styles.toolActive : ""}`}
                 disabled={!cfg.bgPickerEnabled || !getOwnerToken(rollpaperId)}
                 onClick={() => setOpenPanel(openPanel === "bg" ? null : "bg")}
@@ -137,6 +145,11 @@ export function CanvasPageClient({
         {!recipientView && openPanel === "sticker" && (
           <div className={styles.sidePanel}>
             <StickerPanel onSubmit={addNote} />
+          </div>
+        )}
+        {!recipientView && openPanel === "draw" && (
+          <div className={styles.sidePanel}>
+            <DrawPanel onSubmit={addNote} onDone={() => setOpenPanel(null)} />
           </div>
         )}
         {!recipientView && openPanel === "bg" && (
