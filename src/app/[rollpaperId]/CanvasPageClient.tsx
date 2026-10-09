@@ -17,9 +17,10 @@ import { EnvelopeIntro } from "@/features/recipient/components/EnvelopeIntro";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { CanvasSkinToggle } from "@/components/CanvasSkinToggle";
 import { BgColorPanel } from "@/features/canvas/components/BgColorPanel";
+import { PaperSizePanel, type PaperSize } from "@/features/canvas/components/PaperSizePanel";
 import { getOwnerToken } from "@/lib/editToken";
 
-type PanelKey = "write" | "sticker" | "draw" | "bg" | null;
+type PanelKey = "write" | "sticker" | "draw" | "bg" | "paper" | null;
 
 export function CanvasPageClient({
   rollpaperId,
@@ -31,6 +32,7 @@ export function CanvasPageClient({
   const { rollpaper, loading, error, addNote, updateNote, moveNote, deleteNote, updateBgColor } =
     useCanvasNotes(rollpaperId);
   const [openPanel, setOpenPanel] = useState<PanelKey>(null);
+  const [paperSize, setPaperSize] = useState<PaperSize>("free");
   const [showBanner, setShowBanner] = useState(false);
   const [downloading, setDownloading] = useState(false);
   const [showEnvelope, setShowEnvelope] = useState(recipientView);
@@ -122,6 +124,12 @@ export function CanvasPageClient({
               >
                 <span className={styles.ic}>◐</span>배경색
               </button>
+              <button
+                className={`${styles.tool} ${openPanel === "paper" ? styles.toolActive : ""}`}
+                onClick={() => setOpenPanel(openPanel === "paper" ? null : "paper")}
+              >
+                <span className={styles.ic}>📐</span>용지
+              </button>
             </>
           )}
           <button className={styles.tool} onClick={handleDownload} disabled={downloading}>
@@ -137,6 +145,7 @@ export function CanvasPageClient({
           deleteNote={deleteNote}
           canvasRef={canvasExportRef}
           readOnly={recipientView}
+          paperSize={paperSize}
         />
 
         {!recipientView && openPanel === "write" && (
@@ -157,6 +166,11 @@ export function CanvasPageClient({
         {!recipientView && openPanel === "bg" && (
           <div className={styles.sidePanel}>
             <BgColorPanel current={rollpaper.bgColor} onPick={updateBgColor} />
+          </div>
+        )}
+        {!recipientView && openPanel === "paper" && (
+          <div className={styles.sidePanel}>
+            <PaperSizePanel value={paperSize} onPick={setPaperSize} />
           </div>
         )}
       </div>

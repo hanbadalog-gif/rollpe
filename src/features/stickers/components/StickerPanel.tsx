@@ -23,6 +23,7 @@ export function StickerPanel({ onSubmit }: Props) {
   return (
     <div className={styles.panel}>
       <h4 className={styles.heading}>스티커</h4>
+      <p className={styles.desc}>눌러서 캔버스에 바로 붙여보세요.</p>
       <div className={styles.grid}>
         {DEFAULT_STICKERS.map((emoji, i) => (
           <button key={i} type="button" onClick={() => handlePick(emoji)}>

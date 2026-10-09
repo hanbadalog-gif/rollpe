@@ -2,6 +2,9 @@
 .canvasScroll {
   flex: 1;
   overflow: auto;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
   background:
     radial-gradient(circle at 12% 15%, var(--accent-soft), transparent 40%),
     radial-gradient(circle at 88% 65%, var(--accent-soft), transparent 40%),
@@ -10,22 +13,47 @@
   padding: 20px;
 }
 
+/* 기본(자유) — 캔버스 가용 영역을 꽉 채움 */
 .canvas {
   position: relative;
-  margin: 0 auto;
-  min-height: 480px;
+  flex: 1 1 auto;
   width: 100%;
-  max-width: 760px;
+  min-height: 480px;
+  max-width: none;
   border-radius: 14px;
   box-shadow: var(--shadow);
   overflow: hidden;
-  transition: background 0.2s ease, max-width 0.2s ease;
+  transition: background 0.2s ease, max-width 0.2s ease, aspect-ratio 0.3s ease, flex-basis 0.3s ease;
 }
 
 .canvasLocked {
   max-width: 360px;
   aspect-ratio: 3 / 4;
   min-height: 0;
+}
+
+/* 용지 크기 고정 — 실물 인화/액자 비율 미리보기 */
+.canvasA4p,
+.canvasA4l,
+.canvasA3p,
+.canvasA3l {
+  flex: 0 0 auto;
+  width: auto;
+  height: min(74vh, 760px);
+  min-height: 0;
+  max-width: 100%;
+}
+.canvasA4p {
+  aspect-ratio: 210 / 297;
+}
+.canvasA4l {
+  aspect-ratio: 297 / 210;
+}
+.canvasA3p {
+  aspect-ratio: 297 / 420;
+}
+.canvasA3l {
+  aspect-ratio: 420 / 297;
 }
 
 .safeArea {

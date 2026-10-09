@@ -8,6 +8,7 @@ import { MODE_CONFIG, type RollpaperMode } from "@/lib/theme";
 import { getOwnerToken } from "@/lib/editToken";
 import { showToast } from "@/components/Toast";
 import type { RollpaperDTO } from "../types";
+import type { PaperSize } from "./PaperSizePanel";
 
 interface Props {
   rollpaperId: string;
@@ -19,13 +20,32 @@ interface Props {
   canvasRef?: React.RefObject<HTMLDivElement | null>;
   /** 수신자 전용 화면(Epic 2 Story 2.2) — 전체를 읽기 전용으로 표시 */
   readOnly?: boolean;
+  /** 용지 크기 미리보기(실물 인화/액자 비율) — 로컬 뷰 전용, 서버에 저장하지 않음 */
+  paperSize?: PaperSize;
 }
+
+const PAPER_CLASS: Record<PaperSize, string> = {
+  free: "",
+  a4p: "canvasA4p",
+  a4l: "canvasA4l",
+  a3p: "canvasA3p",
+  a3l: "canvasA3l",
+};
 
 /**
  * 캔버스 코어 엔진 — Epic 3 (Story 3.1~3.5).
  * 상태(useCanvasNotes)는 page에서 끌어올려 write-panel/stickers/share와 공유한다.
  */
-export function CanvasBoard({ rollpaperId, rollpaper, updateNote, moveNote, deleteNote, canvasRef: externalRef, readOnly }: Props) {
+export function CanvasBoard({
+  rollpaperId,
+  rollpaper,
+  updateNote,
+  moveNote,
+  deleteNote,
+  canvasRef: externalRef,
+  readOnly,
+  paperSize = "free",
+}: Props) {
   const ownRef = useRef<HTMLDivElement>(null);
   const canvasRef = externalRef ?? ownRef;
   const noteRefs = useRef<Record<string, HTMLDivElement | null>>({});
@@ -62,7 +82,7 @@ export function CanvasBoard({ rollpaperId, rollpaper, updateNote, moveNote, dele
     <div className={styles.canvasScroll}>
       <div
         ref={canvasRef}
-        className={`${styles.canvas} ${cfg.locked ? styles.canvasLocked : ""}`}
+        className={`${styles.canvas} ${cfg.locked ? styles.canvasLocked : ""} ${PAPER_CLASS[paperSize] ? styles[PAPER_CLASS[paperSize]] : ""}`}
         style={{ background: rollpaper.bgColor ?? cfg.bgColor }}
       >
         {cfg.locked && <div className={styles.safeArea} aria-hidden />}
