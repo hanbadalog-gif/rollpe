@@ -10,14 +10,15 @@
   color: var(--ink-soft);
 }
 
-/* 코르크보드 톤 — CorkPage(/new,/gift)와 동일 계열, 폴라로이드 콜라주 채택분 */
+/* 흰색 + glimory 브랜드컬러 포인트 — CorkPage(/new,/gift)와 동일 계열 (코르크/똥색 배경 피드백으로 교체) */
 .appbar {
   display: flex;
   align-items: center;
   gap: 12px;
   padding: 10px 16px;
   padding-top: calc(10px + env(safe-area-inset-top, 0px));
-  background: var(--cork-2);
+  background: var(--surface);
+  border-bottom: 1px solid var(--line);
   flex: none;
 }
 
@@ -26,14 +27,14 @@
   align-items: center;
   gap: 5px;
   font-size: 11px;
-  color: var(--cork-ink);
+  color: var(--ink-soft);
   opacity: 0.8;
   flex: 1;
   min-width: 0;
 }
 
 .toField b {
-  color: var(--cork-ink);
+  color: var(--ink);
   opacity: 1;
   font-size: 13px;
 }
@@ -41,7 +42,7 @@
 .counter {
   font-size: 10px;
   font-weight: 700;
-  background: var(--surface);
+  background: var(--accent-soft);
   color: var(--accent-deep);
   padding: 4px 10px;
   border-radius: 999px;

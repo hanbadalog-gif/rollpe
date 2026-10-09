@@ -1,12 +1,12 @@
-/* /new, /gift 공용 쉘 — landing.module.css .corkboard와 동일한 코르크 배경 공식 */
+/* /new, /gift 공용 쉘 — 흰색 + glimory 브랜드컬러 포인트 (코르크/똥색 배경 피드백으로 교체) */
 .shell {
   min-height: 100dvh;
   display: flex;
   flex-direction: column;
   background:
-    radial-gradient(circle at 15% 20%, rgba(255, 255, 255, 0.08), transparent 35%),
-    radial-gradient(circle at 85% 70%, rgba(0, 0, 0, 0.08), transparent 35%),
-    var(--cork);
+    radial-gradient(circle at 12% 15%, var(--accent-soft), transparent 40%),
+    radial-gradient(circle at 88% 65%, var(--accent-soft), transparent 40%),
+    var(--surface);
 }
 
 .appbar {
@@ -15,13 +15,14 @@
   gap: 10px;
   padding: 13px 16px;
   padding-top: calc(13px + env(safe-area-inset-top, 0px));
-  background: var(--cork-2);
+  background: var(--surface);
+  border-bottom: 1px solid var(--line);
   flex: none;
 }
 
 .back {
   font-size: 16px;
-  color: var(--cork-ink);
+  color: var(--ink);
   opacity: 0.85;
   flex: none;
 }
@@ -30,7 +31,7 @@
   font-size: 13.5px;
   margin: 0;
   font-weight: 700;
-  color: var(--cork-ink);
+  color: var(--ink);
   flex: 1;
 }
 
