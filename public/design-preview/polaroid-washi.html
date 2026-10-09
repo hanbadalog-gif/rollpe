@@ -1,0 +1,488 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ROLLPE Canvas — 폴라로이드 워시테이프 (Final)</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Gaegu:wght@300;400;700&family=Noto+Sans+KR:wght@400;500;700;900&display=swap');
+
+:root{
+  --brand:#6C7FB7;
+  --brand-pale:#EEF0FA;
+  --brand-paler:#F8F9FD;
+  --ink:#3A3D4D;
+  --sub:#8B8FA3;
+  --paper:#FFFFFF;
+  --line:#E3E6F3;
+}
+*{box-sizing:border-box;}
+html,body{margin:0;}
+body{
+  font-family:'Noto Sans KR',sans-serif;
+  background:#e8e9f1;
+  display:flex;
+  justify-content:center;
+  padding:40px 12px;
+  min-height:100vh;
+}
+
+/* hidden state-control inputs (pure-CSS toggles, no JS) */
+.state-inputs{position:absolute;width:0;height:0;overflow:hidden;opacity:0;}
+
+.device{
+  width:390px;max-width:100%;
+  background:var(--paper);
+  border-radius:36px;
+  box-shadow:0 30px 60px -20px rgba(70,80,140,0.35), 0 0 0 10px #15161f;
+  overflow:hidden;
+  position:relative;
+  transition:width .2s,border-radius .2s;
+}
+
+.shell{display:flex;flex-direction:column;height:100%;}
+
+/* ===== APP BAR ===== */
+.appbar{
+  position:relative;
+  padding:16px 16px 14px;
+  background:
+    radial-gradient(circle at 15% 0%, rgba(108,127,183,0.18), transparent 60%),
+    radial-gradient(circle at 90% 100%, rgba(108,127,183,0.12), transparent 55%),
+    #fff;
+  border-bottom:1px solid var(--line);
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:8px;
+  flex:none;
+}
+.appbar-left{display:flex;align-items:center;gap:10px;min-width:0;}
+.back-pill{
+  width:34px;height:34px;border-radius:50%;
+  background:var(--brand-pale);
+  display:flex;align-items:center;justify-content:center;
+  color:var(--brand);font-size:16px;flex:none;
+}
+.title-block{min-width:0;}
+.title-to{
+  font-family:'Gaegu',cursive;
+  font-size:22px;font-weight:700;color:var(--ink);
+  line-height:1.1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+}
+.title-to b{color:var(--brand);}
+.counter{
+  font-size:11px;color:var(--sub);
+  display:flex;align-items:center;gap:4px;margin-top:2px;
+}
+.counter .dot{width:5px;height:5px;border-radius:50%;background:#7CC78F;display:inline-block;}
+.appbar-right{display:flex;align-items:center;gap:6px;flex:none;}
+.theme-toggle{
+  width:46px;height:26px;border-radius:14px;
+  background:var(--brand-pale);
+  border:1px solid var(--line);
+  position:relative;flex:none;cursor:pointer;
+}
+.theme-toggle::after{
+  content:'☀️';
+  position:absolute;top:2px;left:2px;
+  width:20px;height:20px;border-radius:50%;
+  background:#fff;box-shadow:0 2px 4px rgba(0,0,0,0.15);
+  display:flex;align-items:center;justify-content:center;font-size:11px;
+}
+.share-btn{
+  height:34px;padding:0 12px;border-radius:12px;
+  background:var(--brand);color:#fff;border:none;
+  font-size:12px;font-weight:700;
+  display:flex;align-items:center;gap:5px;
+}
+
+/* ===== BODY LAYOUT (mobile: stacked / desktop: rail+canvas+panel) ===== */
+.body{
+  display:flex;
+  flex-direction:column;
+  flex:1;
+  min-height:0;
+}
+
+/* ===== CANVAS AREA ===== */
+.canvas-wrap{
+  position:relative;
+  height:520px;
+  overflow:auto;
+  background:#dfe2ef;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:14px;
+}
+
+.paper-board{
+  position:relative;
+  width:100%;height:100%;
+  overflow:hidden;
+  border-radius:4px;
+  background:
+    radial-gradient(circle at 20% 15%, rgba(108,127,183,0.16) 0%, transparent 45%),
+    radial-gradient(circle at 85% 30%, rgba(108,127,183,0.12) 0%, transparent 40%),
+    radial-gradient(circle at 50% 90%, rgba(108,127,183,0.14) 0%, transparent 50%),
+    #ffffff;
+  transition:aspect-ratio .25s, width .25s, height .25s;
+}
+.washi{
+  position:absolute;
+  height:26px;
+  background:repeating-linear-gradient(45deg, rgba(108,127,183,0.55) 0 8px, rgba(108,127,183,0.35) 8px 16px);
+  opacity:0.85;
+  box-shadow:0 2px 6px rgba(0,0,0,0.08);
+  z-index:1;
+}
+.washi.w1{width:120px;top:14px;left:-18px;transform:rotate(-8deg);}
+.washi.w2{width:90px;top:300px;right:-14px;transform:rotate(10deg);background:repeating-linear-gradient(45deg, rgba(255,209,102,0.7) 0 8px, rgba(255,209,102,0.45) 8px 16px);}
+
+.doodle{position:absolute;color:var(--brand);opacity:0.35;font-size:22px;z-index:1;}
+.d1{top:60px;right:30px;transform:rotate(12deg);}
+.d2{bottom:40px;left:20px;transform:rotate(-10deg);}
+.d3{top:220px;left:16px;font-size:16px;}
+
+.note{
+  position:absolute;
+  padding:14px 14px 16px;
+  border-radius:10px;
+  font-family:'Gaegu',cursive;
+  box-shadow:0 10px 20px -6px rgba(60,60,100,0.25), 0 2px 4px rgba(60,60,100,0.08);
+  width:150px;
+  z-index:2;
+}
+.note .pin{
+  position:absolute;top:-9px;left:50%;transform:translateX(-50%);
+  width:16px;height:16px;border-radius:50%;
+  background:radial-gradient(circle at 30% 30%, #fff, var(--brand) 70%);
+  box-shadow:0 2px 3px rgba(0,0,0,0.25);
+}
+.note .from{font-size:12px;color:var(--brand);font-weight:700;margin-bottom:4px;}
+.note .msg{font-size:17px;line-height:1.35;color:var(--ink);}
+
+.note.n1{top:80px;left:18px;background:#FFF7E0;transform:rotate(-6deg);}
+.note.n2{top:60px;left:160px;background:#EAF3FF;transform:rotate(5deg);width:140px;}
+.note.n3{top:250px;left:70px;background:#FDE9EF;transform:rotate(-3deg);}
+.note.n4{top:340px;left:200px;background:var(--brand-pale);transform:rotate(8deg);width:130px;}
+
+.polaroid{
+  position:absolute;
+  top:400px;left:110px;
+  width:110px;
+  background:#fff;
+  padding:8px 8px 20px;
+  border-radius:4px;
+  box-shadow:0 12px 24px -8px rgba(60,60,100,0.3);
+  transform:rotate(-4deg);
+  text-align:center;
+  z-index:2;
+}
+.polaroid .ph{
+  width:100%;height:80px;border-radius:2px;
+  background:linear-gradient(135deg, var(--brand-pale), #fff);
+  display:flex;align-items:center;justify-content:center;font-size:22px;
+}
+.polaroid .cap{font-family:'Gaegu',cursive;font-size:12px;color:var(--sub);margin-top:6px;}
+
+/* ===== PAPER-SIZE POPOVER (sticker label, pure CSS toggle) ===== */
+.paper-popover{
+  position:absolute;
+  top:10px;left:10px;
+  display:none;
+  flex-direction:column;
+  gap:6px;
+  background:#fff;
+  border:1.5px dashed var(--brand);
+  border-radius:12px;
+  padding:10px 10px 8px;
+  box-shadow:0 10px 20px -6px rgba(60,60,100,0.3);
+  z-index:5;
+  width:148px;
+}
+#paper-toggle:checked ~ .device .body .canvas-wrap .paper-popover{display:flex;}
+.paper-popover .cap-label{
+  font-family:'Gaegu',cursive;font-size:14px;color:var(--brand);
+  display:flex;align-items:center;gap:4px;margin-bottom:2px;
+}
+.paper-opt{display:flex;align-items:center;gap:6px;font-size:11.5px;color:var(--ink);cursor:pointer;padding:2px 0;}
+.paper-opt::before{content:'○';color:var(--sub);font-size:10px;}
+
+/* highlight whichever paper-size label matches the currently-checked hidden radio */
+#p-free:checked ~ .device .body .paper-popover label[for="p-free"],
+#p-a4p:checked ~ .device .body .paper-popover label[for="p-a4p"],
+#p-a4l:checked ~ .device .body .paper-popover label[for="p-a4l"],
+#p-a3p:checked ~ .device .body .paper-popover label[for="p-a3p"],
+#p-a3l:checked ~ .device .body .paper-popover label[for="p-a3l"]{
+  color:var(--brand);font-weight:700;
+}
+#p-free:checked ~ .device .body .paper-popover label[for="p-free"]::before,
+#p-a4p:checked ~ .device .body .paper-popover label[for="p-a4p"]::before,
+#p-a4l:checked ~ .device .body .paper-popover label[for="p-a4l"]::before,
+#p-a3p:checked ~ .device .body .paper-popover label[for="p-a3p"]::before,
+#p-a3l:checked ~ .device .body .paper-popover label[for="p-a3l"]::before{
+  content:'●';color:var(--brand);
+}
+
+/* drive the actual board shape from the hidden radios */
+#p-free:checked ~ .device .body .canvas-wrap .paper-board{aspect-ratio:auto;width:100%;height:100%;}
+#p-a4p:checked ~ .device .body .canvas-wrap .paper-board{aspect-ratio:210/297;}
+#p-a4l:checked ~ .device .body .canvas-wrap .paper-board{aspect-ratio:297/210;}
+#p-a3p:checked ~ .device .body .canvas-wrap .paper-board{aspect-ratio:297/420;}
+#p-a3l:checked ~ .device .body .canvas-wrap .paper-board{aspect-ratio:420/297;}
+#p-a4p:checked ~ .device .body .canvas-wrap .paper-board,
+#p-a4l:checked ~ .device .body .canvas-wrap .paper-board,
+#p-a3p:checked ~ .device .body .canvas-wrap .paper-board,
+#p-a3l:checked ~ .device .body .canvas-wrap .paper-board{
+  width:auto;height:100%;max-width:100%;
+  box-shadow:0 10px 30px -12px rgba(40,44,80,0.35);
+  border:1px solid var(--line);
+}
+
+/* ===== TOOLBAR (mobile: bottom bar / desktop: left rail) ===== */
+.toolbar{
+  display:flex;
+  justify-content:space-around;
+  padding:10px 6px;
+  background:#fff;
+  border-top:1px solid var(--line);
+  flex:none;
+}
+.tool{
+  display:flex;flex-direction:column;align-items:center;gap:3px;
+  font-size:10px;color:var(--sub);
+  padding:6px 8px;border-radius:12px;
+  cursor:pointer;
+}
+.tool.active{background:var(--brand-pale);color:var(--brand);font-weight:700;}
+.tool .ic{font-size:18px;}
+
+/* ===== WRITE PANEL ===== */
+.panel{
+  border-top:1px solid var(--line);
+  background:var(--brand-paler);
+  padding:16px;
+  display:flex;flex-direction:column;gap:12px;
+  flex:none;
+}
+.panel-head{
+  display:flex;justify-content:space-between;align-items:center;
+}
+.panel-head h3{
+  margin:0;font-family:'Gaegu',cursive;font-size:20px;color:var(--ink);
+}
+.panel-head span{font-size:11px;color:var(--sub);cursor:pointer;}
+.field label{
+  display:block;font-size:11px;color:var(--sub);margin-bottom:5px;font-weight:500;
+}
+.field input, .field textarea, .field select{
+  width:100%;border:1px solid var(--line);border-radius:10px;
+  padding:9px 10px;font-size:13px;font-family:'Noto Sans KR',sans-serif;
+  background:#fff;color:var(--ink);
+}
+.field textarea{resize:none;height:56px;font-family:'Gaegu',cursive;font-size:16px;}
+.row2{display:flex;gap:10px;}
+.row2 .field{flex:1;}
+.swatches{display:flex;gap:7px;}
+.swatch{width:24px;height:24px;border-radius:50%;border:2px solid #fff;box-shadow:0 0 0 1px var(--line);cursor:pointer;}
+.swatch.sel{box-shadow:0 0 0 2px var(--brand);}
+.toggle-row{display:flex;align-items:center;justify-content:space-between;}
+.mini-toggle{width:36px;height:20px;border-radius:10px;background:var(--brand);position:relative;}
+.mini-toggle::after{content:'';position:absolute;top:2px;right:2px;width:16px;height:16px;border-radius:50%;background:#fff;}
+.add-btn{
+  margin-top:4px;
+  background:var(--brand);color:#fff;border:none;border-radius:14px;
+  padding:13px;font-size:14px;font-weight:700;font-family:'Noto Sans KR',sans-serif;
+  box-shadow:0 8px 16px -4px rgba(108,127,183,0.5);
+}
+
+/* ======================================================================
+   DESKTOP (>=760px): left icon rail + center canvas + right side panel
+   ====================================================================== */
+@media (min-width:760px){
+  html,body{height:100%;}
+  body{padding:0;align-items:stretch;}
+  .device{
+    width:100%;
+    max-width:none;
+    border-radius:0;
+    box-shadow:none;
+  }
+  .shell{height:100vh;}
+
+  .body{
+    flex-direction:row;
+    flex:1;
+    min-height:0;
+  }
+
+  /* toolbar becomes a vertical left rail */
+  .toolbar{
+    flex-direction:column;
+    justify-content:flex-start;
+    width:92px;
+    padding:20px 8px;
+    border-top:none;
+    border-right:1px solid var(--line);
+    gap:8px;
+    order:1;
+  }
+  .tool{padding:10px 6px;width:100%;}
+  .tool .ic{font-size:21px;}
+
+  /* canvas grows to fill the middle */
+  .canvas-wrap{
+    order:2;
+    flex:1;
+    height:auto;
+    padding:28px;
+  }
+
+  /* write panel becomes a persistent right sidebar, scrolls independently */
+  .panel{
+    order:3;
+    width:340px;
+    border-top:none;
+    border-left:1px solid var(--line);
+    overflow-y:auto;
+  }
+
+  .appbar{padding:18px 24px;}
+  .title-to{font-size:24px;}
+}
+</style>
+</head>
+<body>
+
+<!-- pure-CSS state (no JS): paper-size picker toggle + size choice -->
+<input type="checkbox" id="paper-toggle" class="state-inputs">
+<input type="radio" name="papersize" id="p-free" class="state-inputs" checked>
+<input type="radio" name="papersize" id="p-a4p" class="state-inputs">
+<input type="radio" name="papersize" id="p-a4l" class="state-inputs">
+<input type="radio" name="papersize" id="p-a3p" class="state-inputs">
+<input type="radio" name="papersize" id="p-a3l" class="state-inputs">
+
+<div class="device">
+  <div class="shell">
+
+    <div class="appbar">
+      <div class="appbar-left">
+        <div class="back-pill">‹</div>
+        <div class="title-block">
+          <div class="title-to">To. <b>민지</b></div>
+          <div class="counter"><span class="dot"></span>3명이 작성 중</div>
+        </div>
+      </div>
+      <div class="appbar-right">
+        <div class="theme-toggle"></div>
+        <button class="share-btn">🔗 공유</button>
+      </div>
+    </div>
+
+    <div class="body">
+
+      <div class="canvas-wrap">
+        <div class="paper-board">
+          <div class="washi w1"></div>
+          <div class="washi w2"></div>
+          <div class="doodle d1">✦</div>
+          <div class="doodle d2">♡</div>
+          <div class="doodle d3">☁︎</div>
+
+          <div class="note n1"><div class="pin"></div><div class="from">From. 서윤</div><div class="msg">민지야 생일 축하해!! 올해도 우리 더 재밌게 놀자 ㅎㅎ</div></div>
+          <div class="note n2"><div class="pin"></div><div class="from">From. 태훈</div><div class="msg">항상 응원해~ 하는 일 다 잘되길!</div></div>
+          <div class="note n3"><div class="pin"></div><div class="from">From. 하은</div><div class="msg">민지 없었으면 이번 학기 못 버텼을듯 고마워 🩵</div></div>
+          <div class="note n4"><div class="pin"></div><div class="from">From. 지수</div><div class="msg">생일 축하축하!! 선물은 비밀 👀</div></div>
+
+          <div class="polaroid">
+            <div class="ph">📷</div>
+            <div class="cap">우리 여행 ‘25.08</div>
+          </div>
+
+          <!-- paper-size popover: styled like a washi-taped memo, toggled by the 용지 tool -->
+          <div class="paper-popover">
+            <div class="cap-label">📐 용지 크기 <label for="paper-toggle" style="margin-left:auto;cursor:pointer;color:var(--sub);">✕</label></div>
+            <label class="paper-opt" for="p-free">자유 (스크롤)</label>
+            <label class="paper-opt" for="p-a4p">A4 세로 (210:297)</label>
+            <label class="paper-opt" for="p-a4l">A4 가로 (297:210)</label>
+            <label class="paper-opt" for="p-a3p">A3 세로 (297:420)</label>
+            <label class="paper-opt" for="p-a3l">A3 가로 (420:297)</label>
+          </div>
+        </div>
+      </div>
+
+      <div class="toolbar">
+        <div class="tool active"><div class="ic">✏️</div>글쓰기</div>
+        <div class="tool"><div class="ic">⭐</div>스티커</div>
+        <div class="tool"><div class="ic">🖊️</div>그리기</div>
+        <div class="tool"><div class="ic">🎨</div>배경색</div>
+        <label class="tool" for="paper-toggle" style="cursor:pointer;"><div class="ic">📐</div>용지</label>
+        <div class="tool"><div class="ic">💾</div>저장</div>
+      </div>
+
+      <div class="panel">
+        <div class="panel-head">
+          <h3>메모 쓰기 ✎</h3>
+          <span>닫기 ✕</span>
+        </div>
+        <div class="field">
+          <label>이름</label>
+          <input type="text" placeholder="예) 김서윤" value="서윤">
+        </div>
+        <div class="field">
+          <label>메시지</label>
+          <textarea placeholder="따뜻한 한마디를 남겨주세요">민지야 생일 축하해!! 올해도 우리 더 재밌게 놀자</textarea>
+        </div>
+        <div class="row2">
+          <div class="field">
+            <label>폰트</label>
+            <select><option>손글씨 (Gaegu)</option><option>귀여운체</option><option>깔끔체</option><option>동글체</option><option>타자기체</option><option>붓글씨체</option><option>만화체</option><option>캘리체</option><option>네모체</option><option>클래식체</option></select>
+          </div>
+          <div class="field">
+            <label>글자크기</label>
+            <select><option>작게</option><option selected>보통</option><option>크게</option></select>
+          </div>
+        </div>
+        <div class="row2">
+          <div class="field">
+            <label>글자색</label>
+            <div class="swatches">
+              <div class="swatch sel" style="background:#3A3D4D"></div>
+              <div class="swatch" style="background:#6C7FB7"></div>
+              <div class="swatch" style="background:#E88CA6"></div>
+              <div class="swatch" style="background:#E8A449"></div>
+            </div>
+          </div>
+          <div class="field">
+            <label>메모지 배경</label>
+            <div class="swatches">
+              <div class="swatch" style="background:#FFF7E0"></div>
+              <div class="swatch sel" style="background:#EAF3FF"></div>
+              <div class="swatch" style="background:#FDE9EF"></div>
+              <div class="swatch" style="background:#EEF0FA"></div>
+            </div>
+          </div>
+        </div>
+        <div class="toggle-row">
+          <label style="font-size:12px;color:var(--ink);font-weight:500;">테두리 표시</label>
+          <div class="mini-toggle"></div>
+        </div>
+        <div class="row2" style="margin-top:-4px;">
+          <div class="field"><label>굵게</label><select><option>보통</option><option>굵게</option></select></div>
+          <div class="field"><label>테두리색</label>
+            <div class="swatches">
+              <div class="swatch sel" style="background:var(--brand)"></div>
+              <div class="swatch" style="background:#E88CA6"></div>
+            </div>
+          </div>
+        </div>
+        <button class="add-btn">캔버스에 추가하기 ＋</button>
+      </div>
+
+    </div>
+  </div>
+</div>
+</body>
+</html>

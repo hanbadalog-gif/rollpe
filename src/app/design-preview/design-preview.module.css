@@ -1,0 +1,57 @@
+.wrap {
+  height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  background: #0d0d10;
+}
+
+.switchBar {
+  flex: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  padding: 12px 16px;
+  background: #16161b;
+  border-bottom: 1px solid #27272e;
+  flex-wrap: wrap;
+}
+
+.switchLabel {
+  font-size: 11.5px;
+  font-weight: 700;
+  color: #8b8b96;
+  letter-spacing: 0.02em;
+}
+
+.switchToggle {
+  display: inline-flex;
+  background: #1f1f26;
+  border-radius: 999px;
+  padding: 3px;
+  gap: 2px;
+}
+
+.switchBtn {
+  border: none;
+  background: none;
+  color: #9b9ba6;
+  font-size: 12.5px;
+  font-weight: 700;
+  padding: 7px 16px;
+  border-radius: 999px;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.switchBtnOn {
+  background: #fff;
+  color: #16161b;
+}
+
+.frame {
+  flex: 1;
+  width: 100%;
+  border: 0;
+  display: block;
+}

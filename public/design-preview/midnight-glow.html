@@ -1,0 +1,538 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ROLLPE — 미드나잇 글로우 (Final)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Gaegu:wght@400;700&family=Noto+Sans+KR:wght@400;500;700&display=swap');
+
+:root{
+  --brand:#6C7FB7;
+  --bg-deep:#0c0f1e;
+  --bg-deep-2:#141a33;
+  --panel:#1a2140;
+  --panel-soft:#222c52;
+  --glow-amber:#f6c66b;
+  --glow-lav:#9fa8e8;
+  --ink:#eef0fb;
+  --ink-dim:#aab0d6;
+}
+*{box-sizing:border-box;}
+body{
+  margin:0;
+  font-family:'Noto Sans KR',sans-serif;
+  background:#05060d;
+  display:flex;
+  align-items:flex-start;
+  justify-content:center;
+  padding:40px 16px;
+  min-height:100vh;
+}
+
+/* ================= APP SHELL ================= */
+.app{
+  width:390px;
+  max-width:100%;
+  height:844px;
+  border-radius:40px;
+  overflow:hidden;
+  position:relative;
+  background:
+    radial-gradient(circle at 25% 10%, rgba(246,198,107,0.14), transparent 45%),
+    radial-gradient(circle at 80% 75%, rgba(159,168,232,0.18), transparent 50%),
+    linear-gradient(180deg, var(--bg-deep) 0%, var(--bg-deep-2) 60%, #0a0e22 100%);
+  box-shadow: 0 40px 100px rgba(0,0,0,0.55), 0 0 0 10px #000;
+  display:flex;
+  flex-direction:column;
+}
+
+/* ---- App bar ---- */
+.appbar{
+  padding:18px 18px 14px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:10px;
+}
+.appbar-left{display:flex;flex-direction:column;gap:2px;}
+.appbar-to{
+  font-family:'Gaegu', cursive;
+  font-size:22px;
+  color:var(--ink);
+  font-weight:700;
+  text-shadow:0 0 18px rgba(246,198,107,0.35);
+}
+.appbar-count{
+  font-size:11px;color:var(--ink-dim);
+  display:flex;align-items:center;gap:5px;
+}
+.appbar-count .dot{
+  width:6px;height:6px;border-radius:50%;
+  background:var(--glow-amber);box-shadow:0 0 8px var(--glow-amber);
+}
+.appbar-right{display:flex;gap:8px;}
+.icon-btn{
+  width:36px;height:36px;border-radius:12px;
+  background:rgba(255,255,255,0.06);
+  border:1px solid rgba(255,255,255,0.08);
+  display:flex;align-items:center;justify-content:center;
+  color:var(--ink);font-size:15px;
+  backdrop-filter: blur(6px);
+  flex-shrink:0;
+}
+.share-btn{
+  background:linear-gradient(135deg,var(--brand),#5567a0);
+  border:none;box-shadow:0 0 16px rgba(108,127,183,0.6);
+}
+
+/* ================= LAYOUT (rail / canvas / panel) ================= */
+.layout{
+  flex:1;
+  display:block;
+  min-height:0;
+  position:relative;
+}
+
+/* ---- Desktop side rail (hidden on mobile) ---- */
+.side-rail{display:none;}
+
+/* ---- Canvas area ---- */
+.canvas-area{
+  height:100%;
+  display:flex;
+  flex-direction:column;
+  min-height:0;
+}
+.canvas-wrap{
+  flex:1;
+  position:relative;
+  margin:0 12px;
+  border-radius:24px;
+  overflow:hidden;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  background:
+    radial-gradient(circle at 50% 0%, rgba(159,168,232,0.10), transparent 60%),
+    rgba(255,255,255,0.015);
+  border:1px solid rgba(255,255,255,0.06);
+}
+/* the "paper" board — size/ratio driven by 용지 선택 */
+.canvas-board{
+  position:relative;
+  width:100%;
+  height:100%;
+  overflow:hidden;
+  border-radius:16px;
+  background:rgba(255,255,255,0.01);
+  transition:width .35s ease, height .35s ease, aspect-ratio .35s ease;
+}
+.canvas-board.ratio-free{ width:100%; height:100%; }
+.canvas-board.ratio-a4p{ aspect-ratio:210/297; width:auto; height:100%; max-width:100%; box-shadow:0 0 0 1px rgba(255,255,255,0.08), 0 0 40px rgba(159,168,232,0.15); }
+.canvas-board.ratio-a4l{ aspect-ratio:297/210; width:100%; height:auto; max-height:100%; box-shadow:0 0 0 1px rgba(255,255,255,0.08), 0 0 40px rgba(159,168,232,0.15); }
+.canvas-board.ratio-a3p{ aspect-ratio:297/420; width:auto; height:100%; max-width:100%; box-shadow:0 0 0 1px rgba(255,255,255,0.08), 0 0 40px rgba(246,198,107,0.15); }
+.canvas-board.ratio-a3l{ aspect-ratio:420/297; width:100%; height:auto; max-height:100%; box-shadow:0 0 0 1px rgba(255,255,255,0.08), 0 0 40px rgba(246,198,107,0.15); }
+
+.canvas-glow-orb{
+  position:absolute;width:220px;height:220px;border-radius:50%;
+  background:radial-gradient(circle, rgba(246,198,107,0.25), transparent 70%);
+  filter:blur(10px);top:-60px;right:-60px;pointer-events:none;
+}
+.canvas-glow-orb2{
+  position:absolute;width:180px;height:180px;border-radius:50%;
+  background:radial-gradient(circle, rgba(159,168,232,0.22), transparent 70%);
+  filter:blur(10px);bottom:40px;left:-50px;pointer-events:none;
+}
+
+.note{
+  position:absolute;width:140px;padding:14px 14px 16px;
+  border-radius:10px 10px 14px 14px;
+  font-family:'Gaegu', cursive;font-size:15px;line-height:1.5;color:#1e2238;
+  box-shadow:0 8px 20px rgba(0,0,0,0.35);
+}
+.note .name{display:block;margin-top:8px;font-size:12px;text-align:right;opacity:0.6;}
+.note.n1{top:18px;left:16px;background:#fdf4df;transform:rotate(-6deg);
+  box-shadow:0 8px 24px rgba(0,0,0,0.4), 0 0 30px rgba(246,198,107,0.25);}
+.note.n2{top:60px;right:14px;background:#e9ecfb;transform:rotate(5deg);
+  box-shadow:0 8px 24px rgba(0,0,0,0.4), 0 0 30px rgba(159,168,232,0.3);}
+.note.n3{top:230px;left:46px;background:#f6e5ec;transform:rotate(-3deg);
+  box-shadow:0 8px 24px rgba(0,0,0,0.4), 0 0 26px rgba(214,160,190,0.3);}
+.note.n4{top:300px;right:20px;width:120px;background:#e2f3ea;transform:rotate(8deg);
+  box-shadow:0 8px 24px rgba(0,0,0,0.4), 0 0 26px rgba(150,210,180,0.3);font-size:13px;}
+.sticker-emoji{position:absolute;font-size:30px;top:395px;left:160px;filter:drop-shadow(0 0 10px rgba(246,198,107,0.5));}
+
+.canvas-hint{
+  position:absolute;bottom:14px;left:0;right:0;text-align:center;
+  font-size:11px;color:var(--ink-dim);opacity:0.7;
+}
+
+/* ---- Mobile bottom toolbar ---- */
+.toolbar{
+  margin:12px 16px 20px;
+  background:rgba(255,255,255,0.05);
+  border:1px solid rgba(255,255,255,0.08);
+  backdrop-filter: blur(14px);
+  border-radius:22px;
+  padding:8px 2px;
+  display:flex;justify-content:space-around;
+  box-shadow:0 0 30px rgba(108,127,183,0.25), 0 10px 30px rgba(0,0,0,0.4);
+}
+.tool{
+  display:flex;flex-direction:column;align-items:center;gap:3px;
+  color:var(--ink-dim);font-size:9.5px;
+  padding:6px 7px;border-radius:12px;cursor:pointer;
+  white-space:nowrap;
+}
+.tool .ic{font-size:17px;}
+.tool.active{
+  color:var(--ink);background:rgba(246,198,107,0.14);
+  box-shadow:0 0 16px rgba(246,198,107,0.25);
+}
+.tool.active .ic{filter:drop-shadow(0 0 6px rgba(246,198,107,0.6));}
+
+/* ================= WRITE PANEL (bottom sheet on mobile / docked sidebar on desktop) ================= */
+.panel-overlay{
+  position:absolute;inset:0;
+  background:rgba(5,6,13,0.55);
+  display:none;align-items:flex-end;z-index:5;
+}
+.panel-overlay.show{display:flex;}
+.sheet{
+  width:100%;max-height:72%;
+  background:linear-gradient(180deg, var(--panel) 0%, var(--panel-soft) 100%);
+  border-radius:28px 28px 0 0;
+  padding:16px 18px 22px;
+  box-shadow:0 -10px 40px rgba(0,0,0,0.5), 0 0 60px rgba(108,127,183,0.25);
+  overflow-y:auto;
+  border-top:1px solid rgba(255,255,255,0.08);
+}
+.sheet-grab{width:40px;height:4px;border-radius:4px;background:rgba(255,255,255,0.2);margin:0 auto 14px;}
+.sheet-title{
+  color:var(--ink);font-size:14px;font-weight:700;margin-bottom:12px;
+  display:flex;justify-content:space-between;align-items:center;
+}
+.sheet-close{color:var(--ink-dim);font-size:13px;cursor:pointer;}
+.field-label{color:var(--ink-dim);font-size:11px;margin:12px 0 6px;}
+.field-input{
+  width:100%;background:rgba(255,255,255,0.06);
+  border:1px solid rgba(255,255,255,0.1);border-radius:10px;
+  padding:10px 12px;color:var(--ink);font-size:13px;font-family:'Noto Sans KR',sans-serif;
+}
+.field-input::placeholder{color:#6b7299;}
+textarea.field-input{resize:none;height:56px;font-family:'Gaegu',cursive;font-size:16px;}
+.row-2{display:flex;gap:10px;}
+.row-2 > div{flex:1;}
+.swatches{display:flex;gap:8px;margin-top:4px;flex-wrap:wrap;}
+.swatch{width:26px;height:26px;border-radius:50%;border:2px solid rgba(255,255,255,0.15);cursor:pointer;}
+.swatch.selected{border-color:var(--glow-amber);box-shadow:0 0 10px rgba(246,198,107,0.6);}
+.toggle-row{display:flex;align-items:center;justify-content:space-between;margin-top:10px;}
+.toggle{width:40px;height:22px;border-radius:12px;background:rgba(255,255,255,0.12);position:relative;cursor:pointer;}
+.toggle::after{
+  content:'';position:absolute;top:2px;left:2px;width:18px;height:18px;border-radius:50%;
+  background:var(--glow-amber);box-shadow:0 0 8px var(--glow-amber);
+  transition:left .2s ease;
+}
+.toggle.on::after{left:20px;}
+.add-btn{
+  margin-top:18px;width:100%;padding:13px;border-radius:14px;border:none;
+  background:linear-gradient(135deg,var(--glow-amber),#e3a94a);
+  color:#2b2208;font-weight:700;font-size:14px;
+  box-shadow:0 0 24px rgba(246,198,107,0.5), 0 8px 18px rgba(0,0,0,0.3);
+  cursor:pointer;
+}
+.font-select{display:flex;gap:6px;overflow-x:auto;padding-bottom:4px;}
+.font-chip{
+  flex-shrink:0;padding:7px 12px;border-radius:10px;
+  background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);
+  color:var(--ink-dim);font-size:12px;white-space:nowrap;cursor:pointer;
+}
+.font-chip.selected{background:rgba(159,168,232,0.2);color:var(--ink);border-color:var(--glow-lav);}
+
+/* ================= PAPER SIZE POPOVER ================= */
+.paper-overlay{
+  position:absolute;inset:0;z-index:6;
+  background:rgba(5,6,13,0.6);
+  display:none;align-items:center;justify-content:center;
+}
+.paper-overlay.show{display:flex;}
+.paper-card{
+  width:85%;max-width:300px;
+  background:linear-gradient(160deg, var(--panel) 0%, var(--panel-soft) 100%);
+  border:1px solid rgba(255,255,255,0.1);
+  border-radius:20px;padding:18px;
+  box-shadow:0 20px 50px rgba(0,0,0,0.5), 0 0 50px rgba(246,198,107,0.18);
+}
+.paper-card h4{margin:0 0 4px;color:var(--ink);font-size:14px;}
+.paper-card p{margin:0 0 14px;color:var(--ink-dim);font-size:11px;}
+.paper-options{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.paper-opt{
+  display:flex;flex-direction:column;align-items:center;gap:6px;
+  padding:10px 6px;border-radius:12px;cursor:pointer;
+  background:rgba(255,255,255,0.04);
+  border:1px solid rgba(255,255,255,0.08);
+  color:var(--ink-dim);font-size:11px;
+}
+.paper-opt.selected{
+  border-color:var(--glow-amber);
+  background:rgba(246,198,107,0.1);
+  color:var(--ink);
+  box-shadow:0 0 14px rgba(246,198,107,0.3);
+}
+.paper-swatch{
+  background:rgba(255,255,255,0.12);
+  border-radius:3px;
+}
+.paper-opt[data-ratio="free"] .paper-swatch{width:26px;height:26px;border-radius:50%;}
+.paper-opt[data-ratio="a4p"] .paper-swatch{width:20px;height:28px;}
+.paper-opt[data-ratio="a4l"] .paper-swatch{width:28px;height:20px;}
+.paper-opt[data-ratio="a3p"] .paper-swatch{width:18px;height:30px;}
+.paper-opt[data-ratio="a3l"] .paper-swatch{width:30px;height:18px;}
+.paper-note{margin-top:14px;font-size:10px;color:var(--ink-dim);opacity:0.7;line-height:1.5;}
+.paper-close{
+  margin-top:14px;width:100%;padding:10px;border-radius:12px;border:none;
+  background:rgba(255,255,255,0.08);color:var(--ink);font-size:12px;cursor:pointer;
+}
+
+/* =====================================================================
+   DESKTOP (>=760px): bottom toolbar -> left vertical rail,
+   bottom sheet -> docked right sidebar, phone bezel -> web app shell
+   ===================================================================== */
+@media (min-width: 760px){
+  html,body{height:100%;}
+  body{padding:0;align-items:stretch;}
+  .app{
+    width:100%;max-width:none;height:100vh;
+    border-radius:0;
+    box-shadow:none;
+  }
+  .appbar{padding:22px 28px 16px;}
+  .appbar-to{font-size:26px;}
+
+  .layout{display:flex;flex-direction:row;}
+
+  .side-rail{
+    display:flex;flex-direction:column;align-items:center;
+    gap:10px;width:76px;flex-shrink:0;
+    padding:14px 8px;margin:0 0 20px 16px;
+    background:rgba(255,255,255,0.04);
+    border:1px solid rgba(255,255,255,0.07);
+    border-radius:20px;
+    box-shadow:0 0 30px rgba(108,127,183,0.2);
+    height:calc(100% - 20px);
+  }
+  .side-rail .tool{width:100%;padding:10px 4px;font-size:10px;}
+  .side-rail .tool .ic{font-size:19px;}
+
+  .toolbar{display:none;} /* mobile bottom bar replaced by rail */
+
+  .canvas-area{flex:1;min-width:0;}
+  .canvas-wrap{margin:0 16px 20px;}
+
+  .panel-overlay{
+    display:flex !important;
+    position:static;background:none;
+    align-items:stretch;justify-content:stretch;
+    width:300px;flex-shrink:0;
+    margin:0 16px 20px 0;
+  }
+  .sheet{
+    width:100%;max-height:none;height:100%;
+    border-radius:20px;
+    border-top:none;
+    border:1px solid rgba(255,255,255,0.08);
+    box-shadow:0 0 40px rgba(108,127,183,0.2), 0 20px 50px rgba(0,0,0,0.3);
+  }
+  .sheet-grab{display:none;}
+  .sheet-close{display:none;} /* docked panel has no "close", it's persistent */
+
+  .paper-card{max-width:360px;}
+}
+</style>
+</head>
+<body>
+
+<div class="app">
+
+  <!-- App bar -->
+  <div class="appbar">
+    <div class="appbar-left">
+      <div class="appbar-to">To. 민지</div>
+      <div class="appbar-count"><span class="dot"></span>3명 작성 중</div>
+    </div>
+    <div class="appbar-right">
+      <div class="icon-btn" title="테마 전환">🌙</div>
+      <div class="icon-btn share-btn" title="링크 공유">🔗</div>
+    </div>
+  </div>
+
+  <div class="layout">
+
+    <!-- Desktop-only left vertical rail -->
+    <nav class="side-rail">
+      <div class="tool active" onclick="togglePanel(true)"><div class="ic">✏️</div>글쓰기</div>
+      <div class="tool"><div class="ic">😊</div>스티커</div>
+      <div class="tool"><div class="ic">🖊️</div>그리기</div>
+      <div class="tool"><div class="ic">🎨</div>배경색</div>
+      <div class="tool" onclick="togglePaper(true)"><div class="ic">📐</div>용지</div>
+      <div class="tool"><div class="ic">⬇️</div>저장</div>
+    </nav>
+
+    <main class="canvas-area">
+      <div class="canvas-wrap">
+        <div class="canvas-board ratio-free" id="canvasBoard">
+          <div class="canvas-glow-orb"></div>
+          <div class="canvas-glow-orb2"></div>
+
+          <div class="note n1">
+            생일 축하해!! 🎂<br>항상 밝은 너처럼<br>이 종이도 반짝이게<br>꾸며봤어 ✨
+            <span class="name">— 지우</span>
+          </div>
+          <div class="note n2">
+            민지야 늘 고마워<br>우리 오래오래<br>보자 ㅎㅎ
+            <span class="name">— 서연</span>
+          </div>
+          <div class="note n3">
+            새로운 시작을<br>응원해!
+            <span class="name">— 現우</span>
+          </div>
+          <div class="note n4">
+            생일 추카추카 🎉<br>맛있는거 사줘
+            <span class="name">— 하늘</span>
+          </div>
+          <div class="sticker-emoji">💫</div>
+
+          <div class="canvas-hint">카드를 눌러 이동 · 두 손가락으로 확대</div>
+        </div>
+      </div>
+
+      <!-- Mobile-only bottom toolbar -->
+      <div class="toolbar">
+        <div class="tool active" onclick="togglePanel(true)"><div class="ic">✏️</div>글쓰기</div>
+        <div class="tool"><div class="ic">😊</div>스티커</div>
+        <div class="tool"><div class="ic">🖊️</div>그리기</div>
+        <div class="tool"><div class="ic">🎨</div>배경색</div>
+        <div class="tool" onclick="togglePaper(true)"><div class="ic">📐</div>용지</div>
+        <div class="tool"><div class="ic">⬇️</div>저장</div>
+      </div>
+    </main>
+
+    <!-- Write panel: bottom sheet on mobile, docked sidebar on desktop -->
+    <div class="panel-overlay" id="sheetOverlay">
+      <div class="sheet">
+        <div class="sheet-grab"></div>
+        <div class="sheet-title">메모 작성 <span class="sheet-close" onclick="togglePanel(false)">닫기 ✕</span></div>
+
+        <div class="field-label">이름</div>
+        <input class="field-input" placeholder="누가 쓰는 메모인가요?" value="지우">
+
+        <div class="field-label">메시지</div>
+        <textarea class="field-input" placeholder="따뜻한 한마디를 남겨주세요">생일 축하해!! 항상 밝은 너처럼 이 종이도 반짝이게 꾸며봤어 ✨</textarea>
+
+        <div class="field-label">폰트 (10종)</div>
+        <div class="font-select">
+          <div class="font-chip selected">Gaegu</div>
+          <div class="font-chip">나눔손글씨</div>
+          <div class="font-chip">카페24써라운드</div>
+          <div class="font-chip">학교안심</div>
+          <div class="font-chip">마루부리</div>
+          <div class="font-chip">Noto Serif</div>
+        </div>
+
+        <div class="row-2">
+          <div>
+            <div class="field-label">글자 크기</div>
+            <input class="field-input" value="16px">
+          </div>
+          <div>
+            <div class="field-label">굵게</div>
+            <input class="field-input" value="보통 / 굵게">
+          </div>
+        </div>
+
+        <div class="field-label">글자색</div>
+        <div class="swatches">
+          <div class="swatch selected" style="background:#1e2238;"></div>
+          <div class="swatch" style="background:#6C7FB7;"></div>
+          <div class="swatch" style="background:#e3a94a;"></div>
+          <div class="swatch" style="background:#d6a0be;"></div>
+        </div>
+
+        <div class="field-label">메모지 배경색</div>
+        <div class="swatches">
+          <div class="swatch selected" style="background:#fdf4df;"></div>
+          <div class="swatch" style="background:#e9ecfb;"></div>
+          <div class="swatch" style="background:#f6e5ec;"></div>
+          <div class="swatch" style="background:#e2f3ea;"></div>
+        </div>
+
+        <div class="toggle-row">
+          <div class="field-label" style="margin:0;">테두리 표시</div>
+          <div class="toggle" onclick="this.classList.toggle('on')"></div>
+        </div>
+
+        <button class="add-btn" onclick="togglePanel(false)">캔버스에 추가 ✨</button>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- Paper size popover -->
+<div class="paper-overlay" id="paperOverlay">
+  <div class="paper-card">
+    <h4>캔버스 용지 크기</h4>
+    <p>완성 후 실물 인화·액자 주문 시 이 비율대로 제작됩니다</p>
+    <div class="paper-options" id="paperOptions">
+      <div class="paper-opt selected" data-ratio="free" onclick="selectPaper('free', this)">
+        <div class="paper-swatch"></div>자유
+      </div>
+      <div class="paper-opt" data-ratio="a4p" onclick="selectPaper('a4p', this)">
+        <div class="paper-swatch"></div>A4 세로
+      </div>
+      <div class="paper-opt" data-ratio="a4l" onclick="selectPaper('a4l', this)">
+        <div class="paper-swatch"></div>A4 가로
+      </div>
+      <div class="paper-opt" data-ratio="a3p" onclick="selectPaper('a3p', this)">
+        <div class="paper-swatch"></div>A3 세로
+      </div>
+      <div class="paper-opt" data-ratio="a3l" onclick="selectPaper('a3l', this)">
+        <div class="paper-swatch"></div>A3 가로
+      </div>
+    </div>
+    <div class="paper-note">💡 "자유"는 스크롤로 자유롭게 확장, 나머지는 실물 인화 비율에 맞춰 캔버스가 고정됩니다.</div>
+    <button class="paper-close" onclick="togglePaper(false)">완료</button>
+  </div>
+</div>
+
+<script>
+function togglePanel(show){
+  document.getElementById('sheetOverlay').classList.toggle('show', show);
+}
+function togglePaper(show){
+  document.getElementById('paperOverlay').classList.toggle('show', show);
+}
+function selectPaper(ratio, el){
+  document.querySelectorAll('.paper-opt').forEach(o => o.classList.remove('selected'));
+  el.classList.add('selected');
+  const board = document.getElementById('canvasBoard');
+  board.classList.remove('ratio-free','ratio-a4p','ratio-a4l','ratio-a3p','ratio-a3l');
+  board.classList.add('ratio-' + ratio);
+}
+/* generic swatch / font-chip selection within their own group */
+document.addEventListener('click', function(e){
+  if(e.target.classList.contains('swatch')){
+    const group = e.target.parentElement;
+    group.querySelectorAll('.swatch').forEach(s => s.classList.remove('selected'));
+    e.target.classList.add('selected');
+  }
+  if(e.target.classList.contains('font-chip')){
+    const group = e.target.parentElement;
+    group.querySelectorAll('.font-chip').forEach(s => s.classList.remove('selected'));
+    e.target.classList.add('selected');
+  }
+});
+</script>
+</body>
+</html>
