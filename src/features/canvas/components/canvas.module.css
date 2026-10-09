@@ -64,6 +64,78 @@
   user-select: none;
 }
 
+/* 워시테이프 스킨: 메모 상단에 압정 느낌의 점 */
+[data-skin='washi'] .note:not(.noteSticker):not(.notePhotoOnly)::before {
+  content: '';
+  position: absolute;
+  top: -8px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 30% 30%, #fff, var(--accent) 70%);
+  box-shadow: 0 2px 3px rgba(0, 0, 0, 0.25);
+  pointer-events: none;
+}
+
+/* 글로우 스킨: 메모에 은은한 글로우 */
+[data-skin='glow'] .note:not(.noteSticker) {
+  box-shadow: 0 6px 14px -6px rgba(40, 20, 80, 0.3), 0 0 24px rgba(159, 168, 232, 0.25);
+}
+
+/* ===== 스킨 전용 장식 (실제 메모와 무관, 캔버스 모서리 고정 장식) ===== */
+.skinDecor {
+  position: absolute;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.washiTape {
+  display: none;
+  height: 22px;
+  background: repeating-linear-gradient(45deg, rgba(108, 127, 183, 0.5) 0 8px, rgba(108, 127, 183, 0.3) 8px 16px);
+  opacity: 0.85;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+}
+[data-skin='washi'] .washiTape {
+  display: block;
+}
+.washiTape1 {
+  width: 100px;
+  top: 10px;
+  left: -14px;
+  transform: rotate(-8deg);
+}
+.washiTape2 {
+  width: 80px;
+  top: 260px;
+  right: -12px;
+  transform: rotate(10deg);
+  background: repeating-linear-gradient(45deg, rgba(255, 209, 102, 0.7) 0 8px, rgba(255, 209, 102, 0.45) 8px 16px);
+}
+
+.glowOrb {
+  display: none;
+  width: 180px;
+  height: 180px;
+  border-radius: 50%;
+  filter: blur(10px);
+}
+[data-skin='glow'] .glowOrb {
+  display: block;
+}
+.glowOrb1 {
+  top: -50px;
+  right: -50px;
+  background: radial-gradient(circle, rgba(246, 198, 107, 0.25), transparent 70%);
+}
+.glowOrb2 {
+  bottom: 30px;
+  left: -40px;
+  background: radial-gradient(circle, rgba(159, 168, 232, 0.22), transparent 70%);
+}
+
 .note:active {
   cursor: grabbing;
   z-index: 50;

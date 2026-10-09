@@ -15,6 +15,7 @@ import { hasBannerBeenSeen, markBannerSeen } from "@/features/share/lib/bannerSe
 import { downloadCanvasAsImage } from "@/features/share/lib/canvasExport";
 import { EnvelopeIntro } from "@/features/recipient/components/EnvelopeIntro";
 import { ThemeToggle } from "@/components/ThemeToggle";
+import { CanvasSkinToggle } from "@/components/CanvasSkinToggle";
 import { BgColorPanel } from "@/features/canvas/components/BgColorPanel";
 import { getOwnerToken } from "@/lib/editToken";
 
@@ -74,6 +75,7 @@ export function CanvasPageClient({
         <span className={styles.counter}>
           {isFinite(cfg.capacity) ? `${noteCount} / ${cfg.capacity}명` : `${noteCount}명 작성`}
         </span>
+        <CanvasSkinToggle />
         <ThemeToggle />
         {!recipientView && (
           <ShareMenu mode={rollpaper.mode as RollpaperMode} onOpenShare={handleOpenShare} />

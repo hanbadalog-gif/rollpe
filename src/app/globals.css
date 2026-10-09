@@ -116,6 +116,28 @@
   color-scheme: dark;
 }
 
+/* 캔버스 디자인 스킨(워시테이프 기본/글로우) — CanvasSkinToggle이 설정하는 data-skin 속성.
+   기존 토큰을 재정의하는 방식이라 appbar/toolbar/패널/캔버스 배경이 전부 자동으로 따라온다.
+   라이트/다크(data-theme)와는 독립된 축 — 글로우는 항상 네이비+글로우 톤으로 고정. */
+[data-skin='glow'] {
+  --surface: #1a2140;
+  --surface-2: #222c52;
+  --ink: #eef0fb;
+  --ink-soft: #aab0d6;
+  --line: rgba(255, 255, 255, 0.08);
+
+  --accent: #f6c66b;
+  --accent-ink: #2b2208;
+  --accent-soft: rgba(246, 198, 107, 0.14);
+  --accent-deep: #9fa8e8;
+
+  --warn-bg: rgba(246, 198, 107, 0.14);
+  --warn-ink: #f6c66b;
+
+  --shadow: 0 20px 50px -14px rgba(0, 0, 0, 0.5), 0 0 40px rgba(159, 168, 232, 0.15);
+  color-scheme: dark;
+}
+
 html {
   height: 100%;
 }

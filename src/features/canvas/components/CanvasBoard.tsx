@@ -66,6 +66,10 @@ export function CanvasBoard({ rollpaperId, rollpaper, updateNote, moveNote, dele
         style={{ background: rollpaper.bgColor ?? cfg.bgColor }}
       >
         {cfg.locked && <div className={styles.safeArea} aria-hidden />}
+        <span className={`${styles.skinDecor} ${styles.washiTape} ${styles.washiTape1}`} aria-hidden />
+        <span className={`${styles.skinDecor} ${styles.washiTape} ${styles.washiTape2}`} aria-hidden />
+        <span className={`${styles.skinDecor} ${styles.glowOrb} ${styles.glowOrb1}`} aria-hidden />
+        <span className={`${styles.skinDecor} ${styles.glowOrb} ${styles.glowOrb2}`} aria-hidden />
         {rollpaper.notes.length === 0 && (
           <div className={styles.hint}>+ 빈 공간을 눌러 마음을 더해보세요</div>
         )}
