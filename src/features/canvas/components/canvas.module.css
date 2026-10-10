@@ -3,7 +3,7 @@
   flex: 1;
   overflow: auto;
   display: flex;
-  align-items: flex-start;
+  align-items: stretch;
   justify-content: center;
   background:
     radial-gradient(circle at 12% 15%, var(--accent-soft), transparent 40%),
@@ -30,6 +30,7 @@
   max-width: 360px;
   aspect-ratio: 3 / 4;
   min-height: 0;
+  align-self: flex-start;
 }
 
 /* 용지 크기 고정 — 실물 인화/액자 비율 미리보기 */
@@ -190,12 +191,14 @@
   overflow: hidden;
 }
 
+/* height:auto — 사진 원본 비율 그대로 보여줌(이전엔 고정 4:3 + cover로 잘려 보이던 문제) */
 .notePhotoOnly img,
 .notePhoto {
   width: 100%;
-  aspect-ratio: 4 / 3;
-  object-fit: cover;
+  height: auto;
   display: block;
+  -webkit-user-drag: none;
+  user-select: none;
 }
 
 .notePhoto {

@@ -101,28 +101,28 @@ export function CanvasPageClient({
                 disabled={atCap && isFinite(cfg.capacity)}
                 onClick={() => setOpenPanel(openPanel === "write" ? null : "write")}
               >
-                <span className={styles.ic}>✎</span>글쓰기
+                <span className={styles.ic}>✏️</span>글쓰기
               </button>
               <button
                 className={`${styles.tool} ${openPanel === "sticker" ? styles.toolActive : ""}`}
                 disabled={!cfg.stickerEnabled}
                 onClick={() => setOpenPanel(openPanel === "sticker" ? null : "sticker")}
               >
-                <span className={styles.ic}>★</span>스티커
+                <span className={styles.ic}>⭐</span>스티커
               </button>
               <button
                 className={`${styles.tool} ${openPanel === "draw" ? styles.toolActive : ""}`}
                 disabled={atCap && isFinite(cfg.capacity)}
                 onClick={() => setOpenPanel(openPanel === "draw" ? null : "draw")}
               >
-                <span className={styles.ic}>✏</span>그리기
+                <span className={styles.ic}>🖊️</span>그리기
               </button>
               <button
                 className={`${styles.tool} ${openPanel === "bg" ? styles.toolActive : ""}`}
                 disabled={!cfg.bgPickerEnabled || !getOwnerToken(rollpaperId)}
                 onClick={() => setOpenPanel(openPanel === "bg" ? null : "bg")}
               >
-                <span className={styles.ic}>◐</span>배경색
+                <span className={styles.ic}>🎨</span>배경색
               </button>
               <button
                 className={`${styles.tool} ${openPanel === "paper" ? styles.toolActive : ""}`}
@@ -133,7 +133,7 @@ export function CanvasPageClient({
             </>
           )}
           <button className={styles.tool} onClick={handleDownload} disabled={downloading}>
-            <span className={styles.ic}>⬇</span>{downloading ? "저장 중…" : "저장"}
+            <span className={styles.ic}>💾</span>{downloading ? "저장 중…" : "저장"}
           </button>
         </div>
 

@@ -74,8 +74,9 @@ export function Note({ note, canvasRef, editable, selected, onMoveEnd, onTap, on
         onPointerUp={drag.onPointerUp}
       >
         {/* next/image는 스토리지 벤더 확정(TRD §1 미결정) 후 remotePatterns 설정과 함께 전환 */}
+        {/* draggable=false — 브라우저 기본 이미지 드래그(다운로드 고스트)가 커스텀 포인터 드래그를 가로채던 버그 수정 */}
         {/* eslint-disable-next-line @next/next/no-img-element */}
-        {note.photoUrl && <img src={note.photoUrl} alt="" />}
+        {note.photoUrl && <img src={note.photoUrl} alt="" draggable={false} />}
         {!readOnly && (
           <span className={styles.deleteBtn} onClick={onDelete}>
             ✕
@@ -103,7 +104,7 @@ export function Note({ note, canvasRef, editable, selected, onMoveEnd, onTap, on
       onPointerUp={drag.onPointerUp}
     >
       {/* eslint-disable-next-line @next/next/no-img-element */}
-      {note.photoUrl && <img className={styles.notePhoto} src={note.photoUrl} alt="" />}
+      {note.photoUrl && <img className={styles.notePhoto} src={note.photoUrl} alt="" draggable={false} />}
       {note.content}
       <span className={styles.noteFrom}>- {note.fromName}</span>
       {!readOnly && (
