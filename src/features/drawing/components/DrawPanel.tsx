@@ -119,6 +119,7 @@ export function DrawPanel({ onSubmit, onDone }: { onSubmit: (input: CreateNoteIn
     try {
       await onSubmit({ type: "photo", photoUrl: canvas.toDataURL("image/png") });
       showToast("그림을 캔버스에 추가했어요");
+      setTimeout(() => showToast("친구들한테도 공유해서 꽉 채워봐요 🔗"), 2400);
       onDone();
     } catch {
       showToast("추가하지 못했어요");

@@ -84,7 +84,7 @@ export function CanvasPageClient({
         )}
       </div>
 
-      {showBanner && <ConversionBanner onClose={() => setShowBanner(false)} />}
+      {showBanner && <ConversionBanner onClose={() => setShowBanner(false)} toName={rollpaper.toName} />}
 
       {!recipientView && atCap && isFinite(cfg.capacity) && (
         <div className={styles.capBanner}>

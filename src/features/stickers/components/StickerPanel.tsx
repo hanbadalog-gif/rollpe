@@ -15,6 +15,7 @@ export function StickerPanel({ onSubmit }: Props) {
     try {
       await onSubmit({ type: "sticker", content: emoji });
       showToast("스티커를 추가했어요");
+      setTimeout(() => showToast("친구들한테도 공유해서 꽉 채워봐요 🔗"), 2400);
     } catch {
       showToast("추가하지 못했어요");
     }

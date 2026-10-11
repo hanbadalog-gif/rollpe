@@ -127,6 +127,7 @@ export function WritePanel({ mode, onSubmit, onDone }: Props) {
         photoUrl: photoUrl ?? undefined,
       });
       showToast("캔버스에 추가했어요");
+      setTimeout(() => showToast("친구들한테도 공유해서 꽉 채워봐요 🔗"), 2400);
       setContent("");
       setPhotoUrl(null);
       onDone();
