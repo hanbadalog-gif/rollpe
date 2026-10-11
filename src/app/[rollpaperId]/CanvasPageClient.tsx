@@ -14,7 +14,7 @@ import { ConversionBanner } from "@/features/share/components/ConversionBanner";
 import { hasBannerBeenSeen, markBannerSeen } from "@/features/share/lib/bannerSeen";
 import { downloadCanvasAsImage } from "@/features/share/lib/canvasExport";
 import { EnvelopeIntro } from "@/features/recipient/components/EnvelopeIntro";
-import { CanvasSkinToggle } from "@/components/CanvasSkinToggle";
+import { DownloadIcon } from "@/components/icons";
 import { BgColorPanel } from "@/features/canvas/components/BgColorPanel";
 import { PaperSizePanel, type PaperSize } from "@/features/canvas/components/PaperSizePanel";
 import { getOwnerToken } from "@/lib/editToken";
@@ -76,9 +76,8 @@ export function CanvasPageClient({
         <span className={styles.counter}>
           {isFinite(cfg.capacity) ? `${noteCount} / ${cfg.capacity}명` : `${noteCount}명 작성`}
         </span>
-        <CanvasSkinToggle />
         <button className={styles.downloadBtn} onClick={handleDownload} disabled={downloading} aria-label="이미지로 저장">
-          {downloading ? "⋯" : "⬇"}
+          {downloading ? "⋯" : <DownloadIcon />}
         </button>
         {!recipientView && (
           <ShareMenu mode={rollpaper.mode as RollpaperMode} onOpenShare={handleOpenShare} />

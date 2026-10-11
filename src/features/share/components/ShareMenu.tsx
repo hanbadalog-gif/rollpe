@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useState } from "react";
 import styles from "./share-menu.module.css";
 import { showToast } from "@/components/Toast";
+import { LinkIcon } from "@/components/icons";
 import type { RollpaperMode } from "@/lib/theme";
 
 interface Props {
@@ -45,7 +46,8 @@ export function ShareMenu({ mode, onOpenShare }: Props) {
   return (
     <div className={styles.wrap}>
       <button className={styles.iconBtn} onClick={toggle} aria-label="공유">
-        ⇪
+        <LinkIcon size={13} />
+        링크 공유하기
       </button>
       {open && (
         <>
