@@ -61,6 +61,7 @@ export async function POST(
       posX: body.posX ?? Math.round(8 + Math.random() * 62),
       posY: body.posY ?? Math.round(8 + Math.random() * 58),
       rotation: body.rotation ?? Math.round(Math.random() * 10 - 5),
+      scale: body.scale,
       editToken,
     })
     .returning();

@@ -3,6 +3,7 @@
 import { useState } from "react";
 import styles from "./canvas.module.css";
 import { useDraggableNote } from "../hooks/useDraggableNote";
+import { useResizableNote } from "../hooks/useResizableNote";
 import type { NoteDTO } from "../types";
 
 interface Props {
@@ -11,6 +12,7 @@ interface Props {
   editable: boolean;
   selected: boolean;
   onMoveEnd: (posX: number, posY: number) => void;
+  onResizeEnd: (scale: number) => void;
   onTap: () => void;
   onDelete: () => void;
   setRef?: (el: HTMLDivElement | null) => void;
@@ -18,9 +20,12 @@ interface Props {
   readOnly?: boolean;
 }
 
-export function Note({ note, canvasRef, editable, selected, onMoveEnd, onTap, onDelete, setRef, readOnly }: Props) {
+export function Note({ note, canvasRef, editable, selected, onMoveEnd, onResizeEnd, onTap, onDelete, setRef, readOnly }: Props) {
   // 드래그 중에는 서버 왕복 없이 로컬 좌표만 바꿔 즉시 반응하게 한다 (실시간 이동 체감용)
   const [dragPos, setDragPos] = useState<{ x: number; y: number } | null>(null);
+  const [dragScale, setDragScale] = useState<number | null>(null);
+
+  const disabled = readOnly || (!editable && note.type !== "sticker");
 
   const drag = useDraggableNote({
     posX: note.posX,
@@ -32,16 +37,37 @@ export function Note({ note, canvasRef, editable, selected, onMoveEnd, onTap, on
       onMoveEnd(x, y);
     },
     onTap,
-    disabled: readOnly || (!editable && note.type !== "sticker"),
+    disabled,
+  });
+
+  const resize = useResizableNote({
+    scale: note.scale ?? 1,
+    onResize: setDragScale,
+    onResizeEnd: (scale) => {
+      setDragScale(null);
+      onResizeEnd(scale);
+    },
+    disabled,
   });
 
   const posX = dragPos?.x ?? note.posX;
   const posY = dragPos?.y ?? note.posY;
+  const scale = dragScale ?? note.scale ?? 1;
   const style: React.CSSProperties = {
     left: `${posX}%`,
     top: `${posY}%`,
-    transform: `rotate(${note.rotation}deg)`,
+    transform: `rotate(${note.rotation}deg) scale(${scale})`,
   };
+
+  const resizeHandle = !disabled && (
+    <span
+      className={styles.resizeHandle}
+      onPointerDown={resize.onPointerDown}
+      onPointerMove={resize.onPointerMove}
+      onPointerUp={resize.onPointerUp}
+      onClick={(e) => e.stopPropagation()}
+    />
+  );
 
   if (note.type === "sticker") {
     return (
@@ -59,6 +85,7 @@ export function Note({ note, canvasRef, editable, selected, onMoveEnd, onTap, on
             ✕
           </span>
         )}
+        {resizeHandle}
       </div>
     );
   }
@@ -82,6 +109,7 @@ export function Note({ note, canvasRef, editable, selected, onMoveEnd, onTap, on
             ✕
           </span>
         )}
+        {resizeHandle}
       </div>
     );
   }
@@ -103,15 +131,16 @@ export function Note({ note, canvasRef, editable, selected, onMoveEnd, onTap, on
       onPointerMove={drag.onPointerMove}
       onPointerUp={drag.onPointerUp}
     >
+      <span className={styles.noteFrom}>From. {note.fromName}</span>
       {/* eslint-disable-next-line @next/next/no-img-element */}
       {note.photoUrl && <img className={styles.notePhoto} src={note.photoUrl} alt="" draggable={false} />}
       {note.content}
-      <span className={styles.noteFrom}>- {note.fromName}</span>
       {!readOnly && (
         <span className={styles.deleteBtn} onClick={onDelete}>
           ✕
         </span>
       )}
+      {resizeHandle}
     </div>
   );
 }

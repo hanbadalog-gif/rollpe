@@ -15,6 +15,7 @@ interface Props {
   rollpaper: RollpaperDTO;
   updateNote: (noteId: string, patch: { font?: string; fontSize?: number }) => Promise<void>;
   moveNote: (noteId: string, posX: number, posY: number, rotation?: number) => Promise<void>;
+  resizeNote: (noteId: string, scale: number) => Promise<void>;
   deleteNote: (noteId: string, ownerToken?: string | null) => Promise<void>;
   /** 이미지 다운로드(Epic 7 Story 7.2)가 캔버스 DOM을 export할 수 있도록 노출 */
   canvasRef?: React.RefObject<HTMLDivElement | null>;
@@ -41,6 +42,7 @@ export function CanvasBoard({
   rollpaper,
   updateNote,
   moveNote,
+  resizeNote,
   deleteNote,
   canvasRef: externalRef,
   readOnly,
@@ -105,6 +107,7 @@ export function CanvasBoard({
               noteRefs.current[note.id] = el;
             }}
             onMoveEnd={(posX, posY) => moveNote(note.id, posX, posY, note.rotation)}
+            onResizeEnd={(scale) => resizeNote(note.id, scale)}
             onTap={() => !readOnly && openPopoverFor(note.id)}
             onDelete={() => handleDelete(note.id)}
           />

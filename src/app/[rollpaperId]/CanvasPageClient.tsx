@@ -29,7 +29,7 @@ export function CanvasPageClient({
   rollpaperId: string;
   recipientView?: boolean;
 }) {
-  const { rollpaper, loading, error, addNote, updateNote, moveNote, deleteNote, updateBgColor } =
+  const { rollpaper, loading, error, addNote, updateNote, moveNote, resizeNote, deleteNote, updateBgColor } =
     useCanvasNotes(rollpaperId);
   const [openPanel, setOpenPanel] = useState<PanelKey>(null);
   const [paperSize, setPaperSize] = useState<PaperSize>("free");
@@ -78,7 +78,7 @@ export function CanvasPageClient({
           {isFinite(cfg.capacity) ? `${noteCount} / ${cfg.capacity}명` : `${noteCount}명 작성`}
         </span>
         <CanvasSkinToggle />
-        <ThemeToggle />
+        <ThemeToggle variant="light" />
         {!recipientView && (
           <ShareMenu mode={rollpaper.mode as RollpaperMode} onOpenShare={handleOpenShare} />
         )}
@@ -142,6 +142,7 @@ export function CanvasPageClient({
           rollpaper={rollpaper}
           updateNote={updateNote}
           moveNote={moveNote}
+          resizeNote={resizeNote}
           deleteNote={deleteNote}
           canvasRef={canvasExportRef}
           readOnly={recipientView}

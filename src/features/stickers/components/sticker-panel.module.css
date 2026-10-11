@@ -2,7 +2,6 @@
   padding: 18px;
   background: var(--surface);
   width: 100%;
-  max-width: 340px;
 }
 
 .heading {
@@ -40,4 +39,11 @@
 
 .grid button:active {
   transform: translateY(0);
+}
+
+/* 데스크톱 사이드바에서만 폭 제한 — 모바일 전체폭 레이아웃에서 좌측에 붙지 않도록 */
+@media (min-width: 760px) {
+  .panel {
+    max-width: 340px;
+  }
 }

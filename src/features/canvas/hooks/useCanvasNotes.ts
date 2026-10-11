@@ -95,6 +95,24 @@ export function useCanvasNotes(rollpaperId: string) {
     [rollpaperId, refresh],
   );
 
+  const resizeNote = useCallback(
+    async (noteId: string, scale: number) => {
+      const token = getEditToken(rollpaperId, noteId);
+      if (!token) return; // moveNote와 동일하게 — 내 글이 아니면 조용히 무시(드래그가 스냅백됨)
+      setRollpaper((prev) =>
+        prev
+          ? { ...prev, notes: prev.notes.map((n) => (n.id === noteId ? { ...n, scale } : n)) }
+          : prev,
+      );
+      try {
+        await api.patch(`/api/rollpapers/${rollpaperId}/notes/${noteId}`, { scale }, { "x-edit-token": token });
+      } catch {
+        await refresh();
+      }
+    },
+    [rollpaperId, refresh],
+  );
+
   const updateBgColor = useCallback(
     async (bgColor: string) => {
       const token = getOwnerToken(rollpaperId);
@@ -128,5 +146,5 @@ export function useCanvasNotes(rollpaperId: string) {
     [rollpaperId],
   );
 
-  return { rollpaper, loading, error, addNote, updateNote, moveNote, deleteNote, updateBgColor, canEdit, refresh };
+  return { rollpaper, loading, error, addNote, updateNote, moveNote, resizeNote, deleteNote, updateBgColor, canEdit, refresh };
 }

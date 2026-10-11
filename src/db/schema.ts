@@ -56,6 +56,7 @@ export const notes = pgTable(
     posX: real("pos_x").notNull().default(10), // % 기준, 0~100
     posY: real("pos_y").notNull().default(10), // % 기준, 0~100
     rotation: real("rotation").notNull().default(0),
+    scale: real("scale").notNull().default(1), // 꼭짓점 드래그 리사이즈 (0.6~2.2)
 
     editToken: text("edit_token").notNull(), // 작성자 본인 식별용 (비로그인)
     userId: uuid("user_id"), // nullable — 로그인 연동 전까지 항상 null

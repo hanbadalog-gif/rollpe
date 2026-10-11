@@ -19,6 +19,7 @@ export interface NoteDTO {
   posX: number;
   posY: number;
   rotation: number;
+  scale: number;
   createdAt: string;
 }
 
@@ -45,4 +46,5 @@ export interface CreateNoteInput {
   posX?: number;
   posY?: number;
   rotation?: number;
+  scale?: number;
 }

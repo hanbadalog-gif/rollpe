@@ -13,3 +13,10 @@
   justify-content: center;
   cursor: pointer;
 }
+
+/* 흰 appbar(캔버스/작성 페이지) 위에서는 반투명 화이트가 안 보여서 토큰 기반으로 */
+.btnOnLight {
+  border-color: var(--line);
+  background: var(--surface-2);
+  color: var(--ink);
+}

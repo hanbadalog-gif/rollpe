@@ -1,0 +1,70 @@
+.wrap {
+  max-width: 640px;
+  margin: 0 auto;
+  padding: 40px 16px 80px;
+}
+
+.denied {
+  padding: 60px 20px;
+  text-align: center;
+  color: var(--ink-soft);
+  font-size: 13px;
+}
+
+.title {
+  font-size: 20px;
+  margin: 0 0 4px;
+}
+
+.sub {
+  font-size: 12px;
+  color: var(--ink-soft);
+  margin: 0 0 18px;
+}
+
+.exportBtn {
+  display: inline-block;
+  padding: 11px 18px;
+  border-radius: 10px;
+  background: var(--accent);
+  color: var(--accent-ink);
+  font-weight: 700;
+  font-size: 13px;
+  text-decoration: none;
+  margin-bottom: 28px;
+}
+
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.item {
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  padding: 14px 16px;
+  background: var(--surface);
+}
+
+.itemFrom {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--accent-deep);
+  margin-bottom: 6px;
+}
+
+.itemPhoto {
+  width: 100%;
+  max-width: 280px;
+  border-radius: 8px;
+  display: block;
+  margin-bottom: 8px;
+}
+
+.itemContent {
+  font-size: 13.5px;
+  line-height: 1.6;
+  color: var(--ink);
+  white-space: pre-wrap;
+}

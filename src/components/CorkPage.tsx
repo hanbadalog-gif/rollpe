@@ -11,7 +11,7 @@ export function CorkPage({ title, children }: { title: string; children: React.R
           ←
         </Link>
         <h3 className={styles.title}>{title}</h3>
-        <ThemeToggle />
+        <ThemeToggle variant="light" />
       </div>
       <div className={styles.board}>{children}</div>
     </div>

@@ -49,6 +49,7 @@ export async function PATCH(
     "textColor",
     "bgColor",
     "borderColor",
+    "scale",
   ] as const;
   const data: Record<string, unknown> = { updatedAt: new Date() };
   for (const key of allowed) {

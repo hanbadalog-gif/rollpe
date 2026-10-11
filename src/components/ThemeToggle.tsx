@@ -15,7 +15,7 @@ function readStored(): "light" | "dark" | null {
 }
 
 /** 라이트/다크 수동 전환 — 선택 없으면 OS 설정(prefers-color-scheme) 따름 (TRD §4-1) */
-export function ThemeToggle({ className }: { className?: string }) {
+export function ThemeToggle({ className, variant }: { className?: string; variant?: "light" }) {
   const [theme, setTheme] = useState<"light" | "dark" | null>(null);
 
   useEffect(() => {
@@ -39,7 +39,7 @@ export function ThemeToggle({ className }: { className?: string }) {
 
   return (
     <button
-      className={`${styles.btn} ${className ?? ""}`}
+      className={`${styles.btn} ${variant === "light" ? styles.btnOnLight : ""} ${className ?? ""}`}
       onClick={toggle}
       aria-label="라이트/다크 모드 전환"
     >
