@@ -2,9 +2,27 @@ import type { Metadata } from "next";
 import { ToastHost } from "@/components/Toast";
 import "./globals.css";
 
+const SITE_URL = "https://rollpe-app.vercel.app";
+
 export const metadata: Metadata = {
+  metadataBase: new URL(SITE_URL),
   title: "ROLLPE by GLIMORY",
   description: "마음을 모은 감동 선물 — 온라인 롤링페이퍼",
+  openGraph: {
+    title: "ROLLPE by GLIMORY",
+    description: "마음을 모은 감동 선물 — 온라인 롤링페이퍼",
+    url: SITE_URL,
+    siteName: "ROLLPE by GLIMORY",
+    images: [{ url: "/og-image.png", width: 1203, height: 632 }],
+    locale: "ko_KR",
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "ROLLPE by GLIMORY",
+    description: "마음을 모은 감동 선물 — 온라인 롤링페이퍼",
+    images: ["/og-image.png"],
+  },
 };
 
 // 노트별 폰트 10종(TRD §4-4-1)은 각 메모마다 임의의 CSS font-family 문자열로
