@@ -10,6 +10,27 @@
   color: var(--ink-soft);
 }
 
+/* 24.png 레퍼런스 — 왼쪽 툴바의 "저장"을 appbar 우측 원형 아이콘으로 이동 */
+.downloadBtn {
+  flex: none;
+  width: 30px;
+  height: 30px;
+  border-radius: 999px;
+  border: 1px solid var(--line);
+  background: var(--surface-2);
+  color: var(--ink);
+  font-size: 13px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.downloadBtn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
 /* 흰색 + glimory 브랜드컬러 포인트 — CorkPage(/new,/gift)와 동일 계열 (코르크/똥색 배경 피드백으로 교체) */
 .appbar {
   display: flex;

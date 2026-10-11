@@ -14,6 +14,9 @@
 }
 
 /* 기본(자유) — 캔버스 가용 영역을 꽉 채움 */
+/* 메모지 바탕 기본 배경 — 단색이 아니라 브랜드컬러가 아주 은은하게 번지는 그라데이션
+   (/design-preview 프로토타입의 .paper-board와 동일한 느낌). 사용자가 배경색을
+   직접 고르면(CanvasBoard의 inline style) 이 그라데이션은 덮어써진다. */
 .canvas {
   position: relative;
   flex: 1 1 auto;
@@ -23,6 +26,11 @@
   border-radius: 14px;
   box-shadow: var(--shadow);
   overflow: hidden;
+  background:
+    radial-gradient(circle at 20% 15%, var(--accent-soft) 0%, transparent 45%),
+    radial-gradient(circle at 85% 30%, var(--accent-soft) 0%, transparent 40%),
+    radial-gradient(circle at 50% 90%, var(--accent-soft) 0%, transparent 50%),
+    var(--surface);
   transition: background 0.2s ease, max-width 0.2s ease, aspect-ratio 0.3s ease, flex-basis 0.3s ease;
 }
 

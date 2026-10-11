@@ -77,6 +77,9 @@ export function CanvasPageClient({
           {isFinite(cfg.capacity) ? `${noteCount} / ${cfg.capacity}명` : `${noteCount}명 작성`}
         </span>
         <CanvasSkinToggle />
+        <button className={styles.downloadBtn} onClick={handleDownload} disabled={downloading} aria-label="이미지로 저장">
+          {downloading ? "⋯" : "⬇"}
+        </button>
         {!recipientView && (
           <ShareMenu mode={rollpaper.mode as RollpaperMode} onOpenShare={handleOpenShare} />
         )}
@@ -91,9 +94,8 @@ export function CanvasPageClient({
       )}
 
       <div className={styles.body}>
-        <div className={styles.toolbar}>
-          {!recipientView && (
-            <>
+        {!recipientView && (
+          <div className={styles.toolbar}>
               <button
                 className={`${styles.tool} ${openPanel === "write" ? styles.toolActive : ""}`}
                 disabled={atCap && isFinite(cfg.capacity)}
@@ -128,12 +130,8 @@ export function CanvasPageClient({
               >
                 <span className={styles.ic}>📐</span>용지
               </button>
-            </>
-          )}
-          <button className={styles.tool} onClick={handleDownload} disabled={downloading}>
-            <span className={styles.ic}>💾</span>{downloading ? "저장 중…" : "저장"}
-          </button>
-        </div>
+          </div>
+        )}
 
         <CanvasBoard
           rollpaperId={rollpaperId}
