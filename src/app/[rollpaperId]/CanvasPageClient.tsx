@@ -14,7 +14,7 @@ import { ConversionBanner } from "@/features/share/components/ConversionBanner";
 import { hasBannerBeenSeen, markBannerSeen } from "@/features/share/lib/bannerSeen";
 import { downloadCanvasAsImage } from "@/features/share/lib/canvasExport";
 import { EnvelopeIntro } from "@/features/recipient/components/EnvelopeIntro";
-import { DownloadIcon } from "@/components/icons";
+import { DownloadIcon, WriteIcon, StickerIcon, DrawIcon, PaletteIcon, FrameIcon } from "@/components/icons";
 import { BgColorPanel } from "@/features/canvas/components/BgColorPanel";
 import { PaperSizePanel, type PaperSize } from "@/features/canvas/components/PaperSizePanel";
 import { getOwnerToken } from "@/lib/editToken";
@@ -93,41 +93,46 @@ export function CanvasPageClient({
                 className={`${styles.tool} ${openPanel === "write" ? styles.toolActive : ""}`}
                 disabled={atCap && isFinite(cfg.capacity)}
                 onClick={() => setOpenPanel(openPanel === "write" ? null : "write")}
+                aria-label="글쓰기"
               >
-                <span className={styles.ic}>✏️</span>글쓰기
+                <WriteIcon />
               </button>
               <button
                 className={`${styles.tool} ${openPanel === "sticker" ? styles.toolActive : ""}`}
                 disabled={!cfg.stickerEnabled}
                 onClick={() => setOpenPanel(openPanel === "sticker" ? null : "sticker")}
+                aria-label="스티커"
               >
-                <span className={styles.ic}>⭐</span>스티커
+                <StickerIcon />
               </button>
               <button
                 className={`${styles.tool} ${openPanel === "draw" ? styles.toolActive : ""}`}
                 disabled={atCap && isFinite(cfg.capacity)}
                 onClick={() => setOpenPanel(openPanel === "draw" ? null : "draw")}
+                aria-label="그리기"
               >
-                <span className={styles.ic}>🖊️</span>그리기
+                <DrawIcon />
               </button>
               <button
                 className={`${styles.tool} ${openPanel === "bg" ? styles.toolActive : ""}`}
                 disabled={!cfg.bgPickerEnabled || !getOwnerToken(rollpaperId)}
                 onClick={() => setOpenPanel(openPanel === "bg" ? null : "bg")}
+                aria-label="배경색"
               >
-                <span className={styles.ic}>🎨</span>배경색
+                <PaletteIcon />
               </button>
               <button
                 className={`${styles.tool} ${openPanel === "paper" ? styles.toolActive : ""}`}
                 onClick={() => setOpenPanel(openPanel === "paper" ? null : "paper")}
+                aria-label="용지"
               >
-                <span className={styles.ic}>📐</span>용지
+                <FrameIcon />
               </button>
 
               <div className={styles.divider} />
 
               <button className={styles.downloadBtn} onClick={handleDownload} disabled={downloading} aria-label="이미지로 저장">
-                <span className={styles.ic}>{downloading ? "⋯" : <DownloadIcon />}</span>저장
+                {downloading ? "⋯" : <DownloadIcon size={19} />}
               </button>
               <ShareMenu mode={rollpaper.mode as RollpaperMode} onOpenShare={handleOpenShare} variant="rail" />
           </div>

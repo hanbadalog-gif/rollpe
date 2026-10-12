@@ -22,30 +22,18 @@
   cursor: pointer;
 }
 
-/* 1.png 원본 기획 — 좌측 세로 툴바 안, 다른 도구 버튼과 같은 아이콘+라벨 스타일 */
+/* 28.png 레퍼런스 — 박스/라벨 없는 미니멀 라인 아이콘, 좌측 세로 툴바 */
 .railBtn {
-  width: 100%;
+  width: 32px;
+  height: 32px;
   display: flex;
-  flex-direction: column;
   align-items: center;
-  gap: 4px;
-  font-size: 9.5px;
+  justify-content: center;
   color: var(--ink-soft);
   background: none;
   border: none;
   cursor: pointer;
-  padding: 5px 2px;
-  border-radius: 9px;
-}
-
-.railIc {
-  width: 32px;
-  height: 32px;
-  border-radius: 10px;
-  background: var(--surface-2);
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  padding: 0;
 }
 
 .backdrop {
@@ -82,7 +70,7 @@
     top: auto;
     bottom: calc(100% + 8px);
     left: auto;
-    right: -40px;
+    right: 0;
   }
 }
 

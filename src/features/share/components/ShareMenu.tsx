@@ -49,10 +49,7 @@ export function ShareMenu({ mode, onOpenShare, variant }: Props) {
     <div className={styles.wrap}>
       {variant === "rail" ? (
         <button className={styles.railBtn} onClick={toggle} aria-label="공유">
-          <span className={styles.railIc}>
-            <LinkIcon size={15} />
-          </span>
-          공유
+          <LinkIcon size={19} />
         </button>
       ) : (
         <button className={styles.iconBtn} onClick={toggle} aria-label="공유">

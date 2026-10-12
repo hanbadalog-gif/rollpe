@@ -10,20 +10,19 @@
   color: var(--ink-soft);
 }
 
-/* 1.png 원본 기획 — 좌측 세로 툴바 안, 다른 도구 버튼과 같은 아이콘+라벨 스타일 */
+/* 1.png 원본 기획 — 좌측 세로 툴바 안, 다른 도구 버튼과 같은 아이콘 전용 스타일 */
 .downloadBtn {
-  width: 100%;
+  width: 32px;
+  height: 32px;
   display: flex;
-  flex-direction: column;
   align-items: center;
-  gap: 4px;
-  font-size: 9.5px;
+  justify-content: center;
   color: var(--ink-soft);
   background: none;
   border: none;
   cursor: pointer;
-  padding: 5px 2px;
-  border-radius: 9px;
+  padding: 0;
+  font-size: 13px;
 }
 
 .downloadBtn:disabled {
@@ -33,11 +32,10 @@
 
 /* 콘텐츠 도구(글쓰기~용지)와 저장/공유 그룹 사이 구분선 */
 .divider {
-  width: 100%;
+  width: 22px;
   height: 1px;
   background: var(--line);
   flex: none;
-  margin: 4px 0;
 }
 
 /* 흰색 + glimory 브랜드컬러 포인트 — CorkPage(/new,/gift)와 동일 계열 (코르크/똥색 배경 피드백으로 교체) */
@@ -94,58 +92,40 @@
   min-height: 0;
 }
 
+/* 28.png 레퍼런스 — 박스/라벨 없는 미니멀 라인 아이콘 툴바 */
 .toolbar {
-  width: 72px;
+  width: 56px;
   flex: none;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 8px;
-  padding: 14px 6px;
+  gap: 22px;
+  padding: 22px 0;
   background: var(--surface);
   border-right: 1px solid var(--line);
-  overflow-y: auto;
+  /* overflow-y:auto였으나 CSS 스펙상 overflow-x가 auto로 강제되어 공유 드롭다운(풀아웃)이 잘렸음 — 아이콘 7개는 항상 들어가므로 제거 */
 }
 
 .tool {
-  width: 100%;
+  width: 32px;
+  height: 32px;
   display: flex;
-  flex-direction: column;
   align-items: center;
-  gap: 4px;
-  font-size: 9.5px;
+  justify-content: center;
   color: var(--ink-soft);
   background: none;
   border: none;
   cursor: pointer;
-  padding: 5px 2px;
-  border-radius: 9px;
+  padding: 0;
 }
 
 .tool:disabled {
-  opacity: 0.35;
+  opacity: 0.3;
   cursor: not-allowed;
-}
-
-.ic {
-  width: 32px;
-  height: 32px;
-  border-radius: 10px;
-  background: var(--surface-2);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 14px;
 }
 
 .toolActive {
   color: var(--accent-deep);
-  font-weight: 700;
-}
-
-.toolActive .ic {
-  background: var(--accent);
-  color: var(--accent-ink);
 }
 
 /* 1_2.JPG 레퍼런스 — 사이드패널 대신 중앙 모달 팝업 */
@@ -180,10 +160,11 @@
     width: 100%;
     flex-direction: row;
     justify-content: space-around;
+    gap: 0;
     border-right: none;
     border-top: 1px solid var(--line);
     order: 3;
-    padding: 7px 6px calc(7px + env(safe-area-inset-bottom, 0px));
+    padding: 10px 6px calc(10px + env(safe-area-inset-bottom, 0px));
   }
 
   .divider {
