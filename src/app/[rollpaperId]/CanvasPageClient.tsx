@@ -144,29 +144,17 @@ export function CanvasPageClient({
           paperSize={paperSize}
         />
 
-        {!recipientView && openPanel === "write" && (
-          <div className={styles.sidePanel}>
-            <WritePanel mode={rollpaper.mode as RollpaperMode} onSubmit={addNote} onDone={() => setOpenPanel(null)} />
-          </div>
-        )}
-        {!recipientView && openPanel === "sticker" && (
-          <div className={styles.sidePanel}>
-            <StickerPanel onSubmit={addNote} />
-          </div>
-        )}
-        {!recipientView && openPanel === "draw" && (
-          <div className={styles.sidePanel}>
-            <DrawPanel onSubmit={addNote} onDone={() => setOpenPanel(null)} />
-          </div>
-        )}
-        {!recipientView && openPanel === "bg" && (
-          <div className={styles.sidePanel}>
-            <BgColorPanel current={rollpaper.bgColor} onPick={updateBgColor} />
-          </div>
-        )}
-        {!recipientView && openPanel === "paper" && (
-          <div className={styles.sidePanel}>
-            <PaperSizePanel value={paperSize} onPick={setPaperSize} />
+        {!recipientView && openPanel !== null && (
+          <div className={styles.modalBackdrop} onClick={() => setOpenPanel(null)}>
+            <div className={styles.modalCard} onClick={(e) => e.stopPropagation()}>
+              {openPanel === "write" && (
+                <WritePanel mode={rollpaper.mode as RollpaperMode} onSubmit={addNote} onDone={() => setOpenPanel(null)} />
+              )}
+              {openPanel === "sticker" && <StickerPanel onSubmit={addNote} />}
+              {openPanel === "draw" && <DrawPanel onSubmit={addNote} onDone={() => setOpenPanel(null)} />}
+              {openPanel === "bg" && <BgColorPanel current={rollpaper.bgColor} onPick={updateBgColor} />}
+              {openPanel === "paper" && <PaperSizePanel value={paperSize} onPick={setPaperSize} />}
+            </div>
           </div>
         )}
       </div>

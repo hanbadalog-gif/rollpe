@@ -139,10 +139,27 @@
   color: var(--accent-ink);
 }
 
-.sidePanel {
-  flex: none;
-  border-left: 1px solid var(--line);
+/* 1_2.JPG 레퍼런스 — 사이드패널 대신 중앙 모달 팝업 */
+.modalBackdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(20, 18, 14, 0.45);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  z-index: 40;
+}
+
+.modalCard {
+  background: var(--surface);
+  border-radius: 20px;
+  box-shadow: var(--shadow);
+  max-width: 420px;
+  width: 100%;
+  max-height: 86vh;
   overflow-y: auto;
+  position: relative;
 }
 
 @media (max-width: 760px) {
@@ -160,10 +177,15 @@
     padding: 7px 6px calc(7px + env(safe-area-inset-bottom, 0px));
   }
 
-  .sidePanel {
-    order: 2;
-    border-left: none;
-    border-top: 1px solid var(--line);
-    max-height: 60vh;
+  .modalBackdrop {
+    align-items: flex-end;
+    padding: 0;
+  }
+
+  .modalCard {
+    max-width: none;
+    width: 100%;
+    max-height: 80vh;
+    border-radius: 20px 20px 0 0;
   }
 }
