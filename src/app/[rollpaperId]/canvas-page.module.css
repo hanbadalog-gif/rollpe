@@ -10,25 +10,34 @@
   color: var(--ink-soft);
 }
 
-/* 24.png 레퍼런스 — 왼쪽 툴바의 "저장"을 appbar 우측 원형 아이콘으로 이동 */
+/* 1.png 원본 기획 — 좌측 세로 툴바 안, 다른 도구 버튼과 같은 아이콘+라벨 스타일 */
 .downloadBtn {
-  flex: none;
-  width: 30px;
-  height: 30px;
-  border-radius: 999px;
-  border: 1px solid var(--line);
-  background: var(--surface-2);
-  color: var(--ink);
-  font-size: 13px;
+  width: 100%;
   display: flex;
+  flex-direction: column;
   align-items: center;
-  justify-content: center;
+  gap: 4px;
+  font-size: 9.5px;
+  color: var(--ink-soft);
+  background: none;
+  border: none;
   cursor: pointer;
+  padding: 5px 2px;
+  border-radius: 9px;
 }
 
 .downloadBtn:disabled {
   opacity: 0.6;
   cursor: not-allowed;
+}
+
+/* 콘텐츠 도구(글쓰기~용지)와 저장/공유 그룹 사이 구분선 */
+.divider {
+  width: 100%;
+  height: 1px;
+  background: var(--line);
+  flex: none;
+  margin: 4px 0;
 }
 
 /* 흰색 + glimory 브랜드컬러 포인트 — CorkPage(/new,/gift)와 동일 계열 (코르크/똥색 배경 피드백으로 교체) */
@@ -175,6 +184,12 @@
     border-top: 1px solid var(--line);
     order: 3;
     padding: 7px 6px calc(7px + env(safe-area-inset-bottom, 0px));
+  }
+
+  .divider {
+    width: 1px;
+    height: 32px;
+    margin: 0 2px;
   }
 
   .modalBackdrop {

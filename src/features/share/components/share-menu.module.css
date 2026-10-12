@@ -22,6 +22,32 @@
   cursor: pointer;
 }
 
+/* 1.png 원본 기획 — 좌측 세로 툴바 안, 다른 도구 버튼과 같은 아이콘+라벨 스타일 */
+.railBtn {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  font-size: 9.5px;
+  color: var(--ink-soft);
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 5px 2px;
+  border-radius: 9px;
+}
+
+.railIc {
+  width: 32px;
+  height: 32px;
+  border-radius: 10px;
+  background: var(--surface-2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
 .backdrop {
   position: fixed;
   inset: 0;
@@ -41,6 +67,23 @@
   width: 180px;
   display: flex;
   flex-direction: column;
+}
+
+/* 좌측 레일 안에서는 오른쪽으로 풀아웃(화면 밖으로 안 나가게) */
+.menuRail {
+  top: 0;
+  right: auto;
+  left: calc(100% + 8px);
+}
+
+/* 모바일(하단 가로 툴바)에서는 버튼 위로 펼침 */
+@media (max-width: 760px) {
+  .menuRail {
+    top: auto;
+    bottom: calc(100% + 8px);
+    left: auto;
+    right: -40px;
+  }
 }
 
 .item {

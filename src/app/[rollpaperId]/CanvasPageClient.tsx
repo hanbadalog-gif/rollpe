@@ -76,12 +76,6 @@ export function CanvasPageClient({
         <span className={styles.counter}>
           {isFinite(cfg.capacity) ? `${noteCount} / ${cfg.capacity}명` : `${noteCount}명 작성`}
         </span>
-        <button className={styles.downloadBtn} onClick={handleDownload} disabled={downloading} aria-label="이미지로 저장">
-          {downloading ? "⋯" : <DownloadIcon />}
-        </button>
-        {!recipientView && (
-          <ShareMenu mode={rollpaper.mode as RollpaperMode} onOpenShare={handleOpenShare} />
-        )}
       </div>
 
       {showBanner && <ConversionBanner onClose={() => setShowBanner(false)} toName={rollpaper.toName} />}
@@ -129,6 +123,13 @@ export function CanvasPageClient({
               >
                 <span className={styles.ic}>📐</span>용지
               </button>
+
+              <div className={styles.divider} />
+
+              <button className={styles.downloadBtn} onClick={handleDownload} disabled={downloading} aria-label="이미지로 저장">
+                <span className={styles.ic}>{downloading ? "⋯" : <DownloadIcon />}</span>저장
+              </button>
+              <ShareMenu mode={rollpaper.mode as RollpaperMode} onOpenShare={handleOpenShare} variant="rail" />
           </div>
         )}
 
