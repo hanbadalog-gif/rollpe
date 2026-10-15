@@ -62,10 +62,13 @@
   background: var(--surface);
 }
 
+/* Black Han Sans는 400(기본) 굵기 하나만 제공하는 단일 굵기 디스플레이체 —
+   font-weight:700을 강제하면 브라우저가 합성(faux) 볼드를 한 번 더 입혀서
+   레퍼런스보다 과하게 두꺼워짐. 400으로 두면 폰트 자체의 굵은 디자인만 적용된다. */
 .title {
   font-family: 'Black Han Sans', 'Noto Sans KR', sans-serif;
   font-size: clamp(22px, 6vw, 30px);
-  font-weight: 700;
+  font-weight: 400;
   line-height: 1.35;
   color: var(--ink);
   margin: 0;
@@ -103,6 +106,9 @@
   height: 230px;
 }
 
+/* 가운데 카드 폭 — 1.jpg를 격자 오버레이로 정밀 측정한 결과(원본 343px 폭 기준
+   카드 폭 약155px) 화면 폭의 약 45% — 고정 px이 아니라 .heroCards 폭 대비
+   퍼센트로 맞춰 레퍼런스 비율을 그대로 따르게 함 */
 .heroCard {
   position: absolute;
   top: 50%;
@@ -111,7 +117,7 @@
   border-radius: 10px;
   box-shadow: 0 14px 28px -10px rgba(0, 0, 0, 0.45);
   padding: 14px 13px;
-  width: 190px;
+  width: 45%;
 }
 
 .heroCard:nth-child(1) {
