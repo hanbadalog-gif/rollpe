@@ -1,5 +1,4 @@
 import Link from "next/link";
-import type { CSSProperties } from "react";
 import styles from "./landing.module.css";
 
 const HERO_NOTES = [
@@ -31,8 +30,8 @@ export default function HomePage() {
 
         <div className={styles.heroPanel}>
           <div className={styles.heroCards}>
-            {HERO_NOTES.map((note, i) => (
-              <div key={note.from} className={styles.heroCard} style={{ "--i": i } as CSSProperties}>
+            {HERO_NOTES.map((note) => (
+              <div key={note.from} className={styles.heroCard}>
                 <p className={styles.heroCardText}>{note.text}</p>
                 <span className={styles.heroCardFrom}>
                   From <span className={styles.heroCardName}>{note.from}</span>

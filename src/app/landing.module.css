@@ -70,30 +70,49 @@
 
 .heroPanel {
   flex: 1;
+  overflow: hidden;
   background: linear-gradient(160deg, var(--accent) 0%, var(--accent-deep) 100%);
-  padding: 36px 16px;
+  padding: 0 16px;
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
+/* 1.jpg 레퍼런스 — 양옆 카드가 화면 경계에서 그대로 잘려나가는(bleed) 구성.
+   가운데 카드만 완전히 보이고, 좌우는 패널(.heroPanel의 overflow:hidden) 밖으로
+   흘러나가게 절대 배치 — flex로 3장을 다 욱여넣어 축소하지 않는다. */
 .heroCards {
   position: relative;
-  display: flex;
-  justify-content: center;
-  gap: 10px;
-  max-width: 480px;
+  width: 100%;
+  max-width: 460px;
+  height: 230px;
 }
 
 .heroCard {
+  position: absolute;
+  top: 50%;
+  left: 50%;
   background: #fff;
   border-radius: 10px;
   box-shadow: 0 14px 28px -10px rgba(0, 0, 0, 0.45);
   padding: 14px 13px;
-  width: clamp(78px, 25vw, 150px);
-  min-width: 0;
-  flex: none;
-  transform: rotate(calc((var(--i, 0) - 1) * 7deg)) translateY(calc(var(--i, 0) * -6px));
+  width: 190px;
+}
+
+.heroCard:nth-child(1) {
+  transform: translate(-148%, -50%) rotate(-10deg);
+  z-index: 1;
+}
+
+.heroCard:nth-child(2) {
+  transform: translate(-50%, -54%) rotate(2deg) scale(1.08);
+  z-index: 3;
+  box-shadow: 0 20px 36px -10px rgba(0, 0, 0, 0.5);
+}
+
+.heroCard:nth-child(3) {
+  transform: translate(48%, -50%) rotate(9deg);
+  z-index: 1;
 }
 
 .heroCardText {
@@ -114,12 +133,12 @@
 /* 수정/4.png 피드백 — 데스크톱 넓은 보라 패널에 비해 카드가 너무 작던 문제, 뷰포트에 맞춰 확대 */
 @media (min-width: 640px) {
   .heroCards {
-    gap: 24px;
-    max-width: 760px;
+    max-width: 720px;
+    height: 320px;
   }
 
   .heroCard {
-    width: clamp(150px, 16vw, 230px);
+    width: 260px;
     padding: 22px 20px;
     border-radius: 14px;
   }
