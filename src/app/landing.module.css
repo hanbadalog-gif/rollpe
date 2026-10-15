@@ -10,26 +10,11 @@
 }
 
 /* 페이지/1.jpg 레퍼런스 — 흰 헤더(로고+악센트마크) → 헤드라인 → 보라 패널(메모 콜라주) → 버튼 2개.
-   스크롤 없는 단일 화면이라 뷰포트 높이에 꽉 차게 구성(.page/.main).
-   낮/밤 토글을 삭제하면서 OS가 다크모드면 이 페이지도 자동으로 테마가 뒤집히는 버그 발생
-   ("무료 롤링페이퍼 방 만들기" 버튼이 --ink(다크모드에서 거의 흰색)를 배경으로 쓰고 있어서
-   흰 배경에 흰 글씨로 사실상 안 보이게 됨) — 1.jpg는 고정 브랜드 비주얼이라 다크모드 대응
-   대상이 아니므로, 토큰을 라이트 값으로 고정해 OS 설정과 무관하게 항상 같은 모습으로 렌더링. */
+   스크롤 없는 단일 화면이라 뷰포트 높이에 꽉 차게 구성(.page/.main). */
 .page {
   min-height: 100dvh;
   display: flex;
   flex-direction: column;
-  color-scheme: light;
-  --bg: #ffffff;
-  --surface: #ffffff;
-  --surface-2: #f6f6f6;
-  --ink: #1a1a1a;
-  --ink-soft: #767676;
-  --line: #e5e5e5;
-  --accent: #6c7fb7;
-  --accent-ink: #ffffff;
-  --accent-soft: #e9ecf6;
-  --accent-deep: #4f5f94;
 }
 
 .main {
@@ -83,12 +68,13 @@
 /* 수정/7.png 픽셀 정밀 샘플링 결과 — 텍스트 코어 평균 #6f7db1(≈--accent와 일치, 변경 없음),
    하이라이트 배경 평균 #dce2ef(--accent-soft #e9ecf6보다 살짝 진함 — 공용 토큰은 다른 곳에도
    쓰여서 건드리지 않고 이 값만 직접 지정) */
+/* 형광펜처럼 글자 아래쪽 절반만 칠해지는 느낌 — 그라데이션으로 하단 50%만 채움
+   (위쪽 절반은 투명이라 글자 위쪽이 하이라이트 밖으로 삐져나와 보임) */
 .highlight {
   color: var(--accent);
-  background: #dce2ef;
-  padding: 2px 6px;
-  line-height: 1.3;
-  border-radius: 6px;
+  background: linear-gradient(to top, #dce2ef 50%, transparent 50%);
+  padding: 0 6px;
+  border-radius: 3px;
   box-decoration-break: clone;
   -webkit-box-decoration-break: clone;
 }
@@ -122,19 +108,21 @@
   border-radius: 10px;
   box-shadow: 0 14px 28px -10px rgba(0, 0, 0, 0.45);
   padding: 14px 13px;
+  /* 1.png 레퍼런스 — 메모지가 좌우로 넓은 게 아니라 위아래로 긴 세로형 비율 */
+  min-height: 190px;
 }
 
 /* 좌측 카드 — 좌상단 꼭지점이 올라가도록 오른쪽(시계 방향)으로 13도 기울임 */
 .heroCard:nth-child(1) {
-  width: 45%;
-  transform: translate(-120%, -46%) rotate(13deg);
+  width: 33%;
+  transform: translate(-150%, -46%) rotate(13deg);
   z-index: 1;
 }
 
 /* 1.jpg 레퍼런스 — 가운데 카드는 오른쪽 위 꼭지점이 가장 높게, 즉 반시계 방향(좌측)으로
    약 13도 기울어진 형태. 양수(2deg)로 돼 있던 걸 음수로 수정 */
 .heroCard:nth-child(2) {
-  width: 45%;
+  width: 33%;
   transform: translate(-50%, -54%) rotate(-13deg) scale(1.08);
   z-index: 3;
   box-shadow: 0 20px 36px -10px rgba(0, 0, 0, 0.5);
@@ -143,8 +131,8 @@
 /* 가운데 카드가 반시계로 기울면서 오른쪽 카드 글씨를 가리던 문제 — 더 오른쪽/아래로
    밀어서 가운데 카드 밑에서 충분히 드러나게 함 */
 .heroCard:nth-child(3) {
-  width: 45%;
-  transform: translate(58%, -40%) rotate(9deg);
+  width: 33%;
+  transform: translate(70%, -40%) rotate(9deg);
   z-index: 1;
 }
 
@@ -178,18 +166,19 @@
   .heroCard {
     padding: 22px 20px;
     border-radius: 14px;
+    min-height: 280px;
   }
 
   .heroCard:nth-child(1) {
-    width: 260px;
+    width: 190px;
   }
 
   .heroCard:nth-child(2) {
-    width: 260px;
+    width: 190px;
   }
 
   .heroCard:nth-child(3) {
-    width: 260px;
+    width: 190px;
   }
 
   .heroCardText {
