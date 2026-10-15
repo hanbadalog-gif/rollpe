@@ -5,18 +5,13 @@
   display: flex;
   align-items: stretch;
   justify-content: center;
-  background:
-    radial-gradient(circle at 12% 15%, var(--accent-soft), transparent 40%),
-    radial-gradient(circle at 88% 65%, var(--accent-soft), transparent 40%),
-    var(--surface);
+  background: var(--surface);
   position: relative;
   padding: 20px;
 }
 
-/* 기본(자유) — 캔버스 가용 영역을 꽉 채움 */
-/* 메모지 바탕 기본 배경 — 단색이 아니라 브랜드컬러가 아주 은은하게 번지는 그라데이션
-   (/design-preview 프로토타입의 .paper-board와 동일한 느낌). 사용자가 배경색을
-   직접 고르면(CanvasBoard의 inline style) 이 그라데이션은 덮어써진다. */
+/* 페이지/3.JPG, 4_1.jpg 레퍼런스 — 플랫한 단색 배경(장식 없음). 사용자가
+   배경색을 직접 고르면(CanvasBoard의 inline style) 이 기본색은 덮어써진다. */
 .canvas {
   position: relative;
   flex: 1 1 auto;
@@ -26,11 +21,7 @@
   border-radius: 14px;
   box-shadow: var(--shadow);
   overflow: hidden;
-  background:
-    radial-gradient(circle at 20% 15%, var(--accent-soft) 0%, transparent 45%),
-    radial-gradient(circle at 85% 30%, var(--accent-soft) 0%, transparent 40%),
-    radial-gradient(circle at 50% 90%, var(--accent-soft) 0%, transparent 50%),
-    var(--surface);
+  background: var(--surface);
   transition: background 0.2s ease, max-width 0.2s ease, aspect-ratio 0.3s ease, flex-basis 0.3s ease;
 }
 
@@ -107,47 +98,6 @@
   user-select: none;
 }
 
-/* 메모 상단에 압정 느낌의 점 */
-.note:not(.noteSticker):not(.notePhotoOnly)::before {
-  content: '';
-  position: absolute;
-  top: -8px;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 14px;
-  height: 14px;
-  border-radius: 50%;
-  background: radial-gradient(circle at 30% 30%, #fff, var(--accent) 70%);
-  box-shadow: 0 2px 3px rgba(0, 0, 0, 0.25);
-  pointer-events: none;
-}
-
-/* ===== 캔버스 모서리 고정 장식(워시테이프) — 실제 메모와 무관 ===== */
-.skinDecor {
-  position: absolute;
-  pointer-events: none;
-  z-index: 0;
-}
-
-.washiTape {
-  height: 22px;
-  background: repeating-linear-gradient(45deg, rgba(108, 127, 183, 0.5) 0 8px, rgba(108, 127, 183, 0.3) 8px 16px);
-  opacity: 0.85;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
-}
-.washiTape1 {
-  width: 100px;
-  top: 10px;
-  left: -14px;
-  transform: rotate(-8deg);
-}
-.washiTape2 {
-  width: 80px;
-  top: 260px;
-  right: -12px;
-  transform: rotate(10deg);
-  background: repeating-linear-gradient(45deg, rgba(255, 209, 102, 0.7) 0 8px, rgba(255, 209, 102, 0.45) 8px 16px);
-}
 
 .note:active {
   cursor: grabbing;

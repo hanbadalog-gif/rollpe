@@ -7,18 +7,12 @@ import type { CreateNoteInput } from "@/features/canvas/types";
 import { showToast } from "@/components/Toast";
 import { ApiError } from "@/lib/api-client";
 
+// 페이지/4.JPG 레퍼런스 — 손글씨체/세리프체/고딕체 3개 필(NoteEditPopover와 동일 값)
 const FONTS = [
-  { label: "Noto Sans KR", value: "'Noto Sans KR',sans-serif" },
-  { label: "Gaegu (손글씨)", value: "'Gaegu',cursive" },
-  { label: "Roboto", value: "'Roboto',sans-serif" },
-  { label: "Playfair Display", value: "'Playfair Display',serif" },
-  { label: "Montserrat", value: "'Montserrat',sans-serif" },
-  { label: "Lato", value: "'Lato',sans-serif" },
-  { label: "Oswald", value: "'Oswald',sans-serif" },
-  { label: "Raleway", value: "'Raleway',sans-serif" },
-  { label: "Merriweather", value: "'Merriweather',serif" },
-  { label: "Lobster", value: "'Lobster',cursive" },
-]; // TRD §4-4-1 10종 확정 목록
+  { label: "손글씨체", value: "'Gaegu',cursive" },
+  { label: "세리프체", value: "'Gowun Batang',serif" },
+  { label: "고딕체", value: "inherit" },
+];
 
 const FONT_SIZES = [
   { label: "작게", value: 14 },
@@ -28,7 +22,6 @@ const FONT_SIZES = [
 
 const TEXT_COLORS = ["#3A3D4D", "#6C7FB7", "#E88CA6", "#E8A449"];
 const BG_COLORS = ["#FFF7E0", "#EAF3FF", "#FDE9EF", "#EEF0FA"];
-const BORDER_COLORS = ["#6C7FB7", "#E88CA6"];
 
 interface Props {
   mode: RollpaperMode;
@@ -67,13 +60,11 @@ export function WritePanel({ mode, onSubmit, onDone }: Props) {
 
   const [fromName, setFromName] = useState("");
   const [content, setContent] = useState("");
-  const [font, setFont] = useState(FONTS[1].value);
+  const [font, setFont] = useState(FONTS[0].value);
   const [fontSize, setFontSize] = useState(16);
   const [bold, setBold] = useState(false);
   const [textColor, setTextColor] = useState(cfg.fixedTextColor ?? TEXT_COLORS[0]);
   const [bgColor, setBgColor] = useState(BG_COLORS[0]);
-  const [borderEnabled, setBorderEnabled] = useState(false);
-  const [borderColor, setBorderColor] = useState(BORDER_COLORS[0]);
   const [submitting, setSubmitting] = useState(false);
   const [photoUrl, setPhotoUrl] = useState<string | null>(null);
 
@@ -123,7 +114,6 @@ export function WritePanel({ mode, onSubmit, onDone }: Props) {
         bold,
         textColor: cfg.fixedTextColor ?? textColor,
         bgColor: cfg.bgPickerEnabled ? bgColor : undefined,
-        borderColor: borderEnabled ? borderColor : undefined,
         photoUrl: photoUrl ?? undefined,
       });
       showToast("캔버스에 추가했어요");
@@ -147,13 +137,13 @@ export function WritePanel({ mode, onSubmit, onDone }: Props) {
       <h4 className={styles.heading}>마음 전하기</h4>
 
       <div className={styles.field}>
-        <label htmlFor="fromName">From, 이름</label>
+        <label htmlFor="fromName">From.</label>
         <input
           id="fromName"
           type="text"
           value={fromName}
           onChange={(e) => setFromName(e.target.value)}
-          placeholder="예: 민수"
+          placeholder="이름을 입력해 주세요 (익명 가능)"
           required
         />
       </div>
@@ -172,14 +162,20 @@ export function WritePanel({ mode, onSubmit, onDone }: Props) {
       </div>
 
       <div className={styles.field}>
-        <label htmlFor="font">폰트</label>
-        <select id="font" value={font} onChange={(e) => setFont(e.target.value)}>
+        <span className={styles.miniLabel}>폰트</span>
+        <div className={styles.pillRow}>
           {FONTS.map((f) => (
-            <option key={f.value} value={f.value} style={{ fontFamily: f.value }}>
+            <button
+              key={f.value}
+              type="button"
+              className={`${styles.pill} ${font === f.value ? styles.pillSelected : ""}`}
+              style={{ fontFamily: f.value }}
+              onClick={() => setFont(f.value)}
+            >
               {f.label}
-            </option>
+            </button>
           ))}
-        </select>
+        </div>
       </div>
 
       <div className={styles.row2}>
@@ -225,28 +221,8 @@ export function WritePanel({ mode, onSubmit, onDone }: Props) {
         )}
       </div>
 
-      <div className={styles.toggleRow}>
-        <span className={styles.miniLabel} style={{ margin: 0 }}>
-          테두리 표시
-        </span>
-        <button
-          type="button"
-          role="switch"
-          aria-checked={borderEnabled}
-          className={`${styles.miniToggle} ${borderEnabled ? styles.miniToggleOn : ""}`}
-          onClick={() => setBorderEnabled((v) => !v)}
-        />
-      </div>
-
-      {borderEnabled && (
-        <div className={styles.field}>
-          <span className={styles.miniLabel}>테두리 색</span>
-          <SwatchRow colors={BORDER_COLORS} value={borderColor} onPick={setBorderColor} />
-        </div>
-      )}
-
       <div className={styles.field}>
-        <span className={styles.miniLabel}>사진 (선택)</span>
+        <span className={styles.miniLabel}>사진(선택)</span>
         <label className={styles.uploadBox}>
           {photoUrl ? (
             <span className={styles.photoPreviewWrap}>
@@ -255,7 +231,7 @@ export function WritePanel({ mode, onSubmit, onDone }: Props) {
               <span className={styles.photoPreviewLabel}>눌러서 사진 바꾸기</span>
             </span>
           ) : (
-            "📷 눌러서 사진 추가"
+            "눌러서 사진추가"
           )}
           <input
             type="file"
@@ -267,7 +243,7 @@ export function WritePanel({ mode, onSubmit, onDone }: Props) {
       </div>
 
       <button type="submit" className={styles.submit} disabled={submitting}>
-        캔버스에 추가 ＋
+        등록하기
       </button>
     </form>
   );
