@@ -96,6 +96,11 @@
   cursor: grab;
   touch-action: none;
   user-select: none;
+  /* 수정/4번 피드백 — 영어는 공백 없는 긴 단어가 140px 카드 밖으로 그대로 삐져나가던
+     문제(한글은 글자 단위라 기본 줄바꿈으로 괜찮았지만 영어 단어는 안 그랬음) —
+     단어 중간에서도 강제로 줄바꿈되게 함 */
+  overflow-wrap: break-word;
+  word-break: break-word;
 }
 
 

@@ -36,7 +36,10 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       <head>
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-        <link rel="stylesheet" href={FONT_HREF} />
+        {/* 수정/9번 피드백 — crossOrigin 없이 로드되면 html-to-image가 다운로드 시
+            styleSheet.cssRules를 읽다 CORS SecurityError로 실패해 폰트 임베딩이
+            안 되고(스킵 처리) 다른 글씨체로 바뀌어 보였음. anonymous로 CORS 허용 */}
+        <link rel="stylesheet" href={FONT_HREF} crossOrigin="anonymous" />
       </head>
       <body>
         {children}
