@@ -114,12 +114,12 @@
   max-width: 460px;
   height: 230px;
   margin-top: 2px; /* 메모지들이 너무 위로 붙어 보인다는 피드백 — 2px 아래로 */
-  /* 수정/20.png + 21.png 피드백 — 메모지 3장 전체 그룹을 왼쪽으로 이동(누적 -3px → -8px).
+  /* 메모지 3장 전체 그룹을 왼쪽으로 이동(누적 -3px → -8px → -11px).
      transform:translateX는 scale()과 합성되며 희석되고, margin-left도 .heroCards가
      width:100%라 justify-content:center가 음수 마진 절반을 다시 상쇄해버려 둘 다
      체감 이동이 거의 없었음 — position:relative인 요소에 left를 직접 줘서
      flex 레이아웃 계산과 무관하게 순수 시각적 오프셋으로 이동 */
-  left: -8px;
+  left: -11px;
   transform: scale(1.1);
 }
 
