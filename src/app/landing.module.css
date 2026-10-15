@@ -13,8 +13,18 @@
    스크롤 없는 단일 화면이라 뷰포트 높이에 꽉 차게 구성(.page/.main). */
 .page {
   min-height: 100dvh;
+  background: var(--surface);
+}
+
+/* 수정/17.png 피드백 — 전체화면(데스크톱 와이드뷰)에서 보라 패널이 화면 끝까지 늘어나던 문제.
+   모바일 폭으로 고정해 가운데로 몰고, 그 바깥은 흰 배경만 보이게 함 */
+.shell {
+  min-height: 100dvh;
+  max-width: 480px;
+  margin: 0 auto;
   display: flex;
   flex-direction: column;
+  overflow: hidden;
 }
 
 .main {
@@ -163,38 +173,8 @@
   padding-bottom: 1px;
 }
 
-@media (min-width: 640px) {
-  .heroCards {
-    max-width: 720px;
-    height: 320px;
-  }
-
-  .heroCard {
-    padding: 22px 20px;
-    border-radius: 14px;
-    min-height: 280px;
-    width: 288px;
-  }
-
-  .heroCardText {
-    font-size: 16px;
-    margin: 0 0 16px;
-  }
-
-  .heroCardFrom {
-    font-size: 14px;
-  }
-
-  /* 모바일은 폭이 좁아 좌우 카드 간격을 줄였는데, 데스크톱은 여유가 있으니
-     다시 넓게 펼침 */
-  .heroCard:nth-child(1) {
-    transform: translate(-120%, -46%) rotate(13deg);
-  }
-
-  .heroCard:nth-child(3) {
-    transform: translate(100%, -40%) rotate(9deg);
-  }
-}
+/* 수정/17.png 피드백 — .shell이 항상 480px 이하로 고정돼서(모바일 전용 레이아웃)
+   더 이상 "데스크톱 폭" 분기가 필요 없음(기존 min-width:640px 변형 삭제) */
 
 /* 1.png 피드백 — 버튼 좌우 끝이 헤드라인("롤"/"감")의 좌측 끝, 그리고 그와 대칭인
    우측 끝에 정확히 맞도록 전체 폭으로 — align-items:center였으면 데스크톱에서

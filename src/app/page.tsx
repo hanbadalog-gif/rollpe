@@ -15,45 +15,47 @@ const HERO_NOTES = [
 export default function HomePage() {
   return (
     <div className={styles.page}>
-      <header className={styles.header}>
-        {/* eslint-disable-next-line @next/next/no-img-element -- 브랜드 로고, 단순 정적 이미지 */}
-        <img src="/brand/logo.png" alt="Rollpe" className={styles.logoImg} />
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img src="/brand/mark.png" alt="" className={styles.markImg} aria-hidden />
-      </header>
+      <div className={styles.shell}>
+        <header className={styles.header}>
+          {/* eslint-disable-next-line @next/next/no-img-element -- 브랜드 로고, 단순 정적 이미지 */}
+          <img src="/brand/logo.png" alt="Rollpe" className={styles.logoImg} />
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src="/brand/mark.png" alt="" className={styles.markImg} aria-hidden />
+        </header>
 
-      <main className={styles.main}>
-        {/* 페이지/1.jpg 재확인 — 헤드라인은 흰 배경 위, 파란 패널은 메모지 구역에만 적용 */}
-        <div className={styles.heroText}>
-          <h1 className={styles.title}>
-            롤링페이퍼로
-            <br />
-            <span className={styles.highlight}>감동을 선물</span>하세요
-          </h1>
-        </div>
-
-        <div className={styles.heroPanel}>
-          <div className={styles.heroCards}>
-            {HERO_NOTES.map((note) => (
-              <div key={note.from} className={styles.heroCard}>
-                <p className={styles.heroCardText}>{note.text}</p>
-                <span className={styles.heroCardFrom}>
-                  From <span className={styles.heroCardName}>{note.from}</span>
-                </span>
-              </div>
-            ))}
+        <main className={styles.main}>
+          {/* 페이지/1.jpg 재확인 — 헤드라인은 흰 배경 위, 파란 패널은 메모지 구역에만 적용 */}
+          <div className={styles.heroText}>
+            <h1 className={styles.title}>
+              롤링페이퍼로
+              <br />
+              <span className={styles.highlight}>감동을 선물</span>하세요
+            </h1>
           </div>
-        </div>
 
-        <div className={styles.heroCtaRow}>
-          <Link href="/new" className={styles.btnAccent}>
-            무료 롤링페이퍼 방 만들기
-          </Link>
-          <Link href="/gift" className={styles.btnGhost}>
-            롤링페이퍼 무드등 <span className={styles.btnGhostBlack}>선물하기</span>
-          </Link>
-        </div>
-      </main>
+          <div className={styles.heroPanel}>
+            <div className={styles.heroCards}>
+              {HERO_NOTES.map((note) => (
+                <div key={note.from} className={styles.heroCard}>
+                  <p className={styles.heroCardText}>{note.text}</p>
+                  <span className={styles.heroCardFrom}>
+                    From <span className={styles.heroCardName}>{note.from}</span>
+                  </span>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <div className={styles.heroCtaRow}>
+            <Link href="/new" className={styles.btnAccent}>
+              무료 롤링페이퍼 방 만들기
+            </Link>
+            <Link href="/gift" className={styles.btnGhost}>
+              롤링페이퍼 무드등 <span className={styles.btnGhostBlack}>선물하기</span>
+            </Link>
+          </div>
+        </main>
+      </div>
     </div>
   );
 }
