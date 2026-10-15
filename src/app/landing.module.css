@@ -95,15 +95,15 @@
 
 /* 1.jpg 레퍼런스 — 양옆 카드가 화면 경계에서 그대로 잘려나가는(bleed) 구성.
    가운데 카드만 완전히 보이고, 좌우는 패널(.heroPanel의 overflow:hidden) 밖으로
-   흘러나가게 절대 배치. 카드별로 폭을 다르게 줘서(내용량도 다름) 1.jpg처럼
-   세 장의 높이가 제각각으로 보이게 함(폭이 같으면 줄바꿈이 비슷해져 높이도
-   비슷해 보임). 가운데 폭은 1.jpg 격자 측정 기준 45%. */
+   흘러나가게 절대 배치. 카드 셋 다 같은 폭으로 통일(가운데 카드 기준) —
+   transform:scale로 전체 그룹을 20% 확대. */
 .heroCards {
   position: relative;
   width: 100%;
   max-width: 460px;
   height: 230px;
   margin-top: 2px; /* 메모지들이 너무 위로 붙어 보인다는 피드백 — 2px 아래로 */
+  transform: scale(1.2);
 }
 
 .heroCard {
@@ -116,13 +116,14 @@
   padding: 14px 13px;
   /* 1.png 레퍼런스 — 메모지가 좌우로 넓은 게 아니라 위아래로 긴 세로형 비율 */
   min-height: 190px;
-  /* 14.png 피드백 — 글줄이 중간에 줄바꿈되지 않게 카드 폭을 가장 긴 줄에 맞춤(왼쪽 모서리 고정, 오른쪽으로 확장) */
-  width: max-content;
+  /* 세 장 모두 가운데 카드(가장 긴 줄)에 맞춘 고정 폭으로 통일 — 줄바꿈 안 되게
+     충분히 넉넉하게 잡음(14.png 피드백: 줄바꿈 방지) */
+  width: 220px;
 }
 
 /* 좌측 카드 — 좌상단 꼭지점이 올라가도록 오른쪽(시계 방향)으로 13도 기울임 */
 .heroCard:nth-child(1) {
-  transform: translate(-170%, -46%) rotate(13deg);
+  transform: translate(-90%, -46%) rotate(13deg);
   z-index: 1;
 }
 
@@ -137,7 +138,7 @@
 /* 가운데 카드가 반시계로 기울면서 오른쪽 카드 글씨를 가리던 문제 — 더 오른쪽/아래로
    밀어서 가운데 카드 밑에서 충분히 드러나게 함 */
 .heroCard:nth-child(3) {
-  transform: translate(115%, -40%) rotate(9deg);
+  transform: translate(50%, -40%) rotate(9deg);
   z-index: 1;
 }
 
@@ -172,6 +173,7 @@
     padding: 22px 20px;
     border-radius: 14px;
     min-height: 280px;
+    width: 290px;
   }
 
   .heroCardText {
@@ -182,12 +184,25 @@
   .heroCardFrom {
     font-size: 14px;
   }
+
+  /* 모바일은 폭이 좁아 좌우 카드 간격을 줄였는데, 데스크톱은 여유가 있으니
+     다시 넓게 펼침 */
+  .heroCard:nth-child(1) {
+    transform: translate(-120%, -46%) rotate(13deg);
+  }
+
+  .heroCard:nth-child(3) {
+    transform: translate(78%, -40%) rotate(9deg);
+  }
 }
 
+/* 1.png 피드백 — 버튼 좌우 끝이 헤드라인("롤"/"감")의 좌측 끝, 그리고 그와 대칭인
+   우측 끝에 정확히 맞도록 전체 폭으로 — align-items:center였으면 데스크톱에서
+   버튼이 가운데 떠서 헤드라인과 좌측이 안 맞았음 */
 .heroCtaRow {
   display: flex;
   flex-direction: column;
-  align-items: center;
+  align-items: stretch;
   gap: 14px;
   padding: 20px 20px 38px; /* 하단 +10px → 버튼 2개가 10px 위로 */
   background: var(--surface);
@@ -196,7 +211,6 @@
 .btnAccent {
   display: block;
   width: 100%;
-  max-width: 420px;
   text-align: center;
   font-weight: 700;
   font-size: 14px;
@@ -206,18 +220,10 @@
   padding: 15px 18px;
 }
 
+/* 밑줄 제거, 색상을 헤드라인 하이라이트("감동을 선물") 텍스트 색과 통일, 굵게 */
 .btnGhost {
   font-weight: 700;
   font-size: 13px;
-  color: var(--accent-deep);
-  text-decoration: underline;
-  text-underline-offset: 3px;
-}
-
-/* 수정/2.png 피드백 — 데스크톱에서도 무드등 선물하기 버튼은 항상 방 만들기 버튼 아래(세로 유지) */
-@media (min-width: 760px) {
-  .btnAccent {
-    width: auto;
-    min-width: 260px;
-  }
+  color: var(--accent);
+  text-align: center;
 }
