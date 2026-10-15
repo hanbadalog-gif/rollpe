@@ -1,29 +1,23 @@
 "use client";
 
-import { useEffect, useState } from "react";
 import styles from "./envelope-intro.module.css";
 
-/** Epic 2 Story 2.2 — 수신자 전용 화면 진입 연출 (PRD §4-8 "봉투가 열리는 애니메이션") */
+// 페이지/6.jpg 레퍼런스 — 봉투 일러스트 대신 로고+문구+"열어보기" 버튼
 export function EnvelopeIntro({ toName, onDone }: { toName: string; onDone: () => void }) {
-  const [opening, setOpening] = useState(false);
-
-  useEffect(() => {
-    const openTimer = setTimeout(() => setOpening(true), 400);
-    const doneTimer = setTimeout(onDone, 1900);
-    return () => {
-      clearTimeout(openTimer);
-      clearTimeout(doneTimer);
-    };
-  }, [onDone]);
-
   return (
     <div className={styles.overlay}>
-      <div className={`${styles.envelope} ${opening ? styles.open : ""}`}>
-        <div className={styles.flap} />
-        <div className={styles.body}>
-          <span className={styles.to}>To. {toName}</span>
-        </div>
-      </div>
+      {/* eslint-disable-next-line @next/next/no-img-element -- 브랜드 로고, 단순 정적 이미지 */}
+      <img src="/brand/mark.png" alt="" className={styles.mark} aria-hidden />
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img src="/brand/logo.png" alt="Rollpe" className={styles.logo} />
+      <p className={styles.text}>
+        사랑하는 {toName}에게온
+        <br />
+        롤링페이퍼
+      </p>
+      <button className={styles.openBtn} onClick={onDone}>
+        열어보기
+      </button>
     </div>
   );
 }

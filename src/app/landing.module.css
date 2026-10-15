@@ -1,3 +1,11 @@
+/* 페이지/1.jpg 헤드라인 폰트 — 굵은 획 + 평평한 끝단(flat terminal) + 완전한 원형 ㅇ(기하학적
+   디스플레이체), Noto Sans KR과 확연히 다름. 지마켓 산스(Gmarket Sans)로 추정했으나 흔히 쓰는
+   무료 CDN 미러(jsdelivr/projectnoonnu, webfontworld)가 전부 끊겨있어 확인(curl 404/빈 파일) —
+   같은 계열의 평평한 굵은 획 + 원형 자형을 가진 Black Han Sans(Google Fonts)로 대체.
+   preconnect + 다른 Google Fonts와 같은 <link>로 layout.tsx의 FONT_HREF에서 로드
+   (CSS @import는 preconnect 혜택을 못 받고 로드가 늦어 모바일 첫 페인트에서 헤드라인이
+   살짝 잘려 보이는 FOUT 현상이 있었음 — layout.tsx 일괄 로드로 이동해 해결). */
+
 /* 페이지/1.jpg 레퍼런스 — 흰 헤더(로고+악센트마크) → 헤드라인 → 보라 패널(메모 콜라주) → 버튼 2개.
    스크롤 없는 단일 화면이라 뷰포트 높이에 꽉 차게 구성(.page/.main). */
 .page {
@@ -28,12 +36,6 @@
   display: block;
 }
 
-.headerActions {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-
 .markImg {
   height: 22px;
   width: auto;
@@ -46,15 +48,24 @@
 }
 
 .title {
+  font-family: 'Black Han Sans', 'Noto Sans KR', sans-serif;
   font-size: clamp(22px, 6vw, 30px);
-  font-weight: 800;
+  font-weight: 700;
   line-height: 1.35;
   color: var(--ink);
   margin: 0;
 }
 
+/* 수정/7.png 피드백 — 텍스트는 --accent-deep(진한 네이비)보다 밝은 --accent 톤,
+   배경에 연한 하이라이트 박스 추가 (픽셀 샘플링 결과 텍스트 ~#6f7eb6, 배경 ~#dfe6f0) */
+/* 수정/7.png 픽셀 정밀 샘플링 결과 — 텍스트 코어 평균 #6f7db1(≈--accent와 일치, 변경 없음),
+   하이라이트 배경 평균 #dce2ef(--accent-soft #e9ecf6보다 살짝 진함 — 공용 토큰은 다른 곳에도
+   쓰여서 건드리지 않고 이 값만 직접 지정) */
 .highlight {
-  color: var(--accent-deep);
+  color: var(--accent);
+  background: #dce2ef;
+  padding: 2px 6px;
+  border-radius: 6px;
 }
 
 .heroPanel {

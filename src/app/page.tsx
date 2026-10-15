@@ -1,7 +1,6 @@
 import Link from "next/link";
 import type { CSSProperties } from "react";
 import styles from "./landing.module.css";
-import { ThemeToggle } from "@/components/ThemeToggle";
 
 const HERO_NOTES = [
   { from: "채린", text: "졸업을 축하드립니다!\n나가서도 늘 응원할게요.\n힘들 때 언제든 연락줘요!" },
@@ -17,11 +16,8 @@ export default function HomePage() {
       <header className={styles.header}>
         {/* eslint-disable-next-line @next/next/no-img-element -- 브랜드 로고, 단순 정적 이미지 */}
         <img src="/brand/logo.png" alt="Rollpe" className={styles.logoImg} />
-        <div className={styles.headerActions}>
-          <ThemeToggle variant="light" />
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src="/brand/mark.png" alt="" className={styles.markImg} aria-hidden />
-        </div>
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img src="/brand/mark.png" alt="" className={styles.markImg} aria-hidden />
       </header>
 
       <main className={styles.main}>

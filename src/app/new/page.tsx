@@ -3,7 +3,6 @@
 import { useState, type FormEvent } from "react";
 import { useRouter } from "next/navigation";
 import styles from "./new.module.css";
-import { ThemeToggle } from "@/components/ThemeToggle";
 import { createRollpaper } from "@/features/rollpaper-create/api";
 import { showToast } from "@/components/Toast";
 
@@ -31,11 +30,8 @@ export default function NewRollpaperPage() {
       <header className={styles.header}>
         {/* eslint-disable-next-line @next/next/no-img-element -- 브랜드 로고, 단순 정적 이미지 */}
         <img src="/brand/logo.png" alt="Rollpe" className={styles.logoImg} />
-        <div className={styles.headerActions}>
-          <ThemeToggle variant="light" />
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src="/brand/mark.png" alt="" className={styles.markImg} aria-hidden />
-        </div>
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img src="/brand/mark.png" alt="" className={styles.markImg} aria-hidden />
       </header>
 
       <div className={styles.body}>

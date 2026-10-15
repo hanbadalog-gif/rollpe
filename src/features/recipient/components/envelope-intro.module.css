@@ -1,59 +1,49 @@
+/* 페이지/6.jpg 레퍼런스 — 흰 배경, 중앙 로고+문구+버튼, 사용자가 "열어보기" 눌러야 닫힘 */
 .overlay {
   position: fixed;
   inset: 0;
   z-index: 100;
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
-  background: linear-gradient(135deg, var(--accent) 0%, var(--accent-deep) 100%);
-  animation: fadeOut 0.5s ease 1.4s forwards;
+  gap: 10px;
+  padding: 24px;
+  background: var(--surface);
 }
 
-.envelope {
-  position: relative;
-  width: 220px;
-  height: 150px;
-  perspective: 600px;
-}
-
-.body {
+.mark {
   position: absolute;
-  inset: 0;
-  background: #fff;
-  border-radius: 8px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.35);
+  top: calc(20px + env(safe-area-inset-top, 0px));
+  right: 20px;
+  height: 22px;
+  width: auto;
 }
 
-.to {
-  font-family: 'Gowun Batang', serif;
+.logo {
+  height: 34px;
+  width: auto;
+  margin-bottom: 14px;
+}
+
+.text {
+  font-size: 17px;
+  font-weight: 700;
+  color: var(--ink);
+  text-align: center;
+  line-height: 1.5;
+  margin: 0 0 24px;
+}
+
+.openBtn {
+  width: 100%;
+  max-width: 280px;
+  padding: 14px 18px;
+  border-radius: 12px;
+  border: none;
+  font-weight: 700;
   font-size: 14px;
-  color: var(--accent-deep);
-}
-
-.flap {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 75px;
-  background: #f3efe4;
-  border-radius: 8px 8px 0 0;
-  clip-path: polygon(0 0, 100% 0, 50% 85%);
-  transform-origin: top center;
-  transition: transform 0.9s cubic-bezier(0.22, 1, 0.36, 1);
-  z-index: 2;
-}
-
-.envelope.open .flap {
-  transform: rotateX(165deg);
-}
-
-@keyframes fadeOut {
-  to {
-    opacity: 0;
-    visibility: hidden;
-  }
+  color: var(--accent-ink);
+  background: var(--accent);
+  cursor: pointer;
 }

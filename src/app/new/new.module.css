@@ -19,12 +19,6 @@
   display: block;
 }
 
-.headerActions {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-
 .markImg {
   height: 22px;
   width: auto;

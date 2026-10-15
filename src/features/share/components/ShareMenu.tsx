@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useState } from "react";
 import styles from "./share-menu.module.css";
 import { showToast } from "@/components/Toast";
-import { LinkIcon } from "@/components/icons";
+import { LinkIcon, MailIcon, LampIcon } from "@/components/icons";
 import type { RollpaperMode } from "@/lib/theme";
 
 interface Props {
@@ -62,14 +62,14 @@ export function ShareMenu({ mode, onOpenShare, variant }: Props) {
           <div className={styles.backdrop} onClick={() => setOpen(false)} />
           <div className={`${styles.menu} ${variant === "rail" ? styles.menuRail : ""}`}>
             <button className={styles.item} onClick={copyLink}>
-              🔗 링크 복사
+              <LinkIcon size={14} /> 링크 복사
             </button>
             <button className={styles.item} onClick={copyRecipientLink}>
-              💌 주인공에게 전달하기
+              <MailIcon size={14} /> 주인공에게 전달하기
             </button>
             {mode === "online" && (
               <Link href="/gift" className={styles.item} onClick={() => setOpen(false)}>
-                🕯️ 무드등으로 만들기
+                <LampIcon size={14} /> 롤링페이퍼 무드등 선물하기
               </Link>
             )}
           </div>

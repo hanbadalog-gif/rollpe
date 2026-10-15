@@ -65,3 +65,24 @@ export function LinkIcon({ size = 14 }: { size?: number }) {
     </svg>
   );
 }
+
+/** 페이지/5.jpg 레퍼런스 — 공유 메뉴용 라인 아이콘(이모지 대신) */
+export function MailIcon({ size = 14 }: { size?: number }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
+      <rect x="3" y="5" width="18" height="14" rx="2" />
+      <path d="m3 7 9 6 9-6" />
+    </svg>
+  );
+}
+
+export function LampIcon({ size = 14 }: { size?: number }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
+      <path d="M9 3h6l-1.5 7H10.5Z" />
+      <path d="M10.5 10v5a1.5 1.5 0 0 0 1.5 1.5v0A1.5 1.5 0 0 0 13.5 15v-5" />
+      <path d="M8 21h8" />
+      <path d="M12 16.5V21" />
+    </svg>
+  );
+}
