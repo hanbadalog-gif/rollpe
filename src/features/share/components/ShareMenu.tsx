@@ -10,7 +10,7 @@ import type { RollpaperMode } from "@/lib/theme";
 interface Props {
   mode: RollpaperMode;
   onOpenShare: () => void; // Story 7.3 — 공유 버튼 처음 누른 시점을 상위에 알림(배너 트리거)
-  /** "rail" — 1.png 원본 기획대로 좌측 세로 툴바 안 아이콘+라벨 버튼으로(기본은 appbar용 그라데이션 pill) */
+  /** "rail" — 페이지/3.JPG 기준 하단 가로 툴바 안 아이콘 전용 버튼으로(기본은 appbar용 그라데이션 pill) */
   variant?: "rail";
 }
 

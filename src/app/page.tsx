@@ -1,11 +1,7 @@
 import Link from "next/link";
 import type { CSSProperties } from "react";
 import styles from "./landing.module.css";
-import { PointSection } from "@/features/landing/components/PointSection";
-import { UseCases } from "@/features/landing/components/UseCases";
-import { BottomCTA } from "@/features/landing/components/BottomCTA";
 import { ThemeToggle } from "@/components/ThemeToggle";
-import { FloatingNotes } from "@/features/landing/components/FloatingNotes";
 
 const HERO_NOTES = [
   { from: "채린", text: "졸업을 축하드립니다!\n나가서도 늘 응원할게요.\n힘들 때 언제든 연락줘요!" },
@@ -13,10 +9,11 @@ const HERO_NOTES = [
   { from: "쑥쑥", text: "선생님 너무 감사했어요\n우리 별처럼 빛나게\n해주셔서 오랫동안\n이렇게 와주셔서 보고싶을 거예요" },
 ];
 
-// 페이지/1.jpg 레퍼런스 — 로고+악센트마크 헤더, 보라 패널 위 메모 콜라주, 하단 2버튼
+// 페이지/1.jpg 레퍼런스 — 로고+악센트마크 헤더, 보라 패널 위 메모 콜라주, 하단 2버튼.
+// 1.jpg는 스크롤 없는 단일 화면이라 그 아래 다른 섹션(Point/사용처/하단CTA)은 두지 않는다.
 export default function HomePage() {
   return (
-    <>
+    <div className={styles.page}>
       <header className={styles.header}>
         {/* eslint-disable-next-line @next/next/no-img-element -- 브랜드 로고, 단순 정적 이미지 */}
         <img src="/brand/logo.png" alt="Rollpe" className={styles.logoImg} />
@@ -27,7 +24,7 @@ export default function HomePage() {
         </div>
       </header>
 
-      <main>
+      <main className={styles.main}>
         <div className={styles.heroText}>
           <h1 className={styles.title}>
             롤링페이퍼로
@@ -41,7 +38,9 @@ export default function HomePage() {
             {HERO_NOTES.map((note, i) => (
               <div key={note.from} className={styles.heroCard} style={{ "--i": i } as CSSProperties}>
                 <p className={styles.heroCardText}>{note.text}</p>
-                <span className={styles.heroCardFrom}>From {note.from}</span>
+                <span className={styles.heroCardFrom}>
+                  From <span className={styles.heroCardName}>{note.from}</span>
+                </span>
               </div>
             ))}
           </div>
@@ -56,13 +55,6 @@ export default function HomePage() {
           </Link>
         </div>
       </main>
-
-      <div className={styles.corkboard}>
-        <FloatingNotes />
-        <PointSection />
-        <UseCases />
-        <BottomCTA />
-      </div>
-    </>
+    </div>
   );
 }

@@ -1,4 +1,17 @@
-/* 페이지/1.jpg 레퍼런스 — 흰 헤더(로고+악센트마크) → 헤드라인 → 보라 패널(메모 콜라주) → 버튼 2개 */
+/* 페이지/1.jpg 레퍼런스 — 흰 헤더(로고+악센트마크) → 헤드라인 → 보라 패널(메모 콜라주) → 버튼 2개.
+   스크롤 없는 단일 화면이라 뷰포트 높이에 꽉 차게 구성(.page/.main). */
+.page {
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+}
+
+.main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
 .header {
   display: flex;
   align-items: center;
@@ -45,9 +58,11 @@
 }
 
 .heroPanel {
+  flex: 1;
   background: linear-gradient(160deg, var(--accent) 0%, var(--accent-deep) 100%);
   padding: 36px 16px;
   display: flex;
+  align-items: center;
   justify-content: center;
 }
 
@@ -71,17 +86,24 @@
 }
 
 .heroCardText {
-  font-size: 10px;
+  font-family: 'Gaegu', cursive;
+  font-size: 12px;
   color: #222;
   line-height: 1.5;
   white-space: pre-line;
-  margin: 0 0 8px;
+  margin: 0 0 10px;
 }
 
 .heroCardFrom {
-  font-size: 10px;
-  font-weight: 700;
+  font-size: 11px;
+  font-weight: 600;
   color: #222;
+}
+
+.heroCardName {
+  font-weight: 700;
+  border-bottom: 1.5px solid #222;
+  padding-bottom: 1px;
 }
 
 .heroCtaRow {
@@ -114,22 +136,8 @@
   text-underline-offset: 3px;
 }
 
-/* 히어로 아래 섹션 — 화이트 바디 + 글리모리 브랜드컬러(#6c7fb7) 은은하게 */
-.corkboard {
-  position: relative;
-  padding-top: 8px;
-  background:
-    radial-gradient(circle at 12% 15%, var(--accent-soft), transparent 40%),
-    radial-gradient(circle at 88% 65%, var(--accent-soft), transparent 40%),
-    var(--surface);
-}
-
+/* 수정/2.png 피드백 — 데스크톱에서도 무드등 선물하기 버튼은 항상 방 만들기 버튼 아래(세로 유지) */
 @media (min-width: 760px) {
-  .heroCtaRow {
-    flex-direction: row;
-    justify-content: center;
-  }
-
   .btnAccent {
     width: auto;
     min-width: 260px;
