@@ -59,8 +59,10 @@
   font-size: clamp(22px, 6vw, 30px);
   font-weight: 700;
   line-height: 1.35;
-  color: var(--ink);
+  color: #fff; /* 파란 패널 위라 흰 글씨 */
   margin: 0;
+  align-self: flex-start;
+  padding-left: 4px; /* 로고(좌측 20px)와 왼쪽선을 맞춤: 패널 padding 16 + 4 */
 }
 
 /* 수정/7.png 피드백 — 텍스트는 --accent-deep(진한 네이비)보다 밝은 --accent 톤,
@@ -71,9 +73,11 @@
 /* 형광펜처럼 글자 아래쪽 절반만 칠해지는 느낌 — 그라데이션으로 하단 50%만 채움
    (위쪽 절반은 투명이라 글자 위쪽이 하이라이트 밖으로 삐져나와 보임) */
 .highlight {
-  color: var(--accent);
-  background: linear-gradient(to top, #dce2ef 50%, transparent 50%);
-  padding: 0 6px;
+  color: #fff;
+  background: linear-gradient(to top, rgba(255, 255, 255, 0.28) 50%, transparent 50%);
+  /* 오른쪽 padding 제거 → '하세요'가 바로 붙음. 왼쪽은 padding 6px 상쇄(-6px) 후 글씨를 3px 더 왼쪽으로(-9px) */
+  padding: 0 0 0 6px;
+  margin-left: -9px;
   border-radius: 3px;
   box-decoration-break: clone;
   -webkit-box-decoration-break: clone;
@@ -82,10 +86,12 @@
 .heroPanel {
   overflow: hidden;
   background: linear-gradient(160deg, var(--accent) 0%, var(--accent-deep) 100%);
-  padding: 40px 16px;
+  padding: 36px 16px 44px; /* 위/아래 각 +4px */
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
+  gap: 28px;
 }
 
 /* 1.jpg 레퍼런스 — 양옆 카드가 화면 경계에서 그대로 잘려나가는(bleed) 구성.
@@ -110,11 +116,12 @@
   padding: 14px 13px;
   /* 1.png 레퍼런스 — 메모지가 좌우로 넓은 게 아니라 위아래로 긴 세로형 비율 */
   min-height: 190px;
+  /* 14.png 피드백 — 글줄이 중간에 줄바꿈되지 않게 카드 폭을 가장 긴 줄에 맞춤(왼쪽 모서리 고정, 오른쪽으로 확장) */
+  width: max-content;
 }
 
 /* 좌측 카드 — 좌상단 꼭지점이 올라가도록 오른쪽(시계 방향)으로 13도 기울임 */
 .heroCard:nth-child(1) {
-  width: 33%;
   transform: translate(-150%, -46%) rotate(13deg);
   z-index: 1;
 }
@@ -122,8 +129,7 @@
 /* 1.jpg 레퍼런스 — 가운데 카드는 오른쪽 위 꼭지점이 가장 높게, 즉 반시계 방향(좌측)으로
    약 13도 기울어진 형태. 양수(2deg)로 돼 있던 걸 음수로 수정 */
 .heroCard:nth-child(2) {
-  width: 33%;
-  transform: translate(-50%, -54%) rotate(-13deg) scale(1.08);
+  transform: translate(-28%, -54%) rotate(-13deg) scale(1.08);
   z-index: 3;
   box-shadow: 0 20px 36px -10px rgba(0, 0, 0, 0.5);
 }
@@ -131,8 +137,7 @@
 /* 가운데 카드가 반시계로 기울면서 오른쪽 카드 글씨를 가리던 문제 — 더 오른쪽/아래로
    밀어서 가운데 카드 밑에서 충분히 드러나게 함 */
 .heroCard:nth-child(3) {
-  width: 33%;
-  transform: translate(70%, -40%) rotate(9deg);
+  transform: translate(95%, -40%) rotate(9deg);
   z-index: 1;
 }
 
@@ -141,7 +146,7 @@
   font-size: 12px;
   color: #222;
   line-height: 1.5;
-  white-space: pre-line;
+  white-space: pre;
   margin: 0 0 10px;
 }
 
@@ -169,18 +174,6 @@
     min-height: 280px;
   }
 
-  .heroCard:nth-child(1) {
-    width: 190px;
-  }
-
-  .heroCard:nth-child(2) {
-    width: 190px;
-  }
-
-  .heroCard:nth-child(3) {
-    width: 190px;
-  }
-
   .heroCardText {
     font-size: 16px;
     margin: 0 0 16px;
@@ -196,7 +189,7 @@
   flex-direction: column;
   align-items: center;
   gap: 14px;
-  padding: 20px 20px 28px;
+  padding: 20px 20px 38px; /* 하단 +10px → 버튼 2개가 10px 위로 */
   background: var(--surface);
 }
 
