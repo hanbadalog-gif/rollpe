@@ -97,7 +97,8 @@
   flex: 1; /* 메모지 구역이 .heroText/.heroCtaRow 사이 남는 공간을 전부 채움 */
   overflow: hidden;
   background: linear-gradient(160deg, var(--accent) 0%, var(--accent-deep) 100%);
-  padding: 33px 16px 41px; /* 위 3px 내리고 아래 3px 올림(이전 +4px 조정이 과했다는 피드백) */
+  /* 수정/18.png 피드백 — 좌우 패딩 탓에 파란 패널 양옆으로 흰 여백이 보이던 문제, 좌우 패딩 제거 */
+  padding: 33px 0 41px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -128,7 +129,8 @@
   min-height: 190px;
   /* 세 장 모두 가운데 카드(가장 긴 줄)에 맞춘 고정 폭으로 통일 — 줄바꿈 안 되게
      충분히 넉넉하게 잡음(14.png 피드백: 줄바꿈 방지) */
-  width: 218px;
+  /* 수정/18.png 피드백 — 세 장 전부(좌/중/우) 폭 2px 추가 축소 */
+  width: 216px;
 }
 
 /* 좌측 카드 — 좌상단 꼭지점이 올라가도록 오른쪽(시계 방향)으로 13도 기울임 */
