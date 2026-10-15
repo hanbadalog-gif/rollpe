@@ -14,17 +14,17 @@
 .page {
   min-height: 100dvh;
   background: var(--surface);
-}
-
-/* 수정/17.png 피드백 — 전체화면(데스크톱 와이드뷰)에서 보라 패널이 화면 끝까지 늘어나던 문제.
-   모바일 폭으로 고정해 가운데로 몰고, 그 바깥은 흰 배경만 보이게 함 */
-.shell {
-  min-height: 100dvh;
-  max-width: 480px;
-  margin: 0 auto;
   display: flex;
   flex-direction: column;
-  overflow: hidden;
+}
+
+/* 수정/17.png 피드백 — 전체화면(데스크톱 와이드뷰)에서도 헤더/헤드라인/버튼은 모바일 폭으로
+   가운데 고정(흰 배경). heroPanel(파란 배경)만 이 래퍼 밖에 둬서 화면 폭 전체를 채운다
+   (와이드뷰에서 "파란 패널만 넓게" 피드백 반영). */
+.shell {
+  width: 100%;
+  max-width: 480px;
+  margin: 0 auto;
 }
 
 .main {
@@ -129,8 +129,8 @@
   min-height: 190px;
   /* 세 장 모두 가운데 카드(가장 긴 줄)에 맞춘 고정 폭으로 통일 — 줄바꿈 안 되게
      충분히 넉넉하게 잡음(14.png 피드백: 줄바꿈 방지) */
-  /* 수정/18.png 피드백 — 세 장 전부(좌/중/우) 폭 2px 추가 축소 */
-  width: 216px;
+  /* 수정/18.png + 후속 피드백 — 세 장 전부(좌/중/우) 폭 2px씩 축소 */
+  width: 214px;
 }
 
 /* 좌측 카드 — 좌상단 꼭지점이 올라가도록 오른쪽(시계 방향)으로 13도 기울임 */
