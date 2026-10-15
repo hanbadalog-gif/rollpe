@@ -124,11 +124,11 @@
   padding: 14px 13px;
 }
 
+/* 좌측 카드 — 좌상단 꼭지점이 올라가도록 오른쪽(시계 방향)으로 13도 기울임 */
 .heroCard:nth-child(1) {
   width: 45%;
-  transform: translate(-120%, -46%) rotate(-10deg);
+  transform: translate(-120%, -46%) rotate(13deg);
   z-index: 1;
-  animation: driftLeft 4.5s ease-in-out infinite;
 }
 
 /* 1.jpg 레퍼런스 — 가운데 카드는 오른쪽 위 꼭지점이 가장 높게, 즉 반시계 방향(좌측)으로
@@ -138,7 +138,6 @@
   transform: translate(-50%, -54%) rotate(-13deg) scale(1.08);
   z-index: 3;
   box-shadow: 0 20px 36px -10px rgba(0, 0, 0, 0.5);
-  animation: driftCenter 4.5s ease-in-out infinite;
 }
 
 /* 가운데 카드가 반시계로 기울면서 오른쪽 카드 글씨를 가리던 문제 — 더 오른쪽/아래로
@@ -147,30 +146,6 @@
   width: 45%;
   transform: translate(58%, -40%) rotate(9deg);
   z-index: 1;
-  animation: driftRight 4.5s ease-in-out infinite;
-}
-
-@keyframes driftLeft {
-  0%, 100% { translate: 0 0; }
-  50% { translate: -6px 0; }
-}
-
-@keyframes driftCenter {
-  0%, 100% { translate: 0 0; }
-  50% { translate: 4px 0; }
-}
-
-@keyframes driftRight {
-  0%, 100% { translate: 0 0; }
-  50% { translate: 6px 0; }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .heroCard:nth-child(1),
-  .heroCard:nth-child(2),
-  .heroCard:nth-child(3) {
-    animation: none;
-  }
 }
 
 .heroCardText {
