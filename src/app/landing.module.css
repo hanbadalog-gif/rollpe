@@ -118,7 +118,7 @@
   min-height: 190px;
   /* 세 장 모두 가운데 카드(가장 긴 줄)에 맞춘 고정 폭으로 통일 — 줄바꿈 안 되게
      충분히 넉넉하게 잡음(14.png 피드백: 줄바꿈 방지) */
-  width: 220px;
+  width: 218px;
 }
 
 /* 좌측 카드 — 좌상단 꼭지점이 올라가도록 오른쪽(시계 방향)으로 13도 기울임 */
@@ -138,7 +138,7 @@
 /* 가운데 카드가 반시계로 기울면서 오른쪽 카드 글씨를 가리던 문제 — 더 오른쪽/아래로
    밀어서 가운데 카드 밑에서 충분히 드러나게 함 */
 .heroCard:nth-child(3) {
-  transform: translate(50%, -40%) rotate(9deg);
+  transform: translate(72%, -40%) rotate(9deg);
   z-index: 1;
 }
 
@@ -173,7 +173,7 @@
     padding: 22px 20px;
     border-radius: 14px;
     min-height: 280px;
-    width: 290px;
+    width: 288px;
   }
 
   .heroCardText {
@@ -192,7 +192,7 @@
   }
 
   .heroCard:nth-child(3) {
-    transform: translate(78%, -40%) rotate(9deg);
+    transform: translate(100%, -40%) rotate(9deg);
   }
 }
 
