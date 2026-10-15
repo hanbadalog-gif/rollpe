@@ -103,7 +103,7 @@
   max-width: 460px;
   height: 230px;
   margin-top: 2px; /* 메모지들이 너무 위로 붙어 보인다는 피드백 — 2px 아래로 */
-  transform: scale(1.2);
+  transform: scale(1.1);
 }
 
 .heroCard {
@@ -226,4 +226,8 @@
   font-size: 13px;
   color: var(--accent);
   text-align: center;
+}
+
+.btnGhostBlack {
+  color: var(--ink);
 }

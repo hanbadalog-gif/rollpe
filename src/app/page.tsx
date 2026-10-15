@@ -50,7 +50,7 @@ export default function HomePage() {
             무료 롤링페이퍼 방 만들기
           </Link>
           <Link href="/gift" className={styles.btnGhost}>
-            롤링페이퍼 무드등 선물하기
+            롤링페이퍼 무드등 <span className={styles.btnGhostBlack}>선물하기</span>
           </Link>
         </div>
       </main>
