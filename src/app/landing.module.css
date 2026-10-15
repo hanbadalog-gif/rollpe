@@ -66,7 +66,7 @@
    font-weight:700을 강제하면 브라우저가 합성(faux) 볼드를 한 번 더 입혀서
    레퍼런스보다 과하게 두꺼워짐. 400으로 두면 폰트 자체의 굵은 디자인만 적용된다. */
 .title {
-  font-family: 'Black Han Sans', 'Noto Sans KR', sans-serif;
+  font-family: 'Jua', 'Noto Sans KR', sans-serif;
   font-size: clamp(22px, 6vw, 30px);
   font-weight: 400;
   line-height: 1.35;
@@ -82,8 +82,11 @@
 .highlight {
   color: var(--accent);
   background: #dce2ef;
-  padding: 2px 6px;
+  padding: 5px 6px;
+  line-height: 1.6;
   border-radius: 6px;
+  box-decoration-break: clone;
+  -webkit-box-decoration-break: clone;
 }
 
 .heroPanel {
@@ -96,88 +99,20 @@
   justify-content: center;
 }
 
-/* 1.jpg 레퍼런스 — 양옆 카드가 화면 경계에서 그대로 잘려나가는(bleed) 구성.
-   가운데 카드만 완전히 보이고, 좌우는 패널(.heroPanel의 overflow:hidden) 밖으로
-   흘러나가게 절대 배치 — flex로 3장을 다 욱여넣어 축소하지 않는다. */
-.heroCards {
-  position: relative;
+/* 수정/11.png — 레퍼런스 카드 콜라주를 CSS로 재구성하는 대신 그 이미지 자체를 그대로 사용
+   (폰트/카드 크기를 CSS로 아무리 맞춰도 손글씨 자형까지 완전히 똑같아지긴 어려워 요청대로
+   이미지를 직접 사용). 원본이 207×163으로 저해상도라 확대 시 다소 흐릿할 수 있음. */
+.heroCardsImg {
   width: 100%;
-  max-width: 460px;
-  height: 230px;
+  max-width: 420px;
+  height: auto;
+  display: block;
 }
 
-/* 가운데 카드 폭 — 1.jpg를 격자 오버레이로 정밀 측정한 결과(원본 343px 폭 기준
-   카드 폭 약155px) 화면 폭의 약 45% — 고정 px이 아니라 .heroCards 폭 대비
-   퍼센트로 맞춰 레퍼런스 비율을 그대로 따르게 함 */
-.heroCard {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  background: #fff;
-  border-radius: 10px;
-  box-shadow: 0 14px 28px -10px rgba(0, 0, 0, 0.45);
-  padding: 14px 13px;
-  width: 45%;
-}
-
-.heroCard:nth-child(1) {
-  transform: translate(-148%, -50%) rotate(-10deg);
-  z-index: 1;
-}
-
-.heroCard:nth-child(2) {
-  transform: translate(-50%, -54%) rotate(2deg) scale(1.08);
-  z-index: 3;
-  box-shadow: 0 20px 36px -10px rgba(0, 0, 0, 0.5);
-}
-
-.heroCard:nth-child(3) {
-  transform: translate(48%, -50%) rotate(9deg);
-  z-index: 1;
-}
-
-.heroCardText {
-  font-family: 'Gaegu', cursive;
-  font-size: 12px;
-  color: #222;
-  line-height: 1.5;
-  white-space: pre-line;
-  margin: 0 0 10px;
-}
-
-.heroCardFrom {
-  font-size: 11px;
-  font-weight: 600;
-  color: #222;
-}
-
-/* 수정/4.png 피드백 — 데스크톱 넓은 보라 패널에 비해 카드가 너무 작던 문제, 뷰포트에 맞춰 확대 */
 @media (min-width: 640px) {
-  .heroCards {
-    max-width: 720px;
-    height: 320px;
+  .heroCardsImg {
+    max-width: 640px;
   }
-
-  .heroCard {
-    width: 260px;
-    padding: 22px 20px;
-    border-radius: 14px;
-  }
-
-  .heroCardText {
-    font-size: 16px;
-    margin: 0 0 16px;
-  }
-
-  .heroCardFrom {
-    font-size: 14px;
-  }
-}
-
-.heroCardName {
-  font-weight: 700;
-  border-bottom: 1.5px solid #222;
-  padding-bottom: 1px;
 }
 
 .heroCtaRow {

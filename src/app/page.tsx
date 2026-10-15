@@ -1,12 +1,6 @@
 import Link from "next/link";
 import styles from "./landing.module.css";
 
-const HERO_NOTES = [
-  { from: "채린", text: "졸업을 축하드립니다!\n나가서도 늘 응원할게요.\n힘들 때 언제든 연락줘요!" },
-  { from: "현정이", text: "교수님\n스승의 날 너무 축하드립니다~\n교수님과 함께 했던 시간들은\n정말 즐거웠어요. 깊고 가득한\n강의 늘 감사했습니다\n교수님 존경합니다 :)" },
-  { from: "쑥쑥", text: "선생님 너무 감사했어요\n우리 별처럼 빛나게\n해주셔서 오랫동안\n이렇게 와주셔서 보고싶을 거예요" },
-];
-
 // 페이지/1.jpg 레퍼런스 — 로고+악센트마크 헤더, 보라 패널 위 메모 콜라주, 하단 2버튼.
 // 1.jpg는 스크롤 없는 단일 화면이라 그 아래 다른 섹션(Point/사용처/하단CTA)은 두지 않는다.
 export default function HomePage() {
@@ -29,16 +23,8 @@ export default function HomePage() {
         </div>
 
         <div className={styles.heroPanel}>
-          <div className={styles.heroCards}>
-            {HERO_NOTES.map((note) => (
-              <div key={note.from} className={styles.heroCard}>
-                <p className={styles.heroCardText}>{note.text}</p>
-                <span className={styles.heroCardFrom}>
-                  From <span className={styles.heroCardName}>{note.from}</span>
-                </span>
-              </div>
-            ))}
-          </div>
+          {/* eslint-disable-next-line @next/next/no-img-element -- 레퍼런스(수정/11.png) 콜라주를 그대로 사용 */}
+          <img src="/brand/hero-cards.png" alt="" className={styles.heroCardsImg} aria-hidden />
         </div>
 
         <div className={styles.heroCtaRow}>
