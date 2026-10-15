@@ -54,15 +54,15 @@
 /* Black Han Sans는 400(기본) 굵기 하나만 제공하는 단일 굵기 디스플레이체 —
    font-weight:700을 강제하면 브라우저가 합성(faux) 볼드를 한 번 더 입혀서
    레퍼런스보다 과하게 두꺼워짐. 400으로 두면 폰트 자체의 굵은 디자인만 적용된다. */
+/* 페이지/1.jpg 재확인 — 헤드라인은 파란 패널이 아니라 흰 배경 위(.heroText). 파란 배경은
+   메모지 구역(.heroPanel)에만 적용됨 */
 .title {
   font-family: 'GmarketSans', 'Noto Sans KR', sans-serif;
   font-size: clamp(22px, 6vw, 30px);
   font-weight: 700;
   line-height: 1.35;
-  color: #fff; /* 파란 패널 위라 흰 글씨 */
-  margin: 10px 0 0; /* 추가로 10px 더 아래로 */
-  align-self: flex-start;
-  padding-left: 4px; /* 로고(좌측 20px)와 왼쪽선을 맞춤: 패널 padding 16 + 4 */
+  color: var(--ink);
+  margin: 0;
 }
 
 /* 수정/7.png 피드백 — 텍스트는 --accent-deep(진한 네이비)보다 밝은 --accent 톤,
@@ -75,8 +75,8 @@
 /* '감'자가 1행 '롤'자와 정확히 같은 왼쪽선에 오도록 — 좌측 padding/margin을 전부 제거해서
    자연스러운 줄바꿈 흐름 그대로 둠(패딩/마이너스 마진으로 임의 보정하던 걸 되돌림) */
 .highlight {
-  color: #fff;
-  background: linear-gradient(to top, rgba(255, 255, 255, 0.28) 50%, transparent 50%);
+  color: var(--accent);
+  background: linear-gradient(to top, #dce2ef 50%, transparent 50%);
   padding: 0;
   border-radius: 3px;
   box-decoration-break: clone;
@@ -84,17 +84,13 @@
 }
 
 .heroPanel {
-  flex: 1; /* 헤드라인이 패널 안으로 들어오면서 .heroText가 사라져 .main의 남는 공간을
-    이 패널이 다시 채우게 함(안 그러면 패널과 하단 버튼 사이에 흰 여백이 생김) */
+  flex: 1; /* 메모지 구역이 .heroText/.heroCtaRow 사이 남는 공간을 전부 채움 */
   overflow: hidden;
   background: linear-gradient(160deg, var(--accent) 0%, var(--accent-deep) 100%);
   padding: 33px 16px 41px; /* 위 3px 내리고 아래 3px 올림(이전 +4px 조정이 과했다는 피드백) */
   display: flex;
-  flex-direction: column;
   align-items: center;
-  justify-content: flex-start; /* center였으면 패널이 flex:1로 커진 만큼 위쪽에 빈 공간이
-    과하게 생김 — 상단 기준으로 고정하고 남는 여유 공간은 자연스럽게 아래쪽에 남게 함 */
-  gap: 28px;
+  justify-content: center;
 }
 
 /* 1.jpg 레퍼런스 — 양옆 카드가 화면 경계에서 그대로 잘려나가는(bleed) 구성.
@@ -107,6 +103,7 @@
   width: 100%;
   max-width: 460px;
   height: 230px;
+  margin-top: 2px; /* 메모지들이 너무 위로 붙어 보인다는 피드백 — 2px 아래로 */
 }
 
 .heroCard {
@@ -125,7 +122,7 @@
 
 /* 좌측 카드 — 좌상단 꼭지점이 올라가도록 오른쪽(시계 방향)으로 13도 기울임 */
 .heroCard:nth-child(1) {
-  transform: translate(-150%, -46%) rotate(13deg);
+  transform: translate(-170%, -46%) rotate(13deg);
   z-index: 1;
 }
 
@@ -140,7 +137,7 @@
 /* 가운데 카드가 반시계로 기울면서 오른쪽 카드 글씨를 가리던 문제 — 더 오른쪽/아래로
    밀어서 가운데 카드 밑에서 충분히 드러나게 함 */
 .heroCard:nth-child(3) {
-  transform: translate(95%, -40%) rotate(9deg);
+  transform: translate(115%, -40%) rotate(9deg);
   z-index: 1;
 }
 

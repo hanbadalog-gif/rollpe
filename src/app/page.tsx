@@ -23,13 +23,16 @@ export default function HomePage() {
       </header>
 
       <main className={styles.main}>
-        <div className={styles.heroPanel}>
-          {/* 수정/15.png 피드백 — 헤드라인을 흰 배경이 아니라 파란 패널 위에 올림 */}
+        {/* 페이지/1.jpg 재확인 — 헤드라인은 흰 배경 위, 파란 패널은 메모지 구역에만 적용 */}
+        <div className={styles.heroText}>
           <h1 className={styles.title}>
             롤링페이퍼로
             <br />
             <span className={styles.highlight}>감동을 선물</span>하세요
           </h1>
+        </div>
+
+        <div className={styles.heroPanel}>
           <div className={styles.heroCards}>
             {HERO_NOTES.map((note) => (
               <div key={note.from} className={styles.heroCard}>
