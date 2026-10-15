@@ -155,16 +155,11 @@
   position: relative;
 }
 
+/* 수정/16.png 피드백 — 모바일에서도 하단 시트가 아니라 페이지/4.jpg처럼 화면 가운데 모달로 고정 */
 @media (max-width: 760px) {
-  .modalBackdrop {
-    align-items: flex-end;
-    padding: 0;
-  }
-
   .modalCard {
     max-width: none;
-    width: 100%;
-    max-height: 80vh;
-    border-radius: 20px 20px 0 0;
+    width: calc(100% - 32px);
+    max-height: 86vh;
   }
 }
