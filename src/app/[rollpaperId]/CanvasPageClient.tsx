@@ -41,7 +41,10 @@ export function CanvasPageClient({
   if (error || !rollpaper) return <div className={styles.loading}>{error ?? "오류가 발생했어요"}</div>;
 
   const cfg = MODE_CONFIG[rollpaper.mode as RollpaperMode];
-  const noteCount = rollpaper.notes.length;
+  const noteCount = rollpaper.notes.length; // 정원(캔버스 혼잡도) 체크용 — 스티커/그림 포함 전체 아이템 수
+  // 수정/6번 피드백 — "N명 작성" 카운터가 스티커/그림(작성자 없음)까지 포함해 부풀려지던 문제.
+  // 실제 이름을 적은 글(From.) 메모만 "명"으로 집계
+  const peopleCount = rollpaper.notes.filter((n) => n.type === "text").length;
   const atCap = noteCount >= cfg.capacity;
 
   function handleOpenShare() {
@@ -74,7 +77,7 @@ export function CanvasPageClient({
           <b>{rollpaper.toName}</b>
         </div>
         <span className={styles.counter}>
-          {isFinite(cfg.capacity) ? `${noteCount} / ${cfg.capacity}명` : `${noteCount}명 작성`}
+          {isFinite(cfg.capacity) ? `${peopleCount} / ${cfg.capacity}명` : `${peopleCount}명 작성`}
         </span>
       </div>
 
