@@ -45,7 +45,7 @@
 }
 
 .logoImg {
-  height: 26px;
+  height: 28.6px; /* 1.1배 확대 요청 */
   width: auto;
   display: block;
 }

@@ -14,7 +14,7 @@
 }
 
 .logoImg {
-  height: 26px;
+  height: 28.6px; /* 1.1배 확대 요청 */
   width: auto;
   display: block;
 }
@@ -79,8 +79,8 @@
 .myLink {
   display: block;
   text-align: center;
-  margin-top: 16px;
   font-size: 13px;
+  white-space: nowrap;
   color: var(--ink-soft);
   text-decoration: underline;
 }

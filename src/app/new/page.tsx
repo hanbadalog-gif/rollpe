@@ -49,12 +49,12 @@ export default function NewRollpaperPage() {
           <button type="submit" className={styles.submit} disabled={submitting}>
             {submitting ? "생성 중…" : "생성하기"}
           </button>
-        </form>
 
-        {/* 수정/8번 피드백 — 링크 복사 전 이탈 시 복구 경로 */}
-        <Link href="/my" className={styles.myLink}>
-          이전에 만든 롤링페이퍼 찾기
-        </Link>
+          {/* 수정/8번 피드백 — 링크 복사 전 이탈 시 복구 경로, 수정/19.png: 생성하기 바로 아래 한 줄로 */}
+          <Link href="/my" className={styles.myLink}>
+            이전에 만든 롤링페이퍼 찾기
+          </Link>
+        </form>
       </div>
     </div>
   );
