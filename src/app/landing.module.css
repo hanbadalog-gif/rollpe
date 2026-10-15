@@ -114,12 +114,12 @@
   max-width: 460px;
   height: 230px;
   margin-top: 2px; /* 메모지들이 너무 위로 붙어 보인다는 피드백 — 2px 아래로 */
-  /* 메모지 3장 전체 그룹을 왼쪽으로 이동(누적 -3px → -8px → -11px → -21px).
+  /* 메모지 3장 전체 그룹을 왼쪽으로 이동(누적 -3 → -8 → -11 → -21 → -41px).
      transform:translateX는 scale()과 합성되며 희석되고, margin-left도 .heroCards가
      width:100%라 justify-content:center가 음수 마진 절반을 다시 상쇄해버려 둘 다
      체감 이동이 거의 없었음 — position:relative인 요소에 left를 직접 줘서
      flex 레이아웃 계산과 무관하게 순수 시각적 오프셋으로 이동 */
-  left: -21px;
+  left: -41px;
   transform: scale(1.1);
 }
 
@@ -137,12 +137,17 @@
      충분히 넉넉하게 잡음(14.png 피드백: 줄바꿈 방지) */
   /* 수정/18.png + 후속 피드백 — 세 장 전부(좌/중/우) 폭 2px씩 축소 */
   width: 214px;
+  /* "붕 뜨는" 모션 옵션 A(잔잔한 떠있음) 채택 — margin-top으로 살짝 떠올랐다 내려오고,
+     filter:drop-shadow가 box-shadow 위에 추가로 겹쳐져서 뜬 정도에 맞춰 그림자도 진해짐.
+     카드마다 duration/delay를 다르게 줘서 세 장이 같은 박자로 움직이지 않게 함 */
+  animation: heroCardFloat 4.2s ease-in-out infinite;
 }
 
 /* 좌측 카드 — 좌상단 꼭지점이 올라가도록 오른쪽(시계 방향)으로 13도 기울임 */
 .heroCard:nth-child(1) {
   transform: translate(-90%, -46%) rotate(13deg);
   z-index: 1;
+  animation-delay: 0.1s;
 }
 
 /* 1.jpg 레퍼런스 — 가운데 카드는 오른쪽 위 꼭지점이 가장 높게, 즉 반시계 방향(좌측)으로
@@ -151,6 +156,8 @@
   transform: translate(-28%, -54%) rotate(-13deg) scale(1.08);
   z-index: 3;
   box-shadow: 0 20px 36px -10px rgba(0, 0, 0, 0.5);
+  animation-duration: 3.6s;
+  animation-delay: 0.4s;
 }
 
 /* 가운데 카드가 반시계로 기울면서 오른쪽 카드 글씨를 가리던 문제 — 더 오른쪽/아래로
@@ -158,6 +165,26 @@
 .heroCard:nth-child(3) {
   transform: translate(72%, -40%) rotate(9deg);
   z-index: 1;
+  animation-duration: 4.8s;
+  animation-delay: 0.2s;
+}
+
+@keyframes heroCardFloat {
+  0%,
+  100% {
+    margin-top: 0;
+    filter: drop-shadow(0 6px 10px rgba(0, 0, 0, 0.18));
+  }
+  50% {
+    margin-top: -7px;
+    filter: drop-shadow(0 16px 18px rgba(0, 0, 0, 0.28));
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .heroCard {
+    animation: none;
+  }
 }
 
 .heroCardText {
