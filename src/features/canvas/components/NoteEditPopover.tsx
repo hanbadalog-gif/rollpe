@@ -10,18 +10,73 @@ const FONTS = [
 ];
 const SIZES = [11, 14, 18];
 
+// WritePanel.tsx와 동일한 팔레트 — 작성 시 고를 수 있던 색을 작성 후에도 그대로 고를 수 있게
+const TEXT_COLORS = ["#3A3D4D", "#6C7FB7", "#E88CA6", "#E8A449"];
+const BG_COLORS = ["#FFF7E0", "#EAF3FF", "#FDE9EF", "#EEF0FA"];
+
 interface Props {
   position: { top: number; left: number };
   font: string;
   size: number;
+  textColor: string;
+  bgColor: string | null;
+  bgPickerEnabled: boolean;
+  textColorLocked: boolean;
   onChangeFont: (font: string) => void;
   onChangeSize: (size: number) => void;
+  onChangeTextColor: (color: string) => void;
+  onChangeBgColor: (color: string) => void;
   onDelete: () => void;
   onClose: () => void;
 }
 
+/** 수정/1번 피드백 — 작성 후에도 글자색/메모지 배경색을 고칠 수 있게 스와치 추가 */
+function ColorSwatchRow({
+  colors,
+  value,
+  onPick,
+}: {
+  colors: string[];
+  value: string;
+  onPick: (c: string) => void;
+}) {
+  return (
+    <div className={styles.pillRow}>
+      {colors.map((c) => (
+        <span
+          key={c}
+          onClick={() => onPick(c)}
+          style={{
+            width: 22,
+            height: 22,
+            borderRadius: "50%",
+            background: c,
+            cursor: "pointer",
+            boxShadow: value === c ? "0 0 0 2px #fff, 0 0 0 4px var(--accent)" : "0 0 0 1px rgba(0,0,0,.08)",
+          }}
+          aria-label={c}
+        />
+      ))}
+    </div>
+  );
+}
+
 /** 페이지/수정,삭제기능.JPG 레퍼런스 — 메모 탭 시 "꾸미기"(글씨 스타일)·"삭제" 액션 */
-export function NoteEditPopover({ position, font, size, onChangeFont, onChangeSize, onDelete, onClose }: Props) {
+export function NoteEditPopover({
+  position,
+  font,
+  size,
+  textColor,
+  bgColor,
+  bgPickerEnabled,
+  textColorLocked,
+  onChangeFont,
+  onChangeSize,
+  onChangeTextColor,
+  onChangeBgColor,
+  onDelete,
+  onClose,
+}: Props) {
   const [expanded, setExpanded] = useState(false);
 
   if (!expanded) {
@@ -79,6 +134,24 @@ export function NoteEditPopover({ position, font, size, onChangeFont, onChangeSi
           </span>
         ))}
       </div>
+
+      {!textColorLocked && (
+        <>
+          <span className={styles.miniLabel} style={{ marginTop: 9 }}>
+            글자색
+          </span>
+          <ColorSwatchRow colors={TEXT_COLORS} value={textColor} onPick={onChangeTextColor} />
+        </>
+      )}
+
+      {bgPickerEnabled && (
+        <>
+          <span className={styles.miniLabel} style={{ marginTop: 9 }}>
+            메모지 배경
+          </span>
+          <ColorSwatchRow colors={BG_COLORS} value={bgColor ?? BG_COLORS[0]} onPick={onChangeBgColor} />
+        </>
+      )}
     </div>
   );
 }

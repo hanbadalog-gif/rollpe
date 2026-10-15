@@ -13,7 +13,10 @@ import type { PaperSize } from "./PaperSizePanel";
 interface Props {
   rollpaperId: string;
   rollpaper: RollpaperDTO;
-  updateNote: (noteId: string, patch: { font?: string; fontSize?: number }) => Promise<void>;
+  updateNote: (
+    noteId: string,
+    patch: { font?: string; fontSize?: number; textColor?: string; bgColor?: string },
+  ) => Promise<void>;
   moveNote: (noteId: string, posX: number, posY: number, rotation?: number) => Promise<void>;
   resizeNote: (noteId: string, scale: number) => Promise<void>;
   deleteNote: (noteId: string, ownerToken?: string | null) => Promise<void>;
@@ -121,8 +124,14 @@ export function CanvasBoard({
           position={popoverPos}
           font={selectedNote.font ?? "'Gaegu',cursive"}
           size={selectedNote.fontSize ?? 14}
+          textColor={cfg.fixedTextColor ?? selectedNote.textColor ?? "#3A3D4D"}
+          bgColor={selectedNote.bgColor}
+          bgPickerEnabled={cfg.bgPickerEnabled}
+          textColorLocked={!!cfg.fixedTextColor}
           onChangeFont={(font) => updateNote(selectedNote.id, { font })}
           onChangeSize={(fontSize) => updateNote(selectedNote.id, { fontSize })}
+          onChangeTextColor={(textColor) => updateNote(selectedNote.id, { textColor })}
+          onChangeBgColor={(bgColor) => updateNote(selectedNote.id, { bgColor })}
           onDelete={() => {
             handleDelete(selectedNote.id);
             setSelectedNoteId(null);
