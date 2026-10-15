@@ -109,6 +109,7 @@ export function CanvasBoard({
             }}
             onMoveEnd={(posX, posY) => moveNote(note.id, posX, posY, note.rotation)}
             onResizeEnd={(scale) => resizeNote(note.id, scale)}
+            onRotateEnd={(rotation) => moveNote(note.id, note.posX, note.posY, rotation)}
             onTap={() => !readOnly && openPopoverFor(note.id)}
             onDelete={() => handleDelete(note.id)}
           />
@@ -122,6 +123,11 @@ export function CanvasBoard({
           size={selectedNote.fontSize ?? 14}
           onChangeFont={(font) => updateNote(selectedNote.id, { font })}
           onChangeSize={(fontSize) => updateNote(selectedNote.id, { fontSize })}
+          onDelete={() => {
+            handleDelete(selectedNote.id);
+            setSelectedNoteId(null);
+            setPopoverPos(null);
+          }}
           onClose={() => {
             setSelectedNoteId(null);
             setPopoverPos(null);

@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import styles from "./canvas.module.css";
 
 const FONTS = [
@@ -15,11 +16,35 @@ interface Props {
   size: number;
   onChangeFont: (font: string) => void;
   onChangeSize: (size: number) => void;
+  onDelete: () => void;
   onClose: () => void;
 }
 
-/** Story 3.4 — 캔버스에 배치된 메모를 탭하면 뜨는 간이 스타일 편집 팝오버 */
-export function NoteEditPopover({ position, font, size, onChangeFont, onChangeSize, onClose }: Props) {
+/** 페이지/수정,삭제기능.JPG 레퍼런스 — 메모 탭 시 "꾸미기"(글씨 스타일)·"삭제" 액션 */
+export function NoteEditPopover({ position, font, size, onChangeFont, onChangeSize, onDelete, onClose }: Props) {
+  const [expanded, setExpanded] = useState(false);
+
+  if (!expanded) {
+    return (
+      <div className={styles.popover} style={{ top: position.top, left: position.left }}>
+        <div className={styles.popoverHead}>
+          <b>메모</b>
+          <span className={styles.popoverClose} onClick={onClose}>
+            ✕
+          </span>
+        </div>
+        <div className={styles.actionRow}>
+          <button type="button" className={styles.actionBtn} onClick={() => setExpanded(true)}>
+            꾸미기
+          </button>
+          <button type="button" className={`${styles.actionBtn} ${styles.actionBtnDanger}`} onClick={onDelete}>
+            삭제
+          </button>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className={styles.popover} style={{ top: position.top, left: position.left }}>
       <div className={styles.popoverHead}>

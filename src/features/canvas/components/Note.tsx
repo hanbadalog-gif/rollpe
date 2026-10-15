@@ -1,9 +1,10 @@
 "use client";
 
-import { useState } from "react";
+import { useRef, useState } from "react";
 import styles from "./canvas.module.css";
 import { useDraggableNote } from "../hooks/useDraggableNote";
 import { useResizableNote } from "../hooks/useResizableNote";
+import { useRotatableNote } from "../hooks/useRotatableNote";
 import type { NoteDTO } from "../types";
 
 interface Props {
@@ -13,6 +14,7 @@ interface Props {
   selected: boolean;
   onMoveEnd: (posX: number, posY: number) => void;
   onResizeEnd: (scale: number) => void;
+  onRotateEnd: (rotation: number) => void;
   onTap: () => void;
   onDelete: () => void;
   setRef?: (el: HTMLDivElement | null) => void;
@@ -20,10 +22,12 @@ interface Props {
   readOnly?: boolean;
 }
 
-export function Note({ note, canvasRef, editable, selected, onMoveEnd, onResizeEnd, onTap, onDelete, setRef, readOnly }: Props) {
+export function Note({ note, canvasRef, editable, selected, onMoveEnd, onResizeEnd, onRotateEnd, onTap, onDelete, setRef, readOnly }: Props) {
   // 드래그 중에는 서버 왕복 없이 로컬 좌표만 바꿔 즉시 반응하게 한다 (실시간 이동 체감용)
   const [dragPos, setDragPos] = useState<{ x: number; y: number } | null>(null);
   const [dragScale, setDragScale] = useState<number | null>(null);
+  const [dragRotation, setDragRotation] = useState<number | null>(null);
+  const elRef = useRef<HTMLDivElement | null>(null);
 
   const disabled = readOnly || (!editable && note.type !== "sticker");
 
@@ -50,31 +54,54 @@ export function Note({ note, canvasRef, editable, selected, onMoveEnd, onResizeE
     disabled,
   });
 
+  const rotate = useRotatableNote({
+    rotation: note.rotation,
+    getCenter: () => {
+      const rect = elRef.current?.getBoundingClientRect();
+      return rect ? { x: rect.left + rect.width / 2, y: rect.top + rect.height / 2 } : null;
+    },
+    onRotate: setDragRotation,
+    onRotateEnd: (rotation) => {
+      setDragRotation(null);
+      onRotateEnd(rotation);
+    },
+    disabled,
+  });
+
   const posX = dragPos?.x ?? note.posX;
   const posY = dragPos?.y ?? note.posY;
   const scale = dragScale ?? note.scale ?? 1;
+  const rotation = dragRotation ?? note.rotation;
   const style: React.CSSProperties = {
     left: `${posX}%`,
     top: `${posY}%`,
-    transform: `rotate(${note.rotation}deg) scale(${scale})`,
+    transform: `rotate(${rotation}deg) scale(${scale})`,
   };
 
-  const resizeHandle = !disabled && (
-    <span
-      className={styles.resizeHandle}
-      onPointerDown={resize.onPointerDown}
-      onPointerMove={resize.onPointerMove}
-      onPointerUp={resize.onPointerUp}
-      onClick={(e) => e.stopPropagation()}
-    />
+  function setRefs(el: HTMLDivElement | null) {
+    elRef.current = el;
+    setRef?.(el);
+  }
+
+  // 페이지/메모지 회전기능.JPG 레퍼런스 — 선택 시 4모서리 리사이즈 점 + 상단 회전 핸들
+  const handles = !disabled && selected && (
+    <>
+      <span className={`${styles.cornerHandle} ${styles.cornerTL}`} onPointerDown={resize.onPointerDown} onPointerMove={resize.onPointerMove} onPointerUp={resize.onPointerUp} onClick={(e) => e.stopPropagation()} />
+      <span className={`${styles.cornerHandle} ${styles.cornerTR}`} onPointerDown={resize.onPointerDown} onPointerMove={resize.onPointerMove} onPointerUp={resize.onPointerUp} onClick={(e) => e.stopPropagation()} />
+      <span className={`${styles.cornerHandle} ${styles.cornerBL}`} onPointerDown={resize.onPointerDown} onPointerMove={resize.onPointerMove} onPointerUp={resize.onPointerUp} onClick={(e) => e.stopPropagation()} />
+      <span className={`${styles.cornerHandle} ${styles.cornerBR}`} onPointerDown={resize.onPointerDown} onPointerMove={resize.onPointerMove} onPointerUp={resize.onPointerUp} onClick={(e) => e.stopPropagation()} />
+      <span className={styles.rotateHandle} onPointerDown={rotate.onPointerDown} onPointerMove={rotate.onPointerMove} onPointerUp={rotate.onPointerUp} onClick={(e) => e.stopPropagation()}>
+        ⟳
+      </span>
+    </>
   );
 
   if (note.type === "sticker") {
     return (
       <div
-        className={`${styles.note} ${styles.noteSticker}`}
+        className={`${styles.note} ${styles.noteSticker} ${selected ? styles.noteSelected : ""}`}
         style={style}
-        ref={setRef}
+        ref={setRefs}
         onPointerDown={drag.onPointerDown}
         onPointerMove={drag.onPointerMove}
         onPointerUp={drag.onPointerUp}
@@ -85,7 +112,7 @@ export function Note({ note, canvasRef, editable, selected, onMoveEnd, onResizeE
             ✕
           </span>
         )}
-        {resizeHandle}
+        {handles}
       </div>
     );
   }
@@ -93,9 +120,9 @@ export function Note({ note, canvasRef, editable, selected, onMoveEnd, onResizeE
   if (note.type === "photo" && !note.content) {
     return (
       <div
-        className={`${styles.note} ${styles.notePhotoOnly}`}
+        className={`${styles.note} ${styles.notePhotoOnly} ${selected ? styles.noteSelected : ""}`}
         style={style}
-        ref={setRef}
+        ref={setRefs}
         onPointerDown={drag.onPointerDown}
         onPointerMove={drag.onPointerMove}
         onPointerUp={drag.onPointerUp}
@@ -109,7 +136,7 @@ export function Note({ note, canvasRef, editable, selected, onMoveEnd, onResizeE
             ✕
           </span>
         )}
-        {resizeHandle}
+        {handles}
       </div>
     );
   }
@@ -117,7 +144,7 @@ export function Note({ note, canvasRef, editable, selected, onMoveEnd, onResizeE
   return (
     <div
       className={`${styles.note} ${selected ? styles.noteSelected : ""}`}
-      ref={setRef}
+      ref={setRefs}
       style={{
         ...style,
         background: note.bgColor ?? undefined,
@@ -140,7 +167,7 @@ export function Note({ note, canvasRef, editable, selected, onMoveEnd, onResizeE
           ✕
         </span>
       )}
-      {resizeHandle}
+      {handles}
     </div>
   );
 }
