@@ -1,4 +1,4 @@
-/* 롤링/0.JPG 레퍼런스 — 다크 배경영상 히어로 제거, 라이트 헤더 바가 첫 화면 */
+/* 페이지/1.jpg 레퍼런스 — 흰 헤더(로고+악센트마크) → 헤드라인 → 보라 패널(메모 콜라주) → 버튼 2개 */
 .header {
   display: flex;
   align-items: center;
@@ -7,18 +7,12 @@
   padding: 16px 20px;
   padding-top: calc(16px + env(safe-area-inset-top, 0px));
   background: var(--surface);
-  border-bottom: 1px solid var(--line);
 }
 
-.logo {
-  font-size: 20px;
-  font-weight: 800;
-  color: var(--ink);
-  letter-spacing: -0.01em;
-}
-
-.logoAccent {
-  color: var(--accent);
+.logoImg {
+  height: 26px;
+  width: auto;
+  display: block;
 }
 
 .headerActions {
@@ -27,14 +21,97 @@
   gap: 10px;
 }
 
-.headerCta {
-  font-size: 12.5px;
+.markImg {
+  height: 22px;
+  width: auto;
+  display: block;
+}
+
+.heroText {
+  padding: 4px 20px 20px;
+  background: var(--surface);
+}
+
+.title {
+  font-size: clamp(22px, 6vw, 30px);
+  font-weight: 800;
+  line-height: 1.35;
+  color: var(--ink);
+  margin: 0;
+}
+
+.highlight {
+  color: var(--accent-deep);
+}
+
+.heroPanel {
+  background: linear-gradient(160deg, var(--accent) 0%, var(--accent-deep) 100%);
+  padding: 36px 16px;
+  display: flex;
+  justify-content: center;
+}
+
+.heroCards {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  max-width: 480px;
+}
+
+.heroCard {
+  background: #fff;
+  border-radius: 10px;
+  box-shadow: 0 14px 28px -10px rgba(0, 0, 0, 0.45);
+  padding: 14px 13px;
+  width: clamp(78px, 25vw, 150px);
+  min-width: 0;
+  flex: none;
+  transform: rotate(calc((var(--i, 0) - 1) * 7deg)) translateY(calc(var(--i, 0) * -6px));
+}
+
+.heroCardText {
+  font-size: 10px;
+  color: #222;
+  line-height: 1.5;
+  white-space: pre-line;
+  margin: 0 0 8px;
+}
+
+.heroCardFrom {
+  font-size: 10px;
   font-weight: 700;
-  color: var(--accent-ink);
-  background: var(--accent);
-  border-radius: 999px;
-  padding: 9px 16px;
-  white-space: nowrap;
+  color: #222;
+}
+
+.heroCtaRow {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+  padding: 20px 20px 28px;
+  background: var(--surface);
+}
+
+.btnAccent {
+  display: block;
+  width: 100%;
+  max-width: 420px;
+  text-align: center;
+  font-weight: 700;
+  font-size: 14px;
+  color: #fff;
+  background: var(--ink);
+  border-radius: 12px;
+  padding: 15px 18px;
+}
+
+.btnGhost {
+  font-weight: 700;
+  font-size: 13px;
+  color: var(--accent-deep);
+  text-decoration: underline;
+  text-underline-offset: 3px;
 }
 
 /* 히어로 아래 섹션 — 화이트 바디 + 글리모리 브랜드컬러(#6c7fb7) 은은하게 */
@@ -45,4 +122,16 @@
     radial-gradient(circle at 12% 15%, var(--accent-soft), transparent 40%),
     radial-gradient(circle at 88% 65%, var(--accent-soft), transparent 40%),
     var(--surface);
+}
+
+@media (min-width: 760px) {
+  .heroCtaRow {
+    flex-direction: row;
+    justify-content: center;
+  }
+
+  .btnAccent {
+    width: auto;
+    min-width: 260px;
+  }
 }
