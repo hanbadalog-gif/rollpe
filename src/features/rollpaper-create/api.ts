@@ -1,5 +1,5 @@
 import { api } from "@/lib/api-client";
-import { saveOwnerToken } from "@/lib/editToken";
+import { saveOwnerToken, saveMyRollpaper } from "@/lib/editToken";
 import type { RollpaperMode } from "@/lib/theme";
 
 interface CreateResult {
@@ -11,5 +11,6 @@ interface CreateResult {
 export async function createRollpaper(toName: string, mode: RollpaperMode = "online") {
   const result = await api.post<CreateResult>("/api/rollpapers", { toName, mode });
   saveOwnerToken(result.id, result.ownerToken);
+  saveMyRollpaper(result.id, toName, mode);
   return result;
 }

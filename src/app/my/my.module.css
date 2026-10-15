@@ -1,0 +1,73 @@
+.page {
+  min-height: 100dvh;
+  background: var(--surface);
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  padding: 16px 20px;
+  padding-top: calc(16px + env(safe-area-inset-top, 0px));
+}
+
+.logoImg {
+  height: 26px;
+  width: auto;
+  display: block;
+}
+
+.body {
+  padding: 8px 20px 40px;
+  max-width: 480px;
+  margin: 0 auto;
+}
+
+.title {
+  font-size: 19px;
+  font-weight: 800;
+  color: var(--ink);
+  margin: 0 0 6px;
+}
+
+.desc {
+  font-size: 13px;
+  color: var(--ink-soft);
+  margin: 0 0 20px;
+}
+
+.empty {
+  font-size: 14px;
+  color: var(--ink-soft);
+  text-align: center;
+  padding: 40px 0;
+}
+
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 18px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: var(--surface);
+}
+
+.cardTo {
+  font-weight: 700;
+  font-size: 15px;
+  color: var(--ink);
+}
+
+.cardDate {
+  font-size: 12px;
+  color: var(--ink-soft);
+}

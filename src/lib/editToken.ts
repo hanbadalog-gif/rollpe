@@ -70,3 +70,35 @@ export function getOwnerToken(rollpaperId: string): string | null {
     return null;
   }
 }
+
+// 수정/8번 피드백 — 링크 복사 전에 뒤로가기/튕김으로 생성 직후 페이지를 나가면 되돌아올 방법이
+// 없던 문제. 만든 롤링페이퍼 목록을 로컬에 남겨서 /my 에서 다시 찾을 수 있게 함
+const MY_ROLLPAPERS_KEY = "rollpe_my_rollpapers";
+
+export interface MyRollpaper {
+  id: string;
+  toName: string;
+  mode: string;
+  createdAt: number;
+}
+
+export function saveMyRollpaper(id: string, toName: string, mode: string) {
+  try {
+    const raw = window.localStorage.getItem(MY_ROLLPAPERS_KEY);
+    const list = raw ? (JSON.parse(raw) as MyRollpaper[]) : [];
+    const next = [{ id, toName, mode, createdAt: Date.now() }, ...list.filter((r) => r.id !== id)];
+    window.localStorage.setItem(MY_ROLLPAPERS_KEY, JSON.stringify(next));
+  } catch {
+    // 무시
+  }
+}
+
+export function getMyRollpapers(): MyRollpaper[] {
+  if (typeof window === "undefined") return [];
+  try {
+    const raw = window.localStorage.getItem(MY_ROLLPAPERS_KEY);
+    return raw ? (JSON.parse(raw) as MyRollpaper[]) : [];
+  } catch {
+    return [];
+  }
+}

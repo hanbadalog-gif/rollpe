@@ -2,6 +2,7 @@
 
 import { useState, type FormEvent } from "react";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 import styles from "./new.module.css";
 import { createRollpaper } from "@/features/rollpaper-create/api";
 import { showToast } from "@/components/Toast";
@@ -49,6 +50,11 @@ export default function NewRollpaperPage() {
             {submitting ? "생성 중…" : "생성하기"}
           </button>
         </form>
+
+        {/* 수정/8번 피드백 — 링크 복사 전 이탈 시 복구 경로 */}
+        <Link href="/my" className={styles.myLink}>
+          이전에 만든 롤링페이퍼 찾기
+        </Link>
       </div>
     </div>
   );

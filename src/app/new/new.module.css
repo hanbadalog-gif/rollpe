@@ -75,3 +75,12 @@
   opacity: 0.6;
   cursor: not-allowed;
 }
+
+.myLink {
+  display: block;
+  text-align: center;
+  margin-top: 16px;
+  font-size: 13px;
+  color: var(--ink-soft);
+  text-decoration: underline;
+}
