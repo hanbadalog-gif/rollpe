@@ -137,15 +137,20 @@
      충분히 넉넉하게 잡음(14.png 피드백: 줄바꿈 방지) */
   /* 수정/18.png + 후속 피드백 — 세 장 전부(좌/중/우) 폭 2px씩 축소 */
   width: 214px;
-  /* "붕 뜨는" 모션 옵션 A(잔잔한 떠있음) 채택 — margin-top으로 살짝 떠올랐다 내려오고,
-     filter:drop-shadow가 box-shadow 위에 추가로 겹쳐져서 뜬 정도에 맞춰 그림자도 진해짐.
-     카드마다 duration/delay를 다르게 줘서 세 장이 같은 박자로 움직이지 않게 함 */
+  /* "붕 뜨는" 모션 옵션 A(잔잔한 떠있음) — 처음엔 margin-top으로 움직였는데, margin은
+     매 프레임 레이아웃을 다시 계산(reflow)해서 글자가 그때마다 분수 픽셀 위치로 다시
+     그려지며 흐려 보이는 문제가 있었음(피드백: "글씨 화질이 안좋아짐"). transform:translateY는
+     레이아웃에 전혀 영향 없이 GPU가 이미 그려둔 비트맵을 그대로 옮기기만 해서 글자가
+     흐려지지 않음 — 그래서 margin-top 대신 translateY로, 그림자 애니메이션(filter)도
+     제거하고 기존 정적 box-shadow만 유지 */
   animation: heroCardFloat 4.2s ease-in-out infinite;
+  will-change: transform;
 }
 
 /* 좌측 카드 — 좌상단 꼭지점이 올라가도록 오른쪽(시계 방향)으로 13도 기울임 */
 .heroCard:nth-child(1) {
-  transform: translate(-90%, -46%) rotate(13deg);
+  --base-transform: translate(-90%, -46%) rotate(13deg);
+  transform: var(--base-transform);
   z-index: 1;
   animation-delay: 0.1s;
 }
@@ -153,7 +158,8 @@
 /* 1.jpg 레퍼런스 — 가운데 카드는 오른쪽 위 꼭지점이 가장 높게, 즉 반시계 방향(좌측)으로
    약 13도 기울어진 형태. 양수(2deg)로 돼 있던 걸 음수로 수정 */
 .heroCard:nth-child(2) {
-  transform: translate(-28%, -54%) rotate(-13deg) scale(1.08);
+  --base-transform: translate(-28%, -54%) rotate(-13deg) scale(1.08);
+  transform: var(--base-transform);
   z-index: 3;
   box-shadow: 0 20px 36px -10px rgba(0, 0, 0, 0.5);
   animation-duration: 3.6s;
@@ -163,7 +169,8 @@
 /* 가운데 카드가 반시계로 기울면서 오른쪽 카드 글씨를 가리던 문제 — 더 오른쪽/아래로
    밀어서 가운데 카드 밑에서 충분히 드러나게 함 */
 .heroCard:nth-child(3) {
-  transform: translate(72%, -40%) rotate(9deg);
+  --base-transform: translate(72%, -40%) rotate(9deg);
+  transform: var(--base-transform);
   z-index: 1;
   animation-duration: 4.8s;
   animation-delay: 0.2s;
@@ -172,12 +179,10 @@
 @keyframes heroCardFloat {
   0%,
   100% {
-    margin-top: 0;
-    filter: drop-shadow(0 6px 10px rgba(0, 0, 0, 0.18));
+    transform: var(--base-transform) translateY(0);
   }
   50% {
-    margin-top: -7px;
-    filter: drop-shadow(0 16px 18px rgba(0, 0, 0, 0.28));
+    transform: var(--base-transform) translateY(-7px);
   }
 }
 
