@@ -20,9 +20,11 @@ interface Props {
   setRef?: (el: HTMLDivElement | null) => void;
   /** 수신자 전용 화면(Epic 2 Story 2.2) — 드래그/삭제/재편집 전부 비활성 */
   readOnly?: boolean;
+  /** 무드등 모드(수정/0번 피드백) — 메모지 그림자를 없애 실물 인화/아크릴 느낌에 가깝게 */
+  flat?: boolean;
 }
 
-export function Note({ note, canvasRef, editable, selected, onMoveEnd, onResizeEnd, onRotateEnd, onTap, onDelete, setRef, readOnly }: Props) {
+export function Note({ note, canvasRef, editable, selected, onMoveEnd, onResizeEnd, onRotateEnd, onTap, onDelete, setRef, readOnly, flat }: Props) {
   // 드래그 중에는 서버 왕복 없이 로컬 좌표만 바꿔 즉시 반응하게 한다 (실시간 이동 체감용)
   const [dragPos, setDragPos] = useState<{ x: number; y: number } | null>(null);
   const [dragScale, setDragScale] = useState<number | null>(null);
@@ -143,7 +145,7 @@ export function Note({ note, canvasRef, editable, selected, onMoveEnd, onResizeE
 
   return (
     <div
-      className={`${styles.note} ${selected ? styles.noteSelected : ""}`}
+      className={`${styles.note} ${selected ? styles.noteSelected : ""} ${flat ? styles.noteFlat : ""}`}
       ref={setRefs}
       style={{
         ...style,

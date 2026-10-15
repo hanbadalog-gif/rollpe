@@ -116,6 +116,11 @@
   border-radius: 7px;
 }
 
+/* 수정/0번 피드백(무드등 전용) — 그림자 없이 평평하게, 실물 인화/아크릴 느낌에 가깝게 */
+.noteFlat {
+  box-shadow: none;
+}
+
 .noteSticker {
   width: auto;
   padding: 5px;

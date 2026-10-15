@@ -106,6 +106,7 @@ export function CanvasBoard({
             canvasRef={canvasRef}
             editable
             readOnly={readOnly}
+            flat={cfg.locked}
             selected={note.id === selectedNoteId}
             setRef={(el) => {
               noteRefs.current[note.id] = el;
