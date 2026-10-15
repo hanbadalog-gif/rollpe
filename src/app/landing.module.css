@@ -100,6 +100,29 @@
   color: #222;
 }
 
+/* 수정/4.png 피드백 — 데스크톱 넓은 보라 패널에 비해 카드가 너무 작던 문제, 뷰포트에 맞춰 확대 */
+@media (min-width: 640px) {
+  .heroCards {
+    gap: 24px;
+    max-width: 760px;
+  }
+
+  .heroCard {
+    width: clamp(150px, 16vw, 230px);
+    padding: 22px 20px;
+    border-radius: 14px;
+  }
+
+  .heroCardText {
+    font-size: 16px;
+    margin: 0 0 16px;
+  }
+
+  .heroCardFrom {
+    font-size: 14px;
+  }
+}
+
 .heroCardName {
   font-weight: 700;
   border-bottom: 1.5px solid #222;
