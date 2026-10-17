@@ -13,7 +13,7 @@ export const metadata: Metadata = {
     description: "마음을 모은 감동 선물 — 온라인 롤링페이퍼",
     url: SITE_URL,
     siteName: "ROLLPE by GLIMORY",
-    images: [{ url: "/og-image.png", width: 1203, height: 632 }],
+    images: [{ url: "/og-image.png", width: 1200, height: 630 }],
     locale: "ko_KR",
     type: "website",
   },
