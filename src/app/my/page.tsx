@@ -17,8 +17,10 @@ export default function MyRollpapersPage() {
   return (
     <div className={styles.page}>
       <header className={styles.header}>
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img src="/brand/logo.png" alt="Rollpe" className={styles.logoImg} />
+        <Link href="/" aria-label="Rollpe 메인으로">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src="/brand/logo.png" alt="Rollpe" className={styles.logoImg} />
+        </Link>
       </header>
 
       <main className={styles.body}>
