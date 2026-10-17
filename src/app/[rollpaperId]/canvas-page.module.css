@@ -51,8 +51,9 @@
   align-items: center;
   gap: 5px;
   font-size: 11px;
-  /* 피드백 — "To."가 회색으로 흐릿하게 보이던 걸 이름과 같은 검은색으로 통일 */
+  /* 피드백 — "To."가 회색으로 흐릿하게 보이던 걸 이름과 같은 검은색+볼드로 통일 */
   color: var(--ink);
+  font-weight: 700;
   flex: 1;
   min-width: 0;
 }
