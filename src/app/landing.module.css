@@ -148,9 +148,11 @@
   will-change: transform;
 }
 
-/* 좌측 카드 — 좌상단 꼭지점이 올라가도록 오른쪽(시계 방향)으로 13도 기울임 */
+/* 좌측 카드 — 좌상단 꼭지점이 올라가도록 오른쪽(시계 방향)으로 13도 기울임.
+   가운데 카드와의 간격을 15px 더 벌리기 위해 calc()로 % 오프셋에 px를 더함
+   (가운데 카드는 그대로 두고 좌측 카드만 추가로 왼쪽 이동) */
 .heroCard:nth-child(1) {
-  --base-transform: translate(-90%, -46%) rotate(13deg);
+  --base-transform: translate(calc(-90% - 15px), -46%) rotate(13deg);
   transform: var(--base-transform);
   z-index: 1;
   animation-delay: 0.1s;
