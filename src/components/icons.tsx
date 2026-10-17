@@ -9,19 +9,14 @@ export function WriteIcon({ size = 20 }: { size?: number }) {
   );
 }
 
+/* 페이지/4_1.jpg 레퍼런스 — 스티커 아이콘을 별 대신 스마일로 */
 export function StickerIcon({ size = 20 }: { size?: number }) {
   return (
     <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.8} strokeLinecap="round" strokeLinejoin="round">
-      <path d="M12 3.5l2.6 5.3 5.9.9-4.25 4.1 1 5.9L12 16.9l-5.25 2.8 1-5.9L3.5 9.7l5.9-.9Z" />
-    </svg>
-  );
-}
-
-export function DrawIcon({ size = 20 }: { size?: number }) {
-  return (
-    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.8} strokeLinecap="round" strokeLinejoin="round">
-      <path d="M3 17.25V21h3.75L17.8 9.94l-3.75-3.75Z" />
-      <path d="M14.3 5.9 17 3.2a1.5 1.5 0 0 1 2.12 0l1.68 1.68a1.5 1.5 0 0 1 0 2.12L18.1 9.68" />
+      <circle cx="12" cy="12" r="9" />
+      <circle cx="8.5" cy="10" r="1" fill="currentColor" stroke="none" />
+      <circle cx="15.5" cy="10" r="1" fill="currentColor" stroke="none" />
+      <path d="M8 14.5c1 1.3 2.4 2 4 2s3-.7 4-2" />
     </svg>
   );
 }

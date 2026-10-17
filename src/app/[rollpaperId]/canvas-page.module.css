@@ -132,6 +132,31 @@
   color: var(--accent-deep);
 }
 
+/* 수정 피드백 — 웹앱(모바일) 폭에서는 하단 가로 툴바 그대로 두고, 웹(데스크톱) 폭에서는
+   왼쪽에 세로 열로 배치. BREAKPOINT_MOBILE(theme.ts)과 동일한 760px 기준 */
+@media (min-width: 761px) {
+  .body {
+    flex-direction: row;
+  }
+
+  .toolbar {
+    order: -1;
+    width: 64px;
+    flex-direction: column;
+    justify-content: flex-start;
+    gap: 14px;
+    border-top: none;
+    border-right: 1px solid var(--line);
+    padding: 20px 6px;
+  }
+
+  .divider {
+    width: 32px;
+    height: 1px;
+    margin: 2px 0;
+  }
+}
+
 /* 1_2.JPG 레퍼런스 — 사이드패널 대신 중앙 모달 팝업 */
 .modalBackdrop {
   position: fixed;

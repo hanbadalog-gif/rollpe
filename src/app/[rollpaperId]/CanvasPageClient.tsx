@@ -5,7 +5,6 @@ import styles from "./canvas-page.module.css";
 import { CanvasBoard } from "@/features/canvas/components/CanvasBoard";
 import { WritePanel } from "@/features/write-panel/components/WritePanel";
 import { StickerPanel } from "@/features/stickers/components/StickerPanel";
-import { DrawPanel } from "@/features/drawing/components/DrawPanel";
 import { useCanvasNotes } from "@/features/canvas/hooks/useCanvasNotes";
 import { MODE_CONFIG, type RollpaperMode } from "@/lib/theme";
 import { showToast } from "@/components/Toast";
@@ -14,12 +13,12 @@ import { ConversionBanner } from "@/features/share/components/ConversionBanner";
 import { hasBannerBeenSeen, markBannerSeen } from "@/features/share/lib/bannerSeen";
 import { downloadCanvasAsImage } from "@/features/share/lib/canvasExport";
 import { EnvelopeIntro } from "@/features/recipient/components/EnvelopeIntro";
-import { DownloadIcon, WriteIcon, StickerIcon, DrawIcon, PaletteIcon, FrameIcon } from "@/components/icons";
+import { DownloadIcon, WriteIcon, StickerIcon, PaletteIcon, FrameIcon } from "@/components/icons";
 import { BgColorPanel } from "@/features/canvas/components/BgColorPanel";
 import { PaperSizePanel, type PaperSize } from "@/features/canvas/components/PaperSizePanel";
 import { getOwnerToken } from "@/lib/editToken";
 
-type PanelKey = "write" | "sticker" | "draw" | "bg" | "paper" | null;
+type PanelKey = "write" | "sticker" | "bg" | "paper" | null;
 
 export function CanvasPageClient({
   rollpaperId,
@@ -109,14 +108,6 @@ export function CanvasPageClient({
                 <StickerIcon />
               </button>
               <button
-                className={`${styles.tool} ${openPanel === "draw" ? styles.toolActive : ""}`}
-                disabled={atCap && isFinite(cfg.capacity)}
-                onClick={() => setOpenPanel(openPanel === "draw" ? null : "draw")}
-                aria-label="그리기"
-              >
-                <DrawIcon />
-              </button>
-              <button
                 className={`${styles.tool} ${openPanel === "bg" ? styles.toolActive : ""}`}
                 disabled={!cfg.bgPickerEnabled || !getOwnerToken(rollpaperId)}
                 onClick={() => setOpenPanel(openPanel === "bg" ? null : "bg")}
@@ -160,7 +151,6 @@ export function CanvasPageClient({
                 <WritePanel mode={rollpaper.mode as RollpaperMode} onSubmit={addNote} onDone={() => setOpenPanel(null)} />
               )}
               {openPanel === "sticker" && <StickerPanel onSubmit={addNote} />}
-              {openPanel === "draw" && <DrawPanel onSubmit={addNote} onDone={() => setOpenPanel(null)} />}
               {openPanel === "bg" && <BgColorPanel current={rollpaper.bgColor} onPick={updateBgColor} />}
               {openPanel === "paper" && <PaperSizePanel value={paperSize} onPick={setPaperSize} />}
             </div>
