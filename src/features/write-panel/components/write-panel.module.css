@@ -7,16 +7,13 @@
   width: 100%;
 }
 
-.heading {
-  margin: 0 0 4px;
-  font-size: 14px;
-}
-
+/* 수정/24.png 피드백 — 라벨(From./내용/폰트/글자 크기/글자색/메모지 배경 등)을
+   회색에서 검은색+볼드로, 삭제한 "마음 전하기" 제목(14px)만큼 키움 */
 .field label,
 .miniLabel {
-  font-size: 11px;
+  font-size: 14px;
   font-weight: 700;
-  color: var(--ink-soft);
+  color: var(--ink);
   display: block;
   margin-bottom: 6px;
 }

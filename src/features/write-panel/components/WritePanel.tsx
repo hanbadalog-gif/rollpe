@@ -134,8 +134,7 @@ export function WritePanel({ mode, onSubmit, onDone }: Props) {
 
   return (
     <form className={styles.panel} onSubmit={handleSubmit}>
-      <h4 className={styles.heading}>마음 전하기</h4>
-
+      {/* 수정/24.png 피드백 — "마음 전하기" 행 삭제, 페이지/4.jpg처럼 From.부터 바로 시작 */}
       <div className={styles.field}>
         <label htmlFor="fromName">From.</label>
         <input
