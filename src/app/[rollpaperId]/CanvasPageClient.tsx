@@ -123,8 +123,6 @@ export function CanvasPageClient({
                 <FrameIcon />
               </button>
 
-              <div className={styles.divider} />
-
               <button className={styles.downloadBtn} onClick={handleDownload} disabled={downloading} aria-label="이미지로 저장">
                 {downloading ? "⋯" : <DownloadIcon size={19} />}
               </button>
