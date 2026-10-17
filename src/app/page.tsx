@@ -18,8 +18,10 @@ export default function HomePage() {
       <main className={styles.main}>
         <div className={styles.shell}>
           <header className={styles.header}>
-            {/* eslint-disable-next-line @next/next/no-img-element -- 브랜드 로고, 단순 정적 이미지 */}
-            <img src="/brand/logo.png" alt="Rollpe" className={styles.logoImg} />
+            <Link href="/" aria-label="Rollpe 메인으로">
+              {/* eslint-disable-next-line @next/next/no-img-element -- 브랜드 로고, 단순 정적 이미지 */}
+              <img src="/brand/logo.png" alt="Rollpe" className={styles.logoImg} />
+            </Link>
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img src="/brand/mark.png" alt="" className={styles.markImg} aria-hidden />
           </header>
