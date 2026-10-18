@@ -2,7 +2,14 @@
 // 출처: ROLLPE_TRD.md §5 인증/보안 — "다른 기기 접속 시 토큰이 없으므로 수정 버튼 비활성화"
 // 2순위 로그인 연동 시 이 토큰들을 /api/auth/claim 으로 전송해 계정에 귀속 (TRD §5-1)
 
+import { showToast } from "@/components/Toast";
+
 const STORAGE_KEY = "rollpe_edit_tokens";
+
+// 저장 실패(용량 초과·프라이빗 모드 등)를 조용히 삼키면 수정/삭제 권한·/my 목록을 잃는 걸 모른다
+function notifySaveFailed() {
+  showToast("이 기기에 저장하지 못했어요. 링크를 꼭 따로 복사해두세요.");
+}
 
 type TokenMap = Record<string, Record<string, string>>; // rollpaperId -> { noteId: editToken }
 
@@ -20,7 +27,7 @@ function writeAll(map: TokenMap) {
   try {
     window.localStorage.setItem(STORAGE_KEY, JSON.stringify(map));
   } catch {
-    // localStorage 접근 불가(프라이빗 모드 등) — 조용히 무시, 수정 권한은 그냥 못 받는 것으로 처리
+    notifySaveFailed(); // 수정 권한은 못 받는 것으로 처리
   }
 }
 
@@ -57,7 +64,7 @@ export function saveOwnerToken(rollpaperId: string, token: string) {
     map[rollpaperId] = token;
     window.localStorage.setItem(OWNER_STORAGE_KEY, JSON.stringify(map));
   } catch {
-    // 무시
+    notifySaveFailed();
   }
 }
 
@@ -89,7 +96,7 @@ export function saveMyRollpaper(id: string, toName: string, mode: string) {
     const next = [{ id, toName, mode, createdAt: Date.now() }, ...list.filter((r) => r.id !== id)];
     window.localStorage.setItem(MY_ROLLPAPERS_KEY, JSON.stringify(next));
   } catch {
-    // 무시
+    notifySaveFailed();
   }
 }
 
