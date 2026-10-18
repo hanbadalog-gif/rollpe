@@ -183,6 +183,22 @@ export function useCanvasNotes(rollpaperId: string) {
     [rollpaperId, refresh],
   );
 
+  // 완성/다시 열기 — 방장만. 화면부터 바꾸고 실패하면 서버 상태로 되돌림
+  const setFinished = useCallback(
+    async (finished: boolean) => {
+      const token = getOwnerToken(rollpaperId);
+      if (!token) throw new Error("NO_OWNER_TOKEN");
+      setRollpaper((prev) => (prev ? { ...prev, finishedAt: finished ? new Date().toISOString() : null } : prev));
+      try {
+        await api.patch(`/api/rollpapers/${rollpaperId}`, { finished }, { "x-owner-token": token });
+      } catch (err) {
+        await refresh();
+        throw err;
+      }
+    },
+    [rollpaperId, refresh],
+  );
+
   const deleteNote = useCallback(
     async (noteId: string, ownerToken?: string | null) => {
       const editTok = getEditToken(rollpaperId, noteId);
@@ -206,5 +222,5 @@ export function useCanvasNotes(rollpaperId: string) {
     [rollpaperId],
   );
 
-  return { rollpaper, loading, error, addNote, updateNote, moveNote, resizeNote, deleteNote, updateBgColor, canEdit, refresh };
+  return { rollpaper, loading, error, addNote, updateNote, moveNote, resizeNote, deleteNote, updateBgColor, setFinished, canEdit, refresh };
 }

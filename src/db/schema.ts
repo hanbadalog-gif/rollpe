@@ -31,6 +31,7 @@ export const rollpapers = pgTable("rollpapers", {
   bgColor: text("bg_color"),
   ownerToken: text("owner_token").notNull(), // 방장 식별용 (비로그인)
   ownerUserId: uuid("owner_user_id"), // nullable — 로그인 연동 전까지 항상 null
+  finishedAt: timestamp("finished_at"), // 방장이 "완성"을 누른 시각 — 값이 있으면 작성/수정이 잠김, 방장이 다시 열면 null
   orderStatus: text("order_status"), // nullable — 2순위(글리모리) 제작 상태
   createdAt: timestamp("created_at").defaultNow().notNull(),
 });

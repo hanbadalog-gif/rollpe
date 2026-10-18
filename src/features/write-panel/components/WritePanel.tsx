@@ -5,6 +5,7 @@ import styles from "./write-panel.module.css";
 import { MODE_CONFIG, type RollpaperMode } from "@/lib/theme";
 import type { CreateNoteInput } from "@/features/canvas/types";
 import { showToast } from "@/components/Toast";
+import { NOTE_BG_COLORS, NOTE_TEXT_COLORS } from "@/features/canvas/lib/palette";
 import { ApiError } from "@/lib/api-client";
 
 // 페이지/4.JPG 레퍼런스 — 손글씨체/세리프체/고딕체 3개 필(NoteEditPopover와 동일 값)
@@ -20,8 +21,8 @@ const FONT_SIZES = [
   { label: "크게", value: 20 },
 ];
 
-const TEXT_COLORS = ["#3A3D4D", "#6C7FB7", "#E88CA6", "#E8A449"];
-const BG_COLORS = ["#FFF7E0", "#EAF3FF", "#FDE9EF", "#EEF0FA"];
+const TEXT_COLORS = NOTE_TEXT_COLORS;
+const BG_COLORS = NOTE_BG_COLORS;
 
 interface Props {
   mode: RollpaperMode;
@@ -200,7 +201,7 @@ export function WritePanel({ mode, onSubmit, onDone }: Props) {
         </div>
       </div>
 
-      <div className={styles.row2}>
+      <div>
         <div>
           <span className={styles.miniLabel}>글자 색</span>
           {cfg.fixedTextColor ? (
@@ -211,13 +212,14 @@ export function WritePanel({ mode, onSubmit, onDone }: Props) {
             <SwatchRow colors={TEXT_COLORS} value={textColor} onPick={setTextColor} />
           )}
         </div>
-        {cfg.bgPickerEnabled && (
-          <div>
-            <span className={styles.miniLabel}>메모지 배경</span>
-            <SwatchRow colors={BG_COLORS} value={bgColor} onPick={setBgColor} />
-          </div>
-        )}
       </div>
+
+      {cfg.bgPickerEnabled && (
+        <div>
+          <span className={styles.miniLabel}>메모지 배경</span>
+          <SwatchRow colors={BG_COLORS} value={bgColor} onPick={setBgColor} />
+        </div>
+      )}
 
       <div className={styles.field}>
         <span className={styles.miniLabel}>사진(선택)</span>

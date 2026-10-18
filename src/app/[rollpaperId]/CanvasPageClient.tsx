@@ -28,13 +28,14 @@ export function CanvasPageClient({
   rollpaperId: string;
   recipientView?: boolean;
 }) {
-  const { rollpaper, loading, error, addNote, updateNote, moveNote, resizeNote, deleteNote, updateBgColor } =
+  const { rollpaper, loading, error, addNote, updateNote, moveNote, resizeNote, deleteNote, updateBgColor, setFinished } =
     useCanvasNotes(rollpaperId);
   const [openPanel, setOpenPanel] = useState<PanelKey>(null);
   const [paperSize, setPaperSize] = useState<PaperSize>("free");
   const [showBanner, setShowBanner] = useState(false);
   const [downloading, setDownloading] = useState(false);
   const [showEnvelope, setShowEnvelope] = useState(recipientView);
+  const [confirmFinish, setConfirmFinish] = useState(false);
   const canvasExportRef = useRef<HTMLDivElement>(null);
 
   if (loading) return <div className={styles.loading}>불러오는 중…</div>;
@@ -49,6 +50,19 @@ export function CanvasPageClient({
 
   // 방장 기기에서만 제작 요청 가능 (서버도 방장 토큰을 확인)
   const isOwner = !!getOwnerToken(rollpaperId);
+  // 완성된 롤링페이퍼는 모두에게 읽기 전용 (방장이 "다시 수정하기"로 열 수 있음)
+  const finished = !!rollpaper.finishedAt;
+  const locked = recipientView || finished;
+  async function handleFinish(next: boolean) {
+    setConfirmFinish(false);
+    setOpenPanel(null);
+    try {
+      await setFinished(next);
+      showToast(next ? "완성했어요. 이미지로 저장하거나 공유해 보세요" : "다시 수정할 수 있어요");
+    } catch {
+      showToast("처리하지 못했어요. 잠시 후 다시 시도해주세요.");
+    }
+  }
   function openOrder() {
     setShowBanner(false);
     setOpenPanel("order");
@@ -86,7 +100,37 @@ export function CanvasPageClient({
         <span className={styles.counter}>
           {isFinite(cfg.capacity) ? `${peopleCount} / ${cfg.capacity}개` : `${peopleCount}개 작성`}
         </span>
+        {/* 완성/수정 — 방장 전용, 제목 줄 오른쪽 끝에 항상 보이도록 */}
+        {isOwner && !recipientView && (
+          <div className={styles.finishWrap}>
+            {finished ? (
+              <button className={styles.finishBtn} onClick={() => handleFinish(false)}>
+                다시 수정하기
+              </button>
+            ) : confirmFinish ? (
+              <>
+                <span className={styles.finishAsk}>완성할까요?</span>
+                <button className={`${styles.finishBtn} ${styles.finishBtnOn}`} onClick={() => handleFinish(true)}>
+                  완성
+                </button>
+                <button className={styles.finishBtn} onClick={() => setConfirmFinish(false)}>
+                  취소
+                </button>
+              </>
+            ) : (
+              <button className={`${styles.finishBtn} ${styles.finishBtnOn}`} onClick={() => setConfirmFinish(true)}>
+                완성하기
+              </button>
+            )}
+          </div>
+        )}
       </div>
+
+      {finished && !recipientView && (
+        <div className={styles.doneBanner}>
+          {isOwner ? "완성했어요. 메모는 잠겨 있고, '다시 수정하기'를 누르면 고칠 수 있어요." : "방장이 완성한 롤링페이퍼예요. 더 이상 메모를 쓸 수 없어요."}
+        </div>
+      )}
 
       {showBanner && <ConversionBanner onClose={() => setShowBanner(false)} onOrder={openOrder} toName={rollpaper.toName} />}
 
@@ -99,6 +143,8 @@ export function CanvasPageClient({
       <div className={styles.body}>
         {!recipientView && (
           <div className={styles.toolbar}>
+            {!finished && (
+              <>
               <button
                 className={`${styles.tool} ${openPanel === "write" ? styles.toolActive : ""}`}
                 disabled={atCap && isFinite(cfg.capacity)}
@@ -131,6 +177,8 @@ export function CanvasPageClient({
                 <FrameIcon />
               </button>
 
+              </>
+            )}
               <button className={styles.downloadBtn} onClick={handleDownload} disabled={downloading} aria-label="이미지로 저장">
                 {downloading ? "⋯" : <DownloadIcon size={19} />}
               </button>
@@ -146,7 +194,7 @@ export function CanvasPageClient({
           resizeNote={resizeNote}
           deleteNote={deleteNote}
           canvasRef={canvasExportRef}
-          readOnly={recipientView}
+          readOnly={locked}
           paperSize={paperSize}
         />
 

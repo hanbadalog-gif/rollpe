@@ -5,6 +5,7 @@ import { db } from "@/db";
 import { rollpapers, notes } from "@/db/schema";
 import { generateToken } from "@/lib/tokens";
 import { gridPosition } from "@/lib/gridPosition";
+import { finishedResponse } from "@/lib/finished";
 import { MODE_CONFIG, type RollpaperMode } from "@/lib/theme";
 import type { CreateNoteInput } from "@/features/canvas/types";
 
@@ -21,6 +22,8 @@ export async function POST(
       { status: 404 },
     );
   }
+
+  if (rollpaper.finishedAt) return finishedResponse();
 
   const [{ value: noteCount }] = await db
     .select({ value: count() })

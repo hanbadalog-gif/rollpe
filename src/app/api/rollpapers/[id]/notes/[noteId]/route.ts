@@ -5,6 +5,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { eq, and } from "drizzle-orm";
 import { db } from "@/db";
 import { rollpapers, notes } from "@/db/schema";
+import { finishedResponse } from "@/lib/finished";
 
 async function loadNoteAndRollpaper(rollpaperId: string, noteId: string) {
   const [note] = await db
@@ -33,6 +34,7 @@ export async function PATCH(
       { status: 404 },
     );
   }
+  if (found.rollpaper?.finishedAt) return finishedResponse();
   if (!editToken || editToken !== found.note.editToken) {
     return NextResponse.json(
       { code: "FORBIDDEN", message: "이 글은 작성한 기기에서만 수정할 수 있어요." },
@@ -82,6 +84,7 @@ export async function DELETE(
     );
   }
 
+  if (found.rollpaper?.finishedAt) return finishedResponse();
   const isAuthor = editToken && editToken === found.note.editToken;
   const isOwner = ownerToken && found.rollpaper && ownerToken === found.rollpaper.ownerToken;
 

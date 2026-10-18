@@ -29,6 +29,8 @@ export interface RollpaperDTO {
   toName: string;
   mode: RollpaperMode;
   bgColor: string | null;
+  /** 방장이 "완성"한 시각 — 값이 있으면 작성/수정이 잠김 */
+  finishedAt: string | null;
   createdAt: string;
   notes: NoteDTO[];
 }

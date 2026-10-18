@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import styles from "./canvas.module.css";
+import { NOTE_BG_COLORS, NOTE_TEXT_COLORS } from "../lib/palette";
 
 const FONTS = [
   { label: "손글씨체", value: "'Gaegu',cursive" },
@@ -11,8 +12,8 @@ const FONTS = [
 const SIZES = [14, 16, 20]; // WritePanel의 작게/보통/크게와 같은 값
 
 // WritePanel.tsx와 동일한 팔레트 — 작성 시 고를 수 있던 색을 작성 후에도 그대로 고를 수 있게
-const TEXT_COLORS = ["#3A3D4D", "#6C7FB7", "#E88CA6", "#E8A449"];
-const BG_COLORS = ["#FFF7E0", "#EAF3FF", "#FDE9EF", "#EEF0FA"];
+const TEXT_COLORS = NOTE_TEXT_COLORS;
+const BG_COLORS = NOTE_BG_COLORS;
 
 interface Props {
   position: { top: number; left: number };

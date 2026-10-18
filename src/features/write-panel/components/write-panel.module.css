@@ -53,6 +53,7 @@
 /* ===== 색상 스와치 (design-preview 프로토타입과 동일) ===== */
 .swatches {
   display: flex;
+  flex-wrap: wrap;
   gap: 7px;
 }
 

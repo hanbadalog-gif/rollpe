@@ -50,11 +50,15 @@ export async function PATCH(
     );
   }
 
-  const body = (await request.json().catch(() => ({}))) as { bgColor?: string };
+  const body = (await request.json().catch(() => ({}))) as { bgColor?: string; finished?: boolean };
 
   const [updated] = await db
     .update(rollpapers)
-    .set({ bgColor: body.bgColor })
+    .set({
+      bgColor: body.bgColor,
+      // 완성 = 시각 기록, 다시 열기 = null. 완성 중에는 방장만 이 값을 바꿀 수 있음(위에서 방장 확인)
+      finishedAt: body.finished === true ? new Date() : body.finished === false ? null : undefined,
+    })
     .where(eq(rollpapers.id, id))
     .returning();
 

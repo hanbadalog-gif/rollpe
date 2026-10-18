@@ -2,7 +2,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import { eq, and } from "drizzle-orm";
 import { db } from "@/db";
-import { notes } from "@/db/schema";
+import { notes, rollpapers } from "@/db/schema";
+import { finishedResponse } from "@/lib/finished";
 
 export async function POST(
   request: NextRequest,
@@ -21,6 +22,8 @@ export async function POST(
       { status: 404 },
     );
   }
+  const [rollpaper] = await db.select({ finishedAt: rollpapers.finishedAt }).from(rollpapers).where(eq(rollpapers.id, id));
+  if (rollpaper?.finishedAt) return finishedResponse();
   if (!editToken || editToken !== note.editToken) {
     return NextResponse.json(
       { code: "FORBIDDEN", message: "이 글은 작성한 기기에서만 수정할 수 있어요." },
