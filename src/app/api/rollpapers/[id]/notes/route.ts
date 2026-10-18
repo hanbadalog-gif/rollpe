@@ -58,9 +58,11 @@ export async function POST(
       bgColor: body.bgColor,
       borderColor: body.borderColor,
       photoUrl: body.photoUrl,
-      posX: body.posX ?? Math.round(8 + Math.random() * 62),
-      posY: body.posY ?? Math.round(8 + Math.random() * 58),
-      rotation: body.rotation ?? Math.round(Math.random() * 10 - 5),
+      // 페이지/6_1.jpg(=4_2.jpg) 레퍼런스 — 빈틈없이 겹쳐 채워진 스크랩북 콜라주 느낌을
+      // 내기 위해 배치 범위와 회전 각도를 더 넓힘(기존엔 8~70%/±5도라 너무 가지런했음)
+      posX: body.posX ?? Math.round(2 + Math.random() * 80),
+      posY: body.posY ?? Math.round(2 + Math.random() * 80),
+      rotation: body.rotation ?? Math.round(Math.random() * 30 - 15),
       scale: body.scale,
       editToken,
     })
