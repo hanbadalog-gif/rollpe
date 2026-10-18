@@ -89,9 +89,9 @@
 }
 
 .pillSelected {
-  background: var(--ink);
-  color: #fff;
-  border-color: var(--ink);
+  background: var(--accent);
+  color: var(--accent-ink);
+  border-color: var(--accent);
 }
 
 .uploadBox {

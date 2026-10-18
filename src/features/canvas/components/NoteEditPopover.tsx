@@ -8,7 +8,7 @@ const FONTS = [
   { label: "세리프체", value: "'Gowun Batang',serif" },
   { label: "고딕체", value: "inherit" },
 ];
-const SIZES = [11, 14, 18];
+const SIZES = [14, 16, 20]; // WritePanel의 작게/보통/크게와 같은 값
 
 // WritePanel.tsx와 동일한 팔레트 — 작성 시 고를 수 있던 색을 작성 후에도 그대로 고를 수 있게
 const TEXT_COLORS = ["#3A3D4D", "#6C7FB7", "#E88CA6", "#E8A449"];
@@ -127,7 +127,7 @@ export function NoteEditPopover({
             className={`${styles.pill} ${size === s ? styles.pillSelected : ""}`}
             onClick={() => onChangeSize(s)}
           >
-            {s === 11 ? "S" : s === 14 ? "M" : "L"}
+            {s === 14 ? "S" : s === 16 ? "M" : "L"}
           </span>
         ))}
       </div>

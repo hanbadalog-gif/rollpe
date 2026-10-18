@@ -168,7 +168,6 @@ export function WritePanel({ mode, onSubmit, onDone }: Props) {
               key={f.value}
               type="button"
               className={`${styles.pill} ${font === f.value ? styles.pillSelected : ""}`}
-              style={{ fontFamily: f.value }}
               onClick={() => setFont(f.value)}
             >
               {f.label}
