@@ -13,12 +13,13 @@ import { ConversionBanner } from "@/features/share/components/ConversionBanner";
 import { hasBannerBeenSeen, markBannerSeen } from "@/features/share/lib/bannerSeen";
 import { downloadCanvasAsImage } from "@/features/share/lib/canvasExport";
 import { EnvelopeIntro } from "@/features/recipient/components/EnvelopeIntro";
-import { DownloadIcon, WriteIcon, StickerIcon, PaletteIcon, FrameIcon } from "@/components/icons";
+import { DownloadIcon, WriteIcon, StickerIcon, PaletteIcon, FrameIcon, LampIcon } from "@/components/icons";
 import { BgColorPanel } from "@/features/canvas/components/BgColorPanel";
 import { PaperSizePanel, type PaperSize } from "@/features/canvas/components/PaperSizePanel";
+import { OrderPanel } from "@/features/order/components/OrderPanel";
 import { getOwnerToken } from "@/lib/editToken";
 
-type PanelKey = "write" | "sticker" | "bg" | "paper" | null;
+type PanelKey = "write" | "sticker" | "bg" | "paper" | "order" | null;
 
 export function CanvasPageClient({
   rollpaperId,
@@ -41,8 +42,8 @@ export function CanvasPageClient({
 
   const cfg = MODE_CONFIG[rollpaper.mode as RollpaperMode];
   const noteCount = rollpaper.notes.length; // 정원(캔버스 혼잡도) 체크용 — 스티커/그림 포함 전체 아이템 수
-  // 수정/6번 피드백 — "N명 작성" 카운터가 스티커/그림(작성자 없음)까지 포함해 부풀려지던 문제.
-  // 실제 이름을 적은 글(From.) 메모만 "명"으로 집계
+  // 수정/6번 피드백 — 카운터가 스티커/그림까지 포함해 부풀려지던 문제.
+  // 한 사람이 여러 장 쓸 수 있으므로 사람 수가 아니라 글이 있는 메모지 "개수"로 집계
   const peopleCount = rollpaper.notes.filter((n) => n.type === "text").length;
   const atCap = noteCount >= cfg.capacity;
 
@@ -76,7 +77,7 @@ export function CanvasPageClient({
           <b>{rollpaper.toName}</b>
         </div>
         <span className={styles.counter}>
-          {isFinite(cfg.capacity) ? `${peopleCount} / ${cfg.capacity}명` : `${peopleCount}명 작성`}
+          {isFinite(cfg.capacity) ? `${peopleCount} / ${cfg.capacity}개` : `${peopleCount}개 작성`}
         </span>
       </div>
 
@@ -84,7 +85,7 @@ export function CanvasPageClient({
 
       {!recipientView && atCap && isFinite(cfg.capacity) && (
         <div className={styles.capBanner}>
-          정원이 다 찼어요 ({cfg.capacity}명). 더 큰 사이즈로 바꾸면 계속 받을 수 있어요.
+          정원이 다 찼어요 ({cfg.capacity}개). 더 큰 사이즈로 바꾸면 계속 받을 수 있어요.
         </div>
       )}
 
@@ -123,6 +124,16 @@ export function CanvasPageClient({
                 <FrameIcon />
               </button>
 
+              {rollpaper.mode !== "online" && getOwnerToken(rollpaperId) && (
+                <button
+                  className={`${styles.tool} ${openPanel === "order" ? styles.toolActive : ""}`}
+                  onClick={() => setOpenPanel(openPanel === "order" ? null : "order")}
+                  aria-label="무드등 제작 요청"
+                >
+                  <LampIcon size={19} />
+                </button>
+              )}
+
               <button className={styles.downloadBtn} onClick={handleDownload} disabled={downloading} aria-label="이미지로 저장">
                 {downloading ? "⋯" : <DownloadIcon size={19} />}
               </button>
@@ -151,6 +162,7 @@ export function CanvasPageClient({
               {openPanel === "sticker" && <StickerPanel onSubmit={addNote} />}
               {openPanel === "bg" && <BgColorPanel current={rollpaper.bgColor} onPick={updateBgColor} />}
               {openPanel === "paper" && <PaperSizePanel value={paperSize} onPick={setPaperSize} />}
+              {openPanel === "order" && <OrderPanel rollpaperId={rollpaperId} onDone={() => setOpenPanel(null)} />}
             </div>
           </div>
         )}

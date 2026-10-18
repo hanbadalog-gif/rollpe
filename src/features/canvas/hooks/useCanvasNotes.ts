@@ -55,14 +55,20 @@ export function useCanvasNotes(rollpaperId: string) {
     [rollpaperId, refresh],
   );
 
+  // 낙관적 업데이트 — 서버 응답을 기다리지 않고 화면부터 바꾸고, 실패하면 서버 상태로 되돌린다
   const updateNote = useCallback(
     async (noteId: string, patch: Partial<CreateNoteInput>) => {
       const token = getEditToken(rollpaperId, noteId);
       if (!token) throw new Error("NO_EDIT_TOKEN");
-      await api.patch(`/api/rollpapers/${rollpaperId}/notes/${noteId}`, patch, {
-        "x-edit-token": token,
-      });
-      await refresh();
+      setRollpaper((prev) =>
+        prev ? { ...prev, notes: prev.notes.map((n) => (n.id === noteId ? { ...n, ...patch } : n)) } : prev,
+      );
+      try {
+        await api.patch(`/api/rollpapers/${rollpaperId}/notes/${noteId}`, patch, { "x-edit-token": token });
+      } catch (err) {
+        await refresh();
+        throw err;
+      }
     },
     [rollpaperId, refresh],
   );
@@ -134,9 +140,14 @@ export function useCanvasNotes(rollpaperId: string) {
       const headers: Record<string, string> = {};
       if (editTok) headers["x-edit-token"] = editTok;
       if (ownerToken) headers["x-owner-token"] = ownerToken;
-      await api.delete(`/api/rollpapers/${rollpaperId}/notes/${noteId}`, headers);
+      setRollpaper((prev) => (prev ? { ...prev, notes: prev.notes.filter((n) => n.id !== noteId) } : prev));
+      try {
+        await api.delete(`/api/rollpapers/${rollpaperId}/notes/${noteId}`, headers);
+      } catch (err) {
+        await refresh();
+        throw err;
+      }
       removeEditToken(rollpaperId, noteId);
-      await refresh();
     },
     [rollpaperId, refresh],
   );

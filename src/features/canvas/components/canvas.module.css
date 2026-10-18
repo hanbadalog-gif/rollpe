@@ -84,6 +84,12 @@
   pointer-events: none;
 }
 
+/* 흰색 손 커서 + 검은 외곽선 — 밝은 배경에서도 보이도록 */
+.note,
+.rotateHandle {
+  --hand: url("data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%2228%22 height=%2228%22 viewBox=%220 0 24 24%22 fill=%22%23fff%22 stroke-linecap=%22round%22 stroke-linejoin=%22round%22%3E%3Cg stroke=%22%23000%22 stroke-width=%224.2%22%3E%3Cpath d=%22M18 11.5V9a2 2 0 0 0-2-2a2 2 0 0 0-2 2v1.4%22/%3E%3Cpath d=%22M14 10V8a2 2 0 0 0-2-2a2 2 0 0 0-2 2v2%22/%3E%3Cpath d=%22M10 9.9V9a2 2 0 0 0-2-2a2 2 0 0 0-2 2v5%22/%3E%3Cpath d=%22M6 14a2 2 0 0 0-2-2a2 2 0 0 0-2 2%22/%3E%3Cpath d=%22M18 11a2 2 0 1 1 4 0v3a8 8 0 0 1-8 8h-2c-2.8 0-4.5-.86-5.99-2.34l-3.6-3.6a2 2 0 0 1 2.83-2.82L7 15%22/%3E%3C/g%3E%3Cg stroke=%22%23fff%22 stroke-width=%222%22%3E%3Cpath d=%22M18 11.5V9a2 2 0 0 0-2-2a2 2 0 0 0-2 2v1.4%22/%3E%3Cpath d=%22M14 10V8a2 2 0 0 0-2-2a2 2 0 0 0-2 2v2%22/%3E%3Cpath d=%22M10 9.9V9a2 2 0 0 0-2-2a2 2 0 0 0-2 2v5%22/%3E%3Cpath d=%22M6 14a2 2 0 0 0-2-2a2 2 0 0 0-2 2%22/%3E%3Cpath d=%22M18 11a2 2 0 1 1 4 0v3a8 8 0 0 1-8 8h-2c-2.8 0-4.5-.86-5.99-2.34l-3.6-3.6a2 2 0 0 1 2.83-2.82L7 15%22/%3E%3C/g%3E%3C/svg%3E");
+}
+
 .note {
   position: absolute;
   /* 피드백 — 메모지가 고정 140px라 좁은 화면(모바일 캔버스)에서는 가로로 3장이
@@ -97,7 +103,7 @@
   font-size: 13px;
   line-height: 1.5;
   box-shadow: 0 6px 14px -6px rgba(40, 20, 80, 0.3);
-  cursor: grab;
+  cursor: var(--hand) 14 14, grab;
   touch-action: none;
   user-select: none;
   /* 수정/4번 피드백 — 영어는 공백 없는 긴 단어가 140px 카드 밖으로 그대로 삐져나가던
@@ -109,7 +115,7 @@
 
 
 .note:active {
-  cursor: grabbing;
+  cursor: var(--hand) 14 14, grabbing;
   z-index: 50;
 }
 
@@ -158,10 +164,15 @@
 
 .noteFrom {
   display: block;
-  font-weight: 700;
-  margin-bottom: 6px;
+  font-weight: 600;
+  margin-top: 11px;
   font-size: 12px;
-  opacity: 0.75;
+}
+
+.noteFromName {
+  font-weight: 700;
+  border-bottom: 1.5px solid currentColor;
+  padding-bottom: 1px;
 }
 
 .deleteBtn {
@@ -243,7 +254,7 @@
   justify-content: center;
   font-size: 13px;
   color: var(--accent-deep);
-  cursor: grab;
+  cursor: var(--hand) 14 14, grab;
   touch-action: none;
   z-index: 5;
 }
@@ -299,6 +310,20 @@
   color: var(--ink);
 }
 
+.pillRowTight {
+  gap: 4px;
+}
+
+.pillRowTight .pill {
+  padding: 5px 7px;
+  white-space: nowrap;
+}
+
+.pill:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+
 .pillSelected {
   background: var(--accent);
   color: var(--accent-ink);
@@ -327,4 +352,18 @@
   color: #d93636;
   border-color: #f3c6c6;
   background: #fdf1f1;
+}
+
+.contentInput {
+  width: 100%;
+  min-height: 64px;
+  resize: vertical;
+  padding: 7px 9px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  font: inherit;
+  font-size: 12px;
+  line-height: 1.5;
+  box-sizing: border-box;
+  margin-bottom: 9px;
 }

@@ -1,6 +1,6 @@
 // POST /api/rollpapers/:id/notes — 메모 추가 (정원 체크 포함, TRD §3 / PRD §5-2)
 import { NextRequest, NextResponse } from "next/server";
-import { eq, count } from "drizzle-orm";
+import { eq, count, max } from "drizzle-orm";
 import { db } from "@/db";
 import { rollpapers, notes } from "@/db/schema";
 import { generateToken } from "@/lib/tokens";
@@ -73,6 +73,8 @@ export async function POST(
     );
   }
 
+  // 새 메모는 항상 맨 위 — 기존 최대 z + 1 (서로 다른 값이어야 "앞으로/뒤로" 중간 삽입이 가능)
+  const [{ top }] = await db.select({ top: max(notes.z) }).from(notes).where(eq(notes.rollpaperId, id));
   const editToken = generateToken();
   const auto = gridPosition(noteCount);
 
@@ -94,6 +96,7 @@ export async function POST(
       posY: body.posY ?? auto.posY,
       rotation: body.rotation ?? auto.rotation,
       scale: body.scale,
+      z: (top ?? 0) + 1,
       editToken,
     })
     .returning();

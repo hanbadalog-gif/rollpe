@@ -15,7 +15,7 @@ interface Props {
   rollpaper: RollpaperDTO;
   updateNote: (
     noteId: string,
-    patch: { font?: string; fontSize?: number; textColor?: string; bgColor?: string },
+    patch: { z?: number; content?: string; font?: string; fontSize?: number; textColor?: string; bgColor?: string },
   ) => Promise<void>;
   moveNote: (noteId: string, posX: number, posY: number, rotation?: number) => Promise<void>;
   resizeNote: (noteId: string, scale: number) => Promise<void>;
@@ -58,20 +58,56 @@ export function CanvasBoard({
   const [popoverPos, setPopoverPos] = useState<{ top: number; left: number } | null>(null);
 
   const cfg = MODE_CONFIG[rollpaper.mode as RollpaperMode];
+  // 겹침 순서 — z가 작을수록 뒤. 화면에서는 DOM 순서가 곧 쌓임 순서라 정렬해서 그린다
+  const ordered = [...rollpaper.notes].sort((a, b) => a.z - b.z);
   const selectedNote = rollpaper.notes.find((n) => n.id === selectedNoteId) ?? null;
 
   function openPopoverFor(noteId: string) {
     const el = noteRefs.current[noteId];
     if (!el) return;
+    // 스티커는 수정창 없이 선택(크기/회전/삭제 핸들)만 — 글씨 설정이 의미 없음
+    if (rollpaper.notes.find((n) => n.id === noteId)?.type === "sticker") {
+      setSelectedNoteId(noteId);
+      setPopoverPos(null);
+      return;
+    }
     const rect = el.getBoundingClientRect();
     let top = rect.bottom + 8;
     let left = rect.left;
     const maxLeft = window.innerWidth - 236;
     if (left > maxLeft) left = maxLeft;
     if (left < 10) left = 10;
-    if (top > window.innerHeight - 170) top = rect.top - 168;
+    if (top > window.innerHeight - 410) top = Math.max(10, rect.top - 408); // 수정 창 높이 약 400px
     setSelectedNoteId(noteId);
     setPopoverPos({ top, left });
+  }
+
+  // 남이 쓴 메모는 수정 토큰이 없어 서버 호출 전에 실패 — 안내만 하고 조용히 넘어감
+  async function handleUpdate(noteId: string, patch: Parameters<Props["updateNote"]>[1]) {
+    try {
+      await updateNote(noteId, patch);
+    } catch {
+      showToast("내가 쓴 메모만 수정할 수 있어요");
+    }
+  }
+
+  function handleReorder(noteId: string, to: "front" | "forward" | "backward" | "back") {
+    const i = ordered.findIndex((n) => n.id === noteId);
+    if (i < 0) return;
+    // 내 메모의 z만 바꿔서 이웃 사이(또는 끝)에 끼워 넣는다 — 남의 메모는 건드리지 않음
+    let z: number;
+    if (to === "front") z = ordered[ordered.length - 1].z + 1;
+    else if (to === "back") z = ordered[0].z - 1;
+    else if (to === "forward") {
+      const next = ordered[i + 1];
+      const after = ordered[i + 2];
+      z = after ? (next.z + after.z) / 2 : next.z + 1;
+    } else {
+      const prev = ordered[i - 1];
+      const before = ordered[i - 2];
+      z = before ? (prev.z + before.z) / 2 : prev.z - 1;
+    }
+    handleUpdate(noteId, { z });
   }
 
   async function handleDelete(noteId: string) {
@@ -99,7 +135,7 @@ export function CanvasBoard({
         {rollpaper.notes.length === 0 && (
           <div className={styles.hint}>+ 빈 공간을 눌러 마음을 더해보세요</div>
         )}
-        {rollpaper.notes.map((note) => (
+        {ordered.map((note) => (
           <Note
             key={note.id}
             note={note}
@@ -122,22 +158,23 @@ export function CanvasBoard({
 
       {selectedNote && popoverPos && (
         <NoteEditPopover
+          key={selectedNote.id}
           position={popoverPos}
           font={selectedNote.font ?? "'Gaegu',cursive"}
           size={selectedNote.fontSize ?? 14}
           textColor={cfg.fixedTextColor ?? selectedNote.textColor ?? "#3A3D4D"}
           bgColor={selectedNote.bgColor}
+          content={selectedNote.content}
           bgPickerEnabled={cfg.bgPickerEnabled}
           textColorLocked={!!cfg.fixedTextColor}
-          onChangeFont={(font) => updateNote(selectedNote.id, { font })}
-          onChangeSize={(fontSize) => updateNote(selectedNote.id, { fontSize })}
-          onChangeTextColor={(textColor) => updateNote(selectedNote.id, { textColor })}
-          onChangeBgColor={(bgColor) => updateNote(selectedNote.id, { bgColor })}
-          onDelete={() => {
-            handleDelete(selectedNote.id);
-            setSelectedNoteId(null);
-            setPopoverPos(null);
-          }}
+          onChangeContent={(content) => handleUpdate(selectedNote.id, { content })}
+          onChangeFont={(font) => handleUpdate(selectedNote.id, { font })}
+          onChangeSize={(fontSize) => handleUpdate(selectedNote.id, { fontSize })}
+          onChangeTextColor={(textColor) => handleUpdate(selectedNote.id, { textColor })}
+          onChangeBgColor={(bgColor) => handleUpdate(selectedNote.id, { bgColor })}
+          canMoveForward={ordered[ordered.length - 1].id !== selectedNote.id}
+          canMoveBackward={ordered[0].id !== selectedNote.id}
+          onReorder={(to) => handleReorder(selectedNote.id, to)}
           onClose={() => {
             setSelectedNoteId(null);
             setPopoverPos(null);
