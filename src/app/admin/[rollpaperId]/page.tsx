@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { eq } from "drizzle-orm";
 import { db } from "@/db";
 import { rollpapers, notes } from "@/db/schema";
@@ -11,7 +12,9 @@ export default async function AdminRollpaperPage({
 }) {
   const ok = await isAdmin();
   if (!ok) {
-    return <div className={styles.denied}>접근 권한이 없어요. 전달받은 관리자 링크로 다시 들어와주세요.</div>;
+    return <div className={styles.denied}>
+        접근 권한이 없어요. <Link href="/admin" style={{ textDecoration: "underline" }}>관리자 로그인</Link>에서 비밀번호를 입력해 주세요.
+      </div>;
   }
 
   const { rollpaperId } = await params;
