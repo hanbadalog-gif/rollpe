@@ -11,6 +11,7 @@ import {
   timestamp,
   pgEnum,
   index,
+  jsonb,
 } from "drizzle-orm/pg-core";
 import { relations } from "drizzle-orm";
 
@@ -57,6 +58,7 @@ export const notes = pgTable(
     posY: real("pos_y").notNull().default(10), // % 기준, 0~100
     rotation: real("rotation").notNull().default(0),
     scale: real("scale").notNull().default(1), // 꼭짓점 드래그 리사이즈 (0.6~2.2)
+    z: real("z").notNull().default(0), // 겹침 순서 — 클수록 위. 실수라 "앞으로/뒤로"는 이웃 사이 중간값으로 끼워 넣음
 
     editToken: text("edit_token").notNull(), // 작성자 본인 식별용 (비로그인)
     userId: uuid("user_id"), // nullable — 로그인 연동 전까지 항상 null
@@ -73,6 +75,21 @@ export const reports = pgTable("reports", {
   rollpaperId: uuid("rollpaper_id").notNull(),
   noteId: uuid("note_id"),
   reason: text("reason").notNull(),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
+// 무드등 제작 요청 — 요청 시점의 문구/배치를 snapshot 으로 고정해 이후 수정과 무관하게 제작
+export const orders = pgTable("orders", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  rollpaperId: uuid("rollpaper_id")
+    .notNull()
+    .unique() // 롤링페이퍼당 요청 1건 (재요청은 status=requested 일 때만 덮어씀)
+    .references(() => rollpapers.id, { onDelete: "cascade" }),
+  contactName: text("contact_name").notNull(),
+  contact: text("contact").notNull(), // 전화/카톡ID/이메일 자유 입력
+  memo: text("memo"),
+  status: text("status").notNull().default("requested"), // requested → in_progress → shipped
+  snapshot: jsonb("snapshot").notNull(),
   createdAt: timestamp("created_at").defaultNow().notNull(),
 });
 
