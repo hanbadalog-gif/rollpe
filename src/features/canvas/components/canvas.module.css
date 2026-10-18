@@ -5,7 +5,8 @@
   display: flex;
   align-items: stretch;
   justify-content: center;
-  background: var(--surface);
+  /* 용지 뒤 배경 — 흰 용지와 구분되도록 옅은 회색(용지와 대비 약 1.5:1) */
+  background: #d3d3d3;
   position: relative;
   padding: 20px;
 }
@@ -19,7 +20,8 @@
   min-height: 480px;
   max-width: none;
   border-radius: 14px;
-  box-shadow: var(--shadow);
+  /* 얇은 테두리는 박스 크기와 이미지 저장 결과에 영향이 없도록 1px 링 그림자로 */
+  box-shadow: 0 0 0 1px #b4b6c2, var(--shadow);
   overflow: hidden;
   background: var(--surface);
   transition: background 0.2s ease, max-width 0.2s ease, aspect-ratio 0.3s ease, flex-basis 0.3s ease;

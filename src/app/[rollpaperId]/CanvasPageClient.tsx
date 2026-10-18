@@ -13,7 +13,7 @@ import { ConversionBanner } from "@/features/share/components/ConversionBanner";
 import { hasBannerBeenSeen, markBannerSeen } from "@/features/share/lib/bannerSeen";
 import { downloadCanvasAsImage } from "@/features/share/lib/canvasExport";
 import { EnvelopeIntro } from "@/features/recipient/components/EnvelopeIntro";
-import { DownloadIcon, WriteIcon, StickerIcon, PaletteIcon, FrameIcon, LampIcon } from "@/components/icons";
+import { DownloadIcon, WriteIcon, StickerIcon, PaletteIcon, FrameIcon } from "@/components/icons";
 import { BgColorPanel } from "@/features/canvas/components/BgColorPanel";
 import { PaperSizePanel, type PaperSize } from "@/features/canvas/components/PaperSizePanel";
 import { OrderPanel } from "@/features/order/components/OrderPanel";
@@ -130,16 +130,6 @@ export function CanvasPageClient({
               >
                 <FrameIcon />
               </button>
-
-              {isOwner && (
-                <button
-                  className={`${styles.tool} ${openPanel === "order" ? styles.toolActive : ""}`}
-                  onClick={() => setOpenPanel(openPanel === "order" ? null : "order")}
-                  aria-label="무드등 제작 요청"
-                >
-                  <LampIcon size={19} />
-                </button>
-              )}
 
               <button className={styles.downloadBtn} onClick={handleDownload} disabled={downloading} aria-label="이미지로 저장">
                 {downloading ? "⋯" : <DownloadIcon size={19} />}
