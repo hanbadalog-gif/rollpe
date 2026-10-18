@@ -86,7 +86,11 @@
 
 .note {
   position: absolute;
-  width: 140px;
+  /* 피드백 — 메모지가 고정 140px라 좁은 화면(모바일 캔버스)에서는 가로로 3장이
+     채 안 들어갔음. 캔버스 폭의 30%를 상한으로 둬서 좁은 화면에선 비례해 줄고,
+     넓은 화면에선 기존 140px를 넘지 않게(최대 사이즈 고정) — 자유 드래그 배치는
+     그대로 유지 */
+  width: min(140px, 30%);
   padding: 11px 12px;
   border-radius: 5px;
   font-family: 'Gaegu', cursive;

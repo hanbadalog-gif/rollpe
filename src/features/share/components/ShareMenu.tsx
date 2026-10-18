@@ -69,7 +69,9 @@ export function ShareMenu({ mode, onOpenShare, variant }: Props) {
             </button>
             {mode === "online" && (
               <Link href="/gift" className={styles.item} onClick={() => setOpen(false)}>
-                <LampIcon size={14} /> 롤링페이퍼 무드등 선물하기
+                {/* 수정/25.png 피드백 — "선물하기"가 "선"/"물하기"로 어절 중간에서 줄바꿈되던 문제.
+                    "롤링페이퍼 무드등" / "선물하기"로 줄바꿈 위치를 고정 */}
+                <LampIcon size={14} /> 롤링페이퍼 무드등<br />선물하기
               </Link>
             )}
           </div>
