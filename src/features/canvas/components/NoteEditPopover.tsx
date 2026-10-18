@@ -20,13 +20,18 @@ interface Props {
   size: number;
   textColor: string;
   bgColor: string | null;
+  content: string | null;
   bgPickerEnabled: boolean;
   textColorLocked: boolean;
+  onChangeContent: (content: string) => void;
   onChangeFont: (font: string) => void;
   onChangeSize: (size: number) => void;
   onChangeTextColor: (color: string) => void;
   onChangeBgColor: (color: string) => void;
-  onDelete: () => void;
+  /** 겹침 순서 — 이미 끝이면 해당 버튼 비활성 */
+  canMoveForward: boolean;
+  canMoveBackward: boolean;
+  onReorder: (to: "front" | "forward" | "backward" | "back") => void;
   onClose: () => void;
 }
 
@@ -61,53 +66,45 @@ function ColorSwatchRow({
   );
 }
 
-/** 페이지/수정,삭제기능.JPG 레퍼런스 — 메모 탭 시 "꾸미기"(글씨 스타일)·"삭제" 액션 */
+/** 메모를 누르면 바로 열리는 꾸미기 창 — 글씨체/크기/글자색/배경색 + 삭제 (중간 단계 없음) */
 export function NoteEditPopover({
   position,
   font,
   size,
   textColor,
   bgColor,
+  content,
   bgPickerEnabled,
   textColorLocked,
+  onChangeContent,
   onChangeFont,
   onChangeSize,
   onChangeTextColor,
   onChangeBgColor,
-  onDelete,
+  canMoveForward,
+  canMoveBackward,
+  onReorder,
   onClose,
 }: Props) {
-  const [expanded, setExpanded] = useState(false);
-
-  if (!expanded) {
-    return (
-      <div className={styles.popover} style={{ top: position.top, left: position.left }}>
-        <div className={styles.popoverHead}>
-          <b>메모</b>
-          <span className={styles.popoverClose} onClick={onClose}>
-            ✕
-          </span>
-        </div>
-        <div className={styles.actionRow}>
-          <button type="button" className={styles.actionBtn} onClick={() => setExpanded(true)}>
-            꾸미기
-          </button>
-          <button type="button" className={`${styles.actionBtn} ${styles.actionBtnDanger}`} onClick={onDelete}>
-            삭제
-          </button>
-        </div>
-      </div>
-    );
-  }
+  // 입력 중에는 서버 호출 없이 로컬 값만 바꾸고, 입력칸을 벗어날 때 한 번만 저장
+  const [draft, setDraft] = useState(content ?? "");
 
   return (
     <div className={styles.popover} style={{ top: position.top, left: position.left }}>
       <div className={styles.popoverHead}>
-        <b>글씨 스타일</b>
+        <b>메모 수정</b>
         <span className={styles.popoverClose} onClick={onClose}>
           ✕
         </span>
       </div>
+      <span className={styles.miniLabel}>내용</span>
+      <textarea
+        className={styles.contentInput}
+        value={draft}
+        onChange={(e) => setDraft(e.target.value)}
+        onBlur={() => draft.trim() && draft !== (content ?? "") && onChangeContent(draft)}
+        onPointerDown={(e) => e.stopPropagation()}
+      />
       <span className={styles.miniLabel}>글씨체</span>
       <div className={styles.pillRow}>
         {FONTS.map((f) => (
@@ -152,6 +149,24 @@ export function NoteEditPopover({
           <ColorSwatchRow colors={BG_COLORS} value={bgColor ?? BG_COLORS[0]} onPick={onChangeBgColor} />
         </>
       )}
+
+      <span className={styles.miniLabel} style={{ marginTop: 9 }}>
+        순서
+      </span>
+      <div className={`${styles.pillRow} ${styles.pillRowTight}`}>
+        <button type="button" className={styles.pill} disabled={!canMoveForward} onClick={() => onReorder("front")}>
+          맨 앞
+        </button>
+        <button type="button" className={styles.pill} disabled={!canMoveForward} onClick={() => onReorder("forward")}>
+          앞으로
+        </button>
+        <button type="button" className={styles.pill} disabled={!canMoveBackward} onClick={() => onReorder("backward")}>
+          뒤로
+        </button>
+        <button type="button" className={styles.pill} disabled={!canMoveBackward} onClick={() => onReorder("back")}>
+          맨 뒤
+        </button>
+      </div>
     </div>
   );
 }

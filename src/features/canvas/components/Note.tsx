@@ -160,10 +160,13 @@ export function Note({ note, canvasRef, editable, selected, onMoveEnd, onResizeE
       onPointerMove={drag.onPointerMove}
       onPointerUp={drag.onPointerUp}
     >
-      <span className={styles.noteFrom}>From. {note.fromName}</span>
       {/* eslint-disable-next-line @next/next/no-img-element */}
       {note.photoUrl && <img className={styles.notePhoto} src={note.photoUrl} alt="" draggable={false} />}
       {note.content}
+      {/* 메인페이지 메모지와 동일 — 본문 아래에 "From 이름"(이름 밑줄) */}
+      <span className={styles.noteFrom}>
+        From <span className={styles.noteFromName}>{note.fromName}</span>
+      </span>
       {!readOnly && (
         <span className={styles.deleteBtn} onClick={onDelete}>
           ✕
