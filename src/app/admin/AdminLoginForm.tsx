@@ -22,7 +22,7 @@ export function AdminLoginForm() {
         body: JSON.stringify({ token: password }),
       });
       if (!res.ok) {
-        setError("비밀번호가 올바르지 않아요.");
+        setError(res.status === 429 ? "시도가 너무 많아요. 10분 뒤에 다시 시도해주세요." : "비밀번호가 올바르지 않아요.");
         setSubmitting(false);
         return;
       }
