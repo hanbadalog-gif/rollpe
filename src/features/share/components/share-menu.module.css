@@ -65,6 +65,16 @@
   left: auto;
 }
 
+/* 웹(760px 이상)에서는 툴바가 왼쪽 세로로 서므로 메뉴를 왼쪽이 아니라 버튼 오른쪽으로 펼침 */
+@media (min-width: 760px) {
+  .menuRail {
+    top: auto;
+    bottom: 0;
+    left: calc(100% + 10px);
+    right: auto;
+  }
+}
+
 .item {
   display: flex;
   align-items: center;
