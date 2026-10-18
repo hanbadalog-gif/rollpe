@@ -1,7 +1,9 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
-import { api } from "@/lib/api-client";
+import { api, ApiError } from "@/lib/api-client";
+import { gridPosition } from "@/lib/gridPosition";
+import { showToast } from "@/components/Toast";
 import { getEditToken, saveEditToken, removeEditToken, getOwnerToken } from "@/lib/editToken";
 import type { CreateNoteInput, NoteDTO, RollpaperDTO } from "../types";
 
@@ -17,6 +19,11 @@ export function useCanvasNotes(rollpaperId: string) {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const pollTimer = useRef<ReturnType<typeof setInterval> | null>(null);
+  const latest = useRef<RollpaperDTO | null>(null); // addNote가 현재 메모 목록을 동기적으로 읽기 위함
+
+  useEffect(() => {
+    latest.current = rollpaper;
+  }, [rollpaper]);
 
   const refresh = useCallback(async () => {
     try {
@@ -42,17 +49,59 @@ export function useCanvasNotes(rollpaperId: string) {
     };
   }, [refresh]);
 
+  // 낙관적 추가 — 누르는 즉시 임시 메모를 보여주고(위치도 서버와 같은 규칙으로 계산해 같이 보냄),
+  // 서버 저장은 뒤에서. 성공하면 임시 메모를 진짜 메모로 바꾸고, 실패하면 지우고 안내한다.
   const addNote = useCallback(
     async (input: CreateNoteInput) => {
-      const note = await api.post<NoteDTO & { editToken: string }>(
-        `/api/rollpapers/${rollpaperId}/notes`,
-        input,
-      );
-      saveEditToken(rollpaperId, note.id, note.editToken);
-      await refresh();
-      return note;
+      const tempId = `tmp-${Math.random().toString(36).slice(2)}`;
+      const current = latest.current?.notes ?? [];
+      const auto = gridPosition(current.length);
+      const sent: CreateNoteInput = {
+        ...input,
+        posX: input.posX ?? auto.posX,
+        posY: input.posY ?? auto.posY,
+        rotation: input.rotation ?? auto.rotation,
+      };
+      const temp: NoteDTO = {
+        id: tempId,
+        rollpaperId,
+        type: sent.type,
+        fromName: sent.fromName ?? null,
+        content: sent.content ?? null,
+        font: sent.font ?? null,
+        fontSize: sent.fontSize ?? null,
+        bold: sent.bold ?? false,
+        textColor: sent.textColor ?? null,
+        bgColor: sent.bgColor ?? null,
+        borderColor: sent.borderColor ?? null,
+        photoUrl: sent.photoUrl ?? null,
+        posX: sent.posX!,
+        posY: sent.posY!,
+        rotation: sent.rotation!,
+        scale: sent.scale ?? 1,
+        z: Math.max(0, ...current.map((n) => n.z)) + 1,
+        createdAt: new Date().toISOString(),
+      };
+      setRollpaper((prev) => (prev ? { ...prev, notes: [...prev.notes, temp] } : prev));
+      api
+        .post<NoteDTO & { editToken: string }>(`/api/rollpapers/${rollpaperId}/notes`, sent)
+        .then((note) => {
+          saveEditToken(rollpaperId, note.id, note.editToken);
+          // 폴링이 먼저 진짜 메모를 가져왔어도 중복되지 않게 id로 정리
+          setRollpaper((prev) =>
+            prev ? { ...prev, notes: [...prev.notes.filter((n) => n.id !== tempId && n.id !== note.id), note] } : prev,
+          );
+        })
+        .catch((err) => {
+          setRollpaper((prev) => (prev ? { ...prev, notes: prev.notes.filter((n) => n.id !== tempId) } : prev));
+          showToast(
+            err instanceof ApiError && err.code === "CAPACITY_FULL"
+              ? "정원이 다 찼어요"
+              : "추가하지 못했어요. 잠시 후 다시 시도해주세요.",
+          );
+        });
     },
-    [rollpaperId, refresh],
+    [rollpaperId],
   );
 
   // 낙관적 업데이트 — 서버 응답을 기다리지 않고 화면부터 바꾸고, 실패하면 서버 상태로 되돌린다
