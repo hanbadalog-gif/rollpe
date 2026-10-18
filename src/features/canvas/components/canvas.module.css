@@ -97,7 +97,7 @@
   font-size: 13px;
   line-height: 1.5;
   box-shadow: 0 6px 14px -6px rgba(40, 20, 80, 0.3);
-  cursor: url("/cursors/hand.svg") 14 14, grab;
+  cursor: grab;
   touch-action: none;
   user-select: none;
   /* 수정/4번 피드백 — 영어는 공백 없는 긴 단어가 140px 카드 밖으로 그대로 삐져나가던
@@ -109,7 +109,7 @@
 
 
 .note:active {
-  cursor: url("/cursors/hand.svg") 14 14, grabbing;
+  cursor: grabbing;
   z-index: 50;
 }
 
@@ -248,7 +248,7 @@
   justify-content: center;
   font-size: 13px;
   color: var(--accent-deep);
-  cursor: url("/cursors/hand.svg") 14 14, grab;
+  cursor: grab;
   touch-action: none;
   z-index: 5;
 }
@@ -360,12 +360,4 @@
   line-height: 1.5;
   box-sizing: border-box;
   margin-bottom: 9px;
-}
-
-/* 흰 손 커서(검은 외곽선) — 메모 안의 글자/사진 위에서도 같은 커서가 나오도록 자손에도 적용 */
-.noteFrom,
-.noteFromName,
-.notePhoto,
-.notePhotoOnly img {
-  cursor: inherit;
 }
