@@ -5,8 +5,8 @@
   display: flex;
   align-items: stretch;
   justify-content: center;
-  /* 용지 뒤 배경 — 아주 옅은 회색(흰 용지와 대비 1.1:1). 구분은 용지의 얇은 테두리가 맡는다 */
-  background: #f4f4f4;
+  /* 용지 뒤 배경 — 아주 옅은 회색(흰 용지와 대비 1.06:1). 구분은 용지의 얇은 테두리가 맡는다 */
+  background: #f8f8f8;
   position: relative;
   padding: 20px;
 }
