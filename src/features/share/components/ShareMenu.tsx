@@ -1,6 +1,5 @@
 "use client";
 
-import Link from "next/link";
 import { useState } from "react";
 import styles from "./share-menu.module.css";
 import { showToast } from "@/components/Toast";
@@ -9,13 +8,16 @@ import type { RollpaperMode } from "@/lib/theme";
 
 interface Props {
   mode: RollpaperMode;
-  onOpenShare: () => void; // Story 7.3 — 공유 버튼 처음 누른 시점을 상위에 알림(배너 트리거)
+  onOpenShare: () => void;
+  /** 방장이면 "무드등 제작 요청" 노출 — 새 작성 화면이 아니라 이미 모은 롤링페이퍼를 그대로 요청 */
+  canOrder?: boolean;
+  onOrder?: () => void; // Story 7.3 — 공유 버튼 처음 누른 시점을 상위에 알림(배너 트리거)
   /** "rail" — 페이지/3.JPG 기준 하단 가로 툴바 안 아이콘 전용 버튼으로(기본은 appbar용 그라데이션 pill) */
   variant?: "rail";
 }
 
 /** Epic 7 Story 7.1 — 공유 메뉴 */
-export function ShareMenu({ mode, onOpenShare, variant }: Props) {
+export function ShareMenu({ mode, onOpenShare, canOrder, onOrder, variant }: Props) {
   const [open, setOpen] = useState(false);
 
   function toggle() {
@@ -67,12 +69,16 @@ export function ShareMenu({ mode, onOpenShare, variant }: Props) {
             <button className={styles.item} onClick={copyRecipientLink}>
               <MailIcon size={14} /> 주인공에게 전달하기
             </button>
-            {mode === "online" && (
-              <Link href="/gift" className={styles.item} onClick={() => setOpen(false)}>
-                {/* 수정/25.png 피드백 — "선물하기"가 "선"/"물하기"로 어절 중간에서 줄바꿈되던 문제.
-                    "롤링페이퍼 무드등" / "선물하기"로 줄바꿈 위치를 고정 */}
-                <LampIcon size={14} /> 롤링페이퍼 무드등<br />선물하기
-              </Link>
+            {mode === "online" && canOrder && (
+              <button
+                className={styles.item}
+                onClick={() => {
+                  setOpen(false);
+                  onOrder?.();
+                }}
+              >
+                <LampIcon size={14} /> 무드등 제작 요청하기
+              </button>
             )}
           </div>
         </>

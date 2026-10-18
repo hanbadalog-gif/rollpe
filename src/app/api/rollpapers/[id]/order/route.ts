@@ -20,6 +20,7 @@ export async function POST(request: NextRequest, ctx: RouteContext<"/api/rollpap
     contactName?: string;
     contact?: string;
     memo?: string;
+    canvas?: { width?: number; height?: number; paperSize?: string };
   } | null;
   const contactName = body?.contactName?.trim();
   const contact = body?.contact?.trim();
@@ -37,6 +38,11 @@ export async function POST(request: NextRequest, ctx: RouteContext<"/api/rollpap
     toName: rollpaper.toName,
     mode: rollpaper.mode,
     bgColor: rollpaper.bgColor,
+    // 위치(posX/posY)는 캔버스 폭·높이에 대한 % — 같은 비율로 복원하려면 요청 시점 크기가 필요
+    canvas:
+      typeof body?.canvas?.width === "number" && typeof body.canvas.height === "number"
+        ? { width: Math.round(body.canvas.width), height: Math.round(body.canvas.height), paperSize: String(body.canvas.paperSize ?? "free") }
+        : null,
     notes: noteRows.map(({ editToken: _t, userId: _u, rollpaperId: _r, ...n }) => n), // 토큰류는 제외
   };
 

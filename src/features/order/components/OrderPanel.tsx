@@ -9,10 +9,12 @@ import { showToast } from "@/components/Toast";
 interface Props {
   rollpaperId: string;
   onDone: () => void;
+  /** 요청 시점의 캔버스 크기/용지 — 별도 시스템이 %좌표를 같은 비율로 복원하는 데 필요 */
+  getCanvas?: () => { width: number; height: number; paperSize: string } | null;
 }
 
 /** 무드등 제작 요청 — 방장이 연락처를 남기면 요청 시점의 문구/배치가 서버에 고정(snapshot)된다 */
-export function OrderPanel({ rollpaperId, onDone }: Props) {
+export function OrderPanel({ rollpaperId, onDone, getCanvas }: Props) {
   const [contactName, setContactName] = useState("");
   const [contact, setContact] = useState("");
   const [memo, setMemo] = useState("");
@@ -24,7 +26,7 @@ export function OrderPanel({ rollpaperId, onDone }: Props) {
     if (!token || submitting) return;
     setSubmitting(true);
     try {
-      await api.post(`/api/rollpapers/${rollpaperId}/order`, { contactName, contact, memo }, { "x-owner-token": token });
+      await api.post(`/api/rollpapers/${rollpaperId}/order`, { contactName, contact, memo, canvas: getCanvas?.() ?? undefined }, { "x-owner-token": token });
       showToast("제작 요청을 보냈어요. 연락드릴게요!");
       onDone();
     } catch (err) {

@@ -47,8 +47,15 @@ export function CanvasPageClient({
   const peopleCount = rollpaper.notes.filter((n) => n.type === "text").length;
   const atCap = noteCount >= cfg.capacity;
 
+  // 방장 기기에서만 제작 요청 가능 (서버도 방장 토큰을 확인)
+  const isOwner = !!getOwnerToken(rollpaperId);
+  function openOrder() {
+    setShowBanner(false);
+    setOpenPanel("order");
+  }
+
   function handleOpenShare() {
-    if (rollpaper!.mode === "online" && !hasBannerBeenSeen(rollpaperId)) {
+    if (rollpaper!.mode === "online" && isOwner && !hasBannerBeenSeen(rollpaperId)) {
       markBannerSeen(rollpaperId);
       setShowBanner(true);
     }
@@ -81,7 +88,7 @@ export function CanvasPageClient({
         </span>
       </div>
 
-      {showBanner && <ConversionBanner onClose={() => setShowBanner(false)} toName={rollpaper.toName} />}
+      {showBanner && <ConversionBanner onClose={() => setShowBanner(false)} onOrder={openOrder} toName={rollpaper.toName} />}
 
       {!recipientView && atCap && isFinite(cfg.capacity) && (
         <div className={styles.capBanner}>
@@ -124,7 +131,7 @@ export function CanvasPageClient({
                 <FrameIcon />
               </button>
 
-              {rollpaper.mode !== "online" && getOwnerToken(rollpaperId) && (
+              {isOwner && (
                 <button
                   className={`${styles.tool} ${openPanel === "order" ? styles.toolActive : ""}`}
                   onClick={() => setOpenPanel(openPanel === "order" ? null : "order")}
@@ -137,7 +144,7 @@ export function CanvasPageClient({
               <button className={styles.downloadBtn} onClick={handleDownload} disabled={downloading} aria-label="이미지로 저장">
                 {downloading ? "⋯" : <DownloadIcon size={19} />}
               </button>
-              <ShareMenu mode={rollpaper.mode as RollpaperMode} onOpenShare={handleOpenShare} variant="rail" />
+              <ShareMenu mode={rollpaper.mode as RollpaperMode} onOpenShare={handleOpenShare} canOrder={isOwner} onOrder={openOrder} variant="rail" />
           </div>
         )}
 
@@ -162,7 +169,14 @@ export function CanvasPageClient({
               {openPanel === "sticker" && <StickerPanel onSubmit={addNote} />}
               {openPanel === "bg" && <BgColorPanel current={rollpaper.bgColor} onPick={updateBgColor} />}
               {openPanel === "paper" && <PaperSizePanel value={paperSize} onPick={setPaperSize} />}
-              {openPanel === "order" && <OrderPanel rollpaperId={rollpaperId} onDone={() => setOpenPanel(null)} />}
+              {openPanel === "order" && <OrderPanel
+                  rollpaperId={rollpaperId}
+                  onDone={() => setOpenPanel(null)}
+                  getCanvas={() => {
+                    const r = canvasExportRef.current?.getBoundingClientRect();
+                    return r ? { width: r.width, height: r.height, paperSize } : null;
+                  }}
+                />}
             </div>
           </div>
         )}

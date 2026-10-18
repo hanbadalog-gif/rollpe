@@ -1,6 +1,5 @@
 "use client";
 
-import Link from "next/link";
 import { useState } from "react";
 import styles from "./conversion-banner.module.css";
 import { downloadNextEventIcs } from "../lib/calendarExport";
@@ -8,7 +7,7 @@ import { showToast } from "@/components/Toast";
 
 /** Epic 7 Story 7.3 — 공유 직후 안내 배너 (PRD §4-7)
  *  + 퀵윈 #3(A4 미리보기 썸네일로 무드등 CTA 강화), #4(다음 이벤트 캘린더 저장) */
-export function ConversionBanner({ onClose, toName }: { onClose: () => void; toName: string }) {
+export function ConversionBanner({ onClose, onOrder, toName }: { onClose: () => void; onOrder: () => void; toName: string }) {
   const [showDatePicker, setShowDatePicker] = useState(false);
   const [date, setDate] = useState("");
 
@@ -27,12 +26,12 @@ export function ConversionBanner({ onClose, toName }: { onClose: () => void; toN
         </div>
         <div className={styles.text}>
           <strong>모은 마음, 무드등으로 간직해 볼까요?</strong>
-          <p>지금까지 모인 메시지를 커스텀 무드등으로 만들어 선물할 수 있어요.</p>
+          <p>지금까지 모인 메시지 그대로 무드등 제작을 요청할 수 있어요.</p>
         </div>
         <div className={styles.actions}>
-          <Link href="/gift" className={styles.cta}>
-            무드등으로 만들기
-          </Link>
+          <button className={styles.cta} onClick={onOrder}>
+            제작 요청하기
+          </button>
           <button className={styles.closeBtn} onClick={onClose} aria-label="닫기">
             ✕
           </button>
