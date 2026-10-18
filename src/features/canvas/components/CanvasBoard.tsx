@@ -3,9 +3,8 @@
 import { useRef, useState } from "react";
 import styles from "./canvas.module.css";
 import { Note } from "./Note";
-import { NoteEditPopover } from "./NoteEditPopover";
 import { MODE_CONFIG, type RollpaperMode } from "@/lib/theme";
-import { getOwnerToken } from "@/lib/editToken";
+import { getEditToken, getOwnerToken } from "@/lib/editToken";
 import { showToast } from "@/components/Toast";
 import type { RollpaperDTO } from "../types";
 import type { PaperSize } from "./PaperSizePanel";
@@ -13,13 +12,12 @@ import type { PaperSize } from "./PaperSizePanel";
 interface Props {
   rollpaperId: string;
   rollpaper: RollpaperDTO;
-  updateNote: (
-    noteId: string,
-    patch: { z?: number; content?: string; font?: string; fontSize?: number; textColor?: string; bgColor?: string },
-  ) => Promise<void>;
+  updateNote: (noteId: string, patch: { z?: number }) => Promise<void>;
   moveNote: (noteId: string, posX: number, posY: number, rotation?: number) => Promise<void>;
   resizeNote: (noteId: string, scale: number) => Promise<void>;
   deleteNote: (noteId: string, ownerToken?: string | null) => Promise<void>;
+  /** 메모 수정창을 여는 쪽(페이지)이 정한다 — 수정이 끝나도 선택은 그대로 유지된다 */
+  onEditNote: (noteId: string) => void;
   /** 이미지 다운로드(Epic 7 Story 7.2)가 캔버스 DOM을 export할 수 있도록 노출 */
   canvasRef?: React.RefObject<HTMLDivElement | null>;
   /** 수신자 전용 화면(Epic 2 Story 2.2) — 전체를 읽기 전용으로 표시 */
@@ -36,9 +34,14 @@ const PAPER_CLASS: Record<PaperSize, string> = {
   a3l: "canvasA3l",
 };
 
+type Reorder = "front" | "forward" | "backward" | "back";
+
 /**
  * 캔버스 코어 엔진 — Epic 3 (Story 3.1~3.5).
  * 상태(useCanvasNotes)는 page에서 끌어올려 write-panel/stickers/share와 공유한다.
+ *
+ * 메모를 누르면 "선택"만 된다(이동·회전·크기 핸들 + 하단 작은 동작 막대). 글 수정은 막대의 '수정' 버튼이나
+ * 이미 선택된 메모를 한 번 더 누르면 열리는 창에서 한다 — 메모 근처에 창이 뜨지 않아 위치 조정을 가리지 않는다.
  */
 export function CanvasBoard({
   rollpaperId,
@@ -47,51 +50,34 @@ export function CanvasBoard({
   moveNote,
   resizeNote,
   deleteNote,
+  onEditNote,
   canvasRef: externalRef,
   readOnly,
   paperSize = "free",
 }: Props) {
   const ownRef = useRef<HTMLDivElement>(null);
   const canvasRef = externalRef ?? ownRef;
-  const noteRefs = useRef<Record<string, HTMLDivElement | null>>({});
   const [selectedNoteId, setSelectedNoteId] = useState<string | null>(null);
-  const [popoverPos, setPopoverPos] = useState<{ top: number; left: number } | null>(null);
 
   const cfg = MODE_CONFIG[rollpaper.mode as RollpaperMode];
   // 겹침 순서 — z가 작을수록 뒤. 화면에서는 DOM 순서가 곧 쌓임 순서라 정렬해서 그린다
   const ordered = [...rollpaper.notes].sort((a, b) => a.z - b.z);
-  const selectedNote = rollpaper.notes.find((n) => n.id === selectedNoteId) ?? null;
+  const selectedNote = readOnly ? null : (rollpaper.notes.find((n) => n.id === selectedNoteId) ?? null);
+  const mine = selectedNote ? !!getEditToken(rollpaperId, selectedNote.id) : false;
 
-  function openPopoverFor(noteId: string) {
-    const el = noteRefs.current[noteId];
-    if (!el) return;
-    // 스티커는 수정창 없이 선택(크기/회전/삭제 핸들)만 — 글씨 설정이 의미 없음
-    if (rollpaper.notes.find((n) => n.id === noteId)?.type === "sticker") {
-      setSelectedNoteId(noteId);
-      setPopoverPos(null);
+  function handleTap(noteId: string) {
+    if (readOnly) return;
+    const note = rollpaper.notes.find((n) => n.id === noteId);
+    if (!note) return;
+    // 이미 선택된 내 글을 한 번 더 누르면 수정창
+    if (selectedNoteId === noteId && note.type !== "sticker" && getEditToken(rollpaperId, noteId)) {
+      onEditNote(noteId);
       return;
     }
-    const rect = el.getBoundingClientRect();
-    let top = rect.bottom + 8;
-    let left = rect.left;
-    const maxLeft = window.innerWidth - 236;
-    if (left > maxLeft) left = maxLeft;
-    if (left < 10) left = 10;
-    if (top > window.innerHeight - 410) top = Math.max(10, rect.top - 408); // 수정 창 높이 약 400px
     setSelectedNoteId(noteId);
-    setPopoverPos({ top, left });
   }
 
-  // 남이 쓴 메모는 수정 토큰이 없어 서버 호출 전에 실패 — 안내만 하고 조용히 넘어감
-  async function handleUpdate(noteId: string, patch: Parameters<Props["updateNote"]>[1]) {
-    try {
-      await updateNote(noteId, patch);
-    } catch {
-      showToast("내가 쓴 메모만 수정할 수 있어요");
-    }
-  }
-
-  function handleReorder(noteId: string, to: "front" | "forward" | "backward" | "back") {
+  function handleReorder(noteId: string, to: Reorder) {
     const i = ordered.findIndex((n) => n.id === noteId);
     if (i < 0) return;
     // 내 메모의 z만 바꿔서 이웃 사이(또는 끝)에 끼워 넣는다 — 남의 메모는 건드리지 않음
@@ -107,7 +93,7 @@ export function CanvasBoard({
       const before = ordered[i - 2];
       z = before ? (prev.z + before.z) / 2 : prev.z - 1;
     }
-    handleUpdate(noteId, { z });
+    updateNote(noteId, { z }).catch(() => showToast("내가 쓴 메모만 바꿀 수 있어요"));
   }
 
   async function handleDelete(noteId: string) {
@@ -124,12 +110,19 @@ export function CanvasBoard({
   // 모드 자체가 고정 배경(무드등 미리보기 등)일 때만 단색으로 덮어쓴다.
   const customBg = rollpaper.bgColor ?? (cfg.bgColor === "var(--surface)" ? undefined : cfg.bgColor);
 
+  const atFront = selectedNote ? ordered[ordered.length - 1].id === selectedNote.id : false;
+  const atBack = selectedNote ? ordered[0].id === selectedNote.id : false;
+
   return (
     <div className={styles.canvasScroll}>
       <div
         ref={canvasRef}
         className={`${styles.canvas} ${cfg.locked ? styles.canvasLocked : ""} ${PAPER_CLASS[paperSize] ? styles[PAPER_CLASS[paperSize]] : ""}`}
         style={customBg ? { background: customBg } : undefined}
+        // 빈 곳을 누르면 선택 해제
+        onPointerDown={(e) => {
+          if (e.target === e.currentTarget) setSelectedNoteId(null);
+        }}
       >
         {cfg.locked && <div className={styles.safeArea} aria-hidden />}
         {rollpaper.notes.length === 0 && (
@@ -143,43 +136,45 @@ export function CanvasBoard({
             editable
             readOnly={readOnly}
             flat={cfg.locked}
-            selected={note.id === selectedNoteId}
-            setRef={(el) => {
-              noteRefs.current[note.id] = el;
-            }}
+            selected={note.id === selectedNote?.id}
             onMoveEnd={(posX, posY) => moveNote(note.id, posX, posY, note.rotation)}
             onResizeEnd={(scale) => resizeNote(note.id, scale)}
             onRotateEnd={(rotation) => moveNote(note.id, note.posX, note.posY, rotation)}
-            onTap={() => !readOnly && openPopoverFor(note.id)}
+            onTap={() => handleTap(note.id)}
             onDelete={() => handleDelete(note.id)}
           />
         ))}
       </div>
 
-      {selectedNote && popoverPos && (
-        <NoteEditPopover
-          key={selectedNote.id}
-          position={popoverPos}
-          font={selectedNote.font ?? "'Gaegu',cursive"}
-          size={selectedNote.fontSize ?? 14}
-          textColor={cfg.fixedTextColor ?? selectedNote.textColor ?? "#3A3D4D"}
-          bgColor={selectedNote.bgColor}
-          content={selectedNote.content}
-          bgPickerEnabled={cfg.bgPickerEnabled}
-          textColorLocked={!!cfg.fixedTextColor}
-          onChangeContent={(content) => handleUpdate(selectedNote.id, { content })}
-          onChangeFont={(font) => handleUpdate(selectedNote.id, { font })}
-          onChangeSize={(fontSize) => handleUpdate(selectedNote.id, { fontSize })}
-          onChangeTextColor={(textColor) => handleUpdate(selectedNote.id, { textColor })}
-          onChangeBgColor={(bgColor) => handleUpdate(selectedNote.id, { bgColor })}
-          canMoveForward={ordered[ordered.length - 1].id !== selectedNote.id}
-          canMoveBackward={ordered[0].id !== selectedNote.id}
-          onReorder={(to) => handleReorder(selectedNote.id, to)}
-          onClose={() => {
-            setSelectedNoteId(null);
-            setPopoverPos(null);
-          }}
-        />
+      {selectedNote && (
+        <div className={styles.actionBar} role="toolbar" aria-label="선택한 메모">
+          {mine ? (
+            <>
+              {selectedNote.type !== "sticker" && (
+                <button type="button" className={`${styles.actionPill} ${styles.actionPillMain}`} onClick={() => onEditNote(selectedNote.id)}>
+                  수정
+                </button>
+              )}
+              <button type="button" className={styles.actionPill} disabled={atFront} onClick={() => handleReorder(selectedNote.id, "front")}>
+                맨 앞
+              </button>
+              <button type="button" className={styles.actionPill} disabled={atFront} onClick={() => handleReorder(selectedNote.id, "forward")}>
+                앞으로
+              </button>
+              <button type="button" className={styles.actionPill} disabled={atBack} onClick={() => handleReorder(selectedNote.id, "backward")}>
+                뒤로
+              </button>
+              <button type="button" className={styles.actionPill} disabled={atBack} onClick={() => handleReorder(selectedNote.id, "back")}>
+                맨 뒤
+              </button>
+            </>
+          ) : (
+            <span className={styles.actionHint}>다른 사람이 쓴 메모예요</span>
+          )}
+          <button type="button" className={styles.actionPill} onClick={() => setSelectedNoteId(null)} aria-label="선택 해제">
+            ✕
+          </button>
+        </div>
       )}
     </div>
   );

@@ -36,6 +36,7 @@ export function CanvasPageClient({
   const [downloading, setDownloading] = useState(false);
   const [showEnvelope, setShowEnvelope] = useState(recipientView);
   const [confirmFinish, setConfirmFinish] = useState(false);
+  const [editingId, setEditingId] = useState<string | null>(null); // 수정창에 열려 있는 메모
   const canvasExportRef = useRef<HTMLDivElement>(null);
 
   if (loading) return <div className={styles.loading}>불러오는 중…</div>;
@@ -195,8 +196,23 @@ export function CanvasPageClient({
           deleteNote={deleteNote}
           canvasRef={canvasExportRef}
           readOnly={locked}
+          onEditNote={setEditingId}
           paperSize={paperSize}
         />
+
+        {!locked && editingId && rollpaper.notes.find((n) => n.id === editingId) && (
+          <div className={styles.modalBackdrop} onClick={() => setEditingId(null)}>
+            <div className={styles.modalCard} onClick={(e) => e.stopPropagation()}>
+              <WritePanel
+                key={editingId}
+                mode={rollpaper.mode as RollpaperMode}
+                initial={rollpaper.notes.find((n) => n.id === editingId)}
+                onSubmit={(patch) => updateNote(editingId, patch)}
+                onDone={() => setEditingId(null)}
+              />
+            </div>
+          </div>
+        )}
 
         {!recipientView && openPanel !== null && (
           <div className={styles.modalBackdrop} onClick={() => setOpenPanel(null)}>

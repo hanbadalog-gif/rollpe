@@ -44,6 +44,8 @@ export async function PATCH(
 
   const body = (await request.json().catch(() => ({}))) as Record<string, unknown>;
   const allowed = [
+    "fromName",
+    "photoUrl",
     "content",
     "font",
     "fontSize",

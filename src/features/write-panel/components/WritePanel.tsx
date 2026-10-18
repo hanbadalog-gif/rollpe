@@ -3,7 +3,7 @@
 import { useState, type FormEvent } from "react";
 import styles from "./write-panel.module.css";
 import { MODE_CONFIG, type RollpaperMode } from "@/lib/theme";
-import type { CreateNoteInput } from "@/features/canvas/types";
+import type { CreateNoteInput, NoteDTO } from "@/features/canvas/types";
 import { showToast } from "@/components/Toast";
 import { NOTE_BG_COLORS, NOTE_TEXT_COLORS } from "@/features/canvas/lib/palette";
 import { ApiError } from "@/lib/api-client";
@@ -28,6 +28,8 @@ interface Props {
   mode: RollpaperMode;
   onSubmit: (input: CreateNoteInput) => Promise<unknown>;
   onDone: () => void;
+  /** 값이 있으면 "수정 모드" — 기존 내용이 채워져 있고, 등록 대신 수정 내용을 onSubmit으로 보낸다 */
+  initial?: NoteDTO | null;
 }
 
 function SwatchRow({
@@ -56,18 +58,23 @@ function SwatchRow({
 }
 
 /** 글쓰기 패널 — Epic 4 (Story 4.1~4.4). /design-preview 프로토타입과 시각적으로 맞춤(스와치/토글 UI) */
-export function WritePanel({ mode, onSubmit, onDone }: Props) {
+export function WritePanel({ mode, onSubmit, onDone, initial }: Props) {
   const cfg = MODE_CONFIG[mode];
 
-  const [fromName, setFromName] = useState("");
-  const [content, setContent] = useState("");
-  const [font, setFont] = useState(FONTS[0].value);
-  const [fontSize, setFontSize] = useState(16);
-  const [bold, setBold] = useState(false);
-  const [textColor, setTextColor] = useState(cfg.fixedTextColor ?? TEXT_COLORS[0]);
-  const [bgColor, setBgColor] = useState(BG_COLORS[0]);
+  const [fromName, setFromName] = useState(initial?.fromName ?? "");
+  const [content, setContent] = useState(initial?.content ?? "");
+  const [font, setFont] = useState(initial?.font ?? FONTS[0].value);
+  // 예전에 다른 값(11/14/18)으로 저장된 메모도 가장 가까운 칸이 선택되도록
+  const [fontSize, setFontSize] = useState(
+    initial?.fontSize
+      ? FONT_SIZES.reduce((best, s) => (Math.abs(s.value - initial.fontSize!) < Math.abs(best.value - initial.fontSize!) ? s : best)).value
+      : 16,
+  );
+  const [bold, setBold] = useState(initial?.bold ?? false);
+  const [textColor, setTextColor] = useState(initial?.textColor ?? cfg.fixedTextColor ?? TEXT_COLORS[0]);
+  const [bgColor, setBgColor] = useState(initial?.bgColor ?? BG_COLORS[0]);
   const [submitting, setSubmitting] = useState(false);
-  const [photoUrl, setPhotoUrl] = useState<string | null>(null);
+  const [photoUrl, setPhotoUrl] = useState<string | null>(initial?.photoUrl ?? null);
 
   function handlePhotoChange(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0];
@@ -103,6 +110,23 @@ export function WritePanel({ mode, onSubmit, onDone }: Props) {
 
   async function handleSubmit(e: FormEvent) {
     e.preventDefault();
+    if (initial) {
+      // 수정 — 창은 바로 닫고 저장은 뒤에서(실패하면 안내). 메모 선택은 그대로 유지된다.
+      const patch: Partial<CreateNoteInput> = {
+        fromName,
+        content,
+        font,
+        fontSize,
+        bold,
+        textColor: cfg.fixedTextColor ?? textColor,
+        bgColor: cfg.bgPickerEnabled ? bgColor : undefined,
+        photoUrl: photoUrl && photoUrl !== initial.photoUrl ? photoUrl : undefined,
+      };
+      onDone();
+      showToast("수정했어요");
+      onSubmit(patch as CreateNoteInput).catch(() => showToast("수정하지 못했어요. 잠시 후 다시 시도해주세요."));
+      return;
+    }
     if (!fromName || !content) return;
     setSubmitting(true);
     try {
@@ -135,6 +159,7 @@ export function WritePanel({ mode, onSubmit, onDone }: Props) {
 
   return (
     <form className={styles.panel} onSubmit={handleSubmit}>
+      {initial && <h4 className={styles.heading}>메모 수정</h4>}
       {/* 수정/24.png 피드백 — "마음 전하기" 행 삭제, 페이지/4.jpg처럼 From.부터 바로 시작 */}
       <div className={styles.field}>
         <label htmlFor="fromName">From.</label>
@@ -144,7 +169,7 @@ export function WritePanel({ mode, onSubmit, onDone }: Props) {
           value={fromName}
           onChange={(e) => setFromName(e.target.value)}
           placeholder="이름을 입력해 주세요 (익명 가능)"
-          required
+          required={!initial}
         />
       </div>
 
@@ -157,7 +182,7 @@ export function WritePanel({ mode, onSubmit, onDone }: Props) {
           onChange={(e) => setContent(e.target.value)}
           placeholder="전하고 싶은 말을 적어보세요"
           style={{ fontFamily: font }}
-          required
+          required={!initial}
         />
       </div>
 
@@ -243,7 +268,7 @@ export function WritePanel({ mode, onSubmit, onDone }: Props) {
       </div>
 
       <button type="submit" className={styles.submit} disabled={submitting}>
-        등록하기
+        {initial ? "수정 완료" : "등록하기"}
       </button>
     </form>
   );
