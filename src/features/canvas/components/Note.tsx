@@ -169,7 +169,13 @@ export function Note({ note, canvasRef, editable, selected, onMoveEnd, onResizeE
         onPointerMove={drag.onPointerMove}
         onPointerUp={drag.onPointerUp}
       >
-        {note.content}
+        {/* 내가 올린 이미지 스티커는 photoUrl, 기본 스티커(이모지)는 content */}
+        {note.photoUrl ? (
+          // eslint-disable-next-line @next/next/no-img-element
+          <img className={styles.stickerImg} src={note.photoUrl} alt="" draggable={false} />
+        ) : (
+          note.content
+        )}
         {!readOnly && (
           <span className={styles.deleteBtn} onClick={onDelete}>
             ✕

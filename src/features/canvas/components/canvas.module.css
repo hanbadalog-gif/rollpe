@@ -212,6 +212,14 @@
   font-size: 3.33cqw;
   margin-top: 3cqw;
 }
+.stickerImg {
+  width: min(110px, 24cqw); /* 내가 올린 이미지 스티커 — 원본 크기와 상관없이 캔버스 폭에 비례하는 작은 크기 */
+  height: auto;
+  display: block;
+  -webkit-user-drag: none;
+  user-select: none;
+}
+
 .canvasLocked .notePhotoOnly {
   width: 30%;
 }
@@ -230,7 +238,10 @@
   width: 140px;
   padding: 0;
   background: #fff;
-  overflow: hidden;
+  /* overflow:hidden이면 바깥으로 튀어나온 회전·크기 핸들이 잘려 안 보인다 — 둥근 모서리는 이미지에 준다 */
+}
+.notePhotoOnly img {
+  border-radius: 11px;
 }
 
 /* height:auto — 사진 원본 비율 그대로 보여줌(이전엔 고정 4:3 + cover로 잘려 보이던 문제) */
