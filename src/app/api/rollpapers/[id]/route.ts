@@ -95,7 +95,7 @@ export async function PATCH(
     for (const z of zones) {
       const v = body.fixedFields[z.key];
       if (typeof v !== "string") continue;
-      const ok = z.kind === "photo" ? v.startsWith("data:image/") && v.length < 2_000_000 : v.length <= 60;
+      const ok = z.kind === "photo" ? v.startsWith("data:image/") && v.length < 3_500_000 : v.length <= 60;
       if (v === "") delete fixedFields[z.key];
       else if (ok) fixedFields[z.key] = v;
     }

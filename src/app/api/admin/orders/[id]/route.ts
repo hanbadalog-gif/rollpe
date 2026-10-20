@@ -4,7 +4,7 @@ import { eq, getTableColumns, sql } from "drizzle-orm";
 import { db } from "@/db";
 import { orders } from "@/db/schema";
 import { isAdmin } from "@/lib/adminAuth";
-import { enrichSnapshot } from "@/lib/orderExport";
+import { slimEnrichedSnapshot } from "@/lib/orderFiles";
 
 export async function GET(_request: NextRequest, ctx: RouteContext<"/api/admin/orders/[id]">) {
   if (!(await isAdmin())) {
@@ -20,7 +20,7 @@ export async function GET(_request: NextRequest, ctx: RouteContext<"/api/admin/o
   if (!order) {
     return NextResponse.json({ code: "NOT_FOUND", message: "요청을 찾을 수 없습니다." }, { status: 404 });
   }
-  return new NextResponse(JSON.stringify({ ...order, imageFile: order.hasImage ? `rollpe-order-${id}.png (같이 받은 PNG)` : null, snapshot: enrichSnapshot(order.snapshot) }, null, 2), {
+  return new NextResponse(JSON.stringify({ ...order, imageFile: order.hasImage ? `rollpe-order-${id}.png (같이 받은 PNG)` : null, snapshot: slimEnrichedSnapshot(order.snapshot) }, null, 2), {
     headers: {
       "Content-Type": "application/json; charset=utf-8",
       "Content-Disposition": `attachment; filename="rollpe-order-${id}.json"`,

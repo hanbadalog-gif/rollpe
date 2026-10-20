@@ -64,7 +64,7 @@ export function ShareMenu({ mode, onOpenShare, canOrder, onOrder, variant }: Pro
           <div className={styles.backdrop} onClick={() => setOpen(false)} />
           <div className={`${styles.menu} ${variant === "rail" ? styles.menuRail : ""}`}>
             <button className={styles.item} onClick={copyLink}>
-              <LinkIcon size={14} /> 링크 복사
+              <LinkIcon size={14} /> 친구초대 링크 복사
             </button>
             {mode === "online" && (
               <button className={styles.item} onClick={copyRecipientLink}>

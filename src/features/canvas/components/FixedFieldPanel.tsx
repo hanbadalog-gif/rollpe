@@ -42,7 +42,8 @@ export function FixedFieldPanel({ zone, value, styleRaw, onSave, onDone }: Props
     const file = e.target.files?.[0];
     if (!file) return;
     try {
-      await save({ [zone.key]: await shrinkToDataUrl(file) });
+      // 가운데 사진은 글리모리가 그대로 받아 쓰므로 일반 메모 사진(800px)보다 크게 보관 (긴 변 1600px)
+      await save({ [zone.key]: await shrinkToDataUrl(file, { max: 1600 }) });
     } catch {
       showToast("사진을 불러오지 못했어요.");
     }

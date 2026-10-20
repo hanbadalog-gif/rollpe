@@ -5,6 +5,8 @@ import { isAdmin } from "@/lib/adminAuth";
 import { AdminEntryForm } from "./AdminEntryForm";
 import { AdminLoginForm } from "./AdminLoginForm";
 
+const EXT: Record<string, string> = { "image/jpeg": "jpg", "image/png": "png", "image/webp": "webp", "image/gif": "gif" };
+
 export default async function AdminHomePage() {
   const ok = await isAdmin();
   if (!ok) return <AdminLoginForm />;
@@ -21,6 +23,8 @@ export default async function AdminHomePage() {
       toName: sql<string>`${orders.snapshot}->>'toName'`,
       noteCount: sql<number>`jsonb_array_length(${orders.snapshot}->'notes')`,
       hasImage: sql<boolean>`${orders.image} is not null`,
+      centerPhotoMime: sql<string | null>`substring(${orders.snapshot}->'fixedFields'->>'photo' from '^data:([^;]+);')`,
+      photoCount: sql<number>`(select count(*)::int from jsonb_array_elements(${orders.snapshot}->'notes') as n where n->>'photoUrl' is not null)`,
     })
     .from(orders)
     .orderBy(desc(orders.createdAt));
@@ -43,6 +47,9 @@ export default async function AdminHomePage() {
               {r.memo ? ` / ${r.memo}` : ""}
             </div>
             <div style={{ color: "#767676" }}>{r.createdAt.toLocaleString("ko-KR")}</div>
+            <a href={`/api/admin/orders/${r.id}/package`} download style={{ color: "#fff", background: "#6c7fb7", fontWeight: 700, marginRight: 12, padding: "3px 10px", borderRadius: 999 }}>
+              ⬇ 전체 한 번에(ZIP)
+            </a>
             {r.hasImage && (
               <a href={`/api/admin/orders/${r.id}/image`} download style={{ color: "#6c7fb7", fontWeight: 700, marginRight: 12 }}>
                 ⬇ 이미지(PNG)
@@ -51,6 +58,12 @@ export default async function AdminHomePage() {
             <a href={`/api/admin/orders/${r.id}`} download style={{ color: "#6c7fb7", fontWeight: 700, marginRight: 12 }}>
               ⬇ JSON
             </a>
+            {r.centerPhotoMime && (
+              <a href={`/api/admin/orders/${r.id}/photo/center-photo.${EXT[r.centerPhotoMime] ?? "jpg"}`} download style={{ color: "#6c7fb7", fontWeight: 700, marginRight: 12 }}>
+                ⬇ 가운데 사진
+              </a>
+            )}
+            {r.photoCount > 0 && <span style={{ color: "#767676", marginRight: 12 }}>메모 사진 {r.photoCount}장 (ZIP에 포함)</span>}
             <a href={`/admin/${r.rollpaperId}`} style={{ color: "#6c7fb7" }}>
               문구 보기
             </a>

@@ -4,7 +4,7 @@ import { desc, getTableColumns, sql } from "drizzle-orm";
 import { db } from "@/db";
 import { orders } from "@/db/schema";
 import { isAdmin } from "@/lib/adminAuth";
-import { enrichSnapshot } from "@/lib/orderExport";
+import { slimEnrichedSnapshot } from "@/lib/orderFiles";
 
 export async function GET() {
   if (!(await isAdmin())) {
@@ -14,7 +14,7 @@ export async function GET() {
   void image; // 이미지(base64)는 전체 JSON에 싣지 않는다 — 건별 /image 로 받는다
   const rows = (await db.select({ ...cols, hasImage: sql<boolean>`${orders.image} is not null` }).from(orders).orderBy(desc(orders.createdAt))).map((r) => ({
     ...r,
-    snapshot: enrichSnapshot(r.snapshot),
+    snapshot: slimEnrichedSnapshot(r.snapshot),
   }));
   return new NextResponse(JSON.stringify(rows, null, 2), {
     headers: {
