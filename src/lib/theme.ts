@@ -43,7 +43,6 @@ export interface ModeConfig {
 const ZONES_A: Zone[] = [
   { key: "title", kind: "text", x: 3, y: 27, w: 27, h: 12, placeholder: "소속·직함" },
   { key: "photo", kind: "photo", x: 31.6, y: 25.4, w: 38.8, h: 37, placeholder: "+ 사진" },
-  { key: "caption", kind: "text", x: 27, y: 63.5, w: 46, h: 7, placeholder: "사진 아래 문구" },
   { key: "label", kind: "text", x: 70.5, y: 50.5, w: 26, h: 7, placeholder: "라벨", defaultText: "오늘의 주인공", rotate: -6 },
 ];
 const SLOTS_A: SlotRows = [

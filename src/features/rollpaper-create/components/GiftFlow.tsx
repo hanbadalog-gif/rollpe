@@ -2,6 +2,7 @@
 
 import { useState, type FormEvent } from "react";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 import newStyles from "@/app/new/new.module.css";
 import styles from "./gift-flow.module.css";
 import { createRollpaper } from "../api";
@@ -63,6 +64,9 @@ export function GiftFlow() {
             </button>
           </div>
         </div>
+        <Link href="/my" className={newStyles.myLink}>
+          이전에 만든 롤링페이퍼 찾기
+        </Link>
       </div>
     );
   }
@@ -94,6 +98,9 @@ export function GiftFlow() {
         <button type="submit" className={newStyles.submit} disabled={submitting}>
           {submitting ? "생성 중…" : "생성하기"}
         </button>
+        <Link href="/my" className={newStyles.myLink}>
+          이전에 만든 롤링페이퍼 찾기
+        </Link>
       </form>
     </div>
   );

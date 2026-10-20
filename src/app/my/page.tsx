@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import styles from "./my.module.css";
 import { getMyRollpapers, type MyRollpaper } from "@/lib/editToken";
+import { MODE_CONFIG, type RollpaperMode } from "@/lib/theme";
 
 // 수정/8번 피드백 — 생성 직후 링크 복사 전에 페이지를 나가면 되찾을 방법이 없던 문제.
 // 이 기기에서 만든 롤링페이퍼 목록(로컬 저장)을 다시 보여주는 복구용 페이지.
@@ -33,8 +34,11 @@ export default function MyRollpapersPage() {
           <ul className={styles.list}>
             {list.map((r) => (
               <li key={r.id}>
-                <Link href={`/${r.id}`} className={styles.card}>
-                  <span className={styles.cardTo}>To. {r.toName}</span>
+                <Link href={r.mode === "online" ? `/${r.id}` : `/gift/${r.id}`} className={styles.card}>
+                  <span className={styles.cardTo}>
+                    To. {r.toName}
+                    {r.mode !== "online" && ` · ${MODE_CONFIG[r.mode as RollpaperMode]?.label ?? "무드등"}`}
+                  </span>
                   <span className={styles.cardDate}>{new Date(r.createdAt).toLocaleDateString("ko-KR")}</span>
                 </Link>
               </li>

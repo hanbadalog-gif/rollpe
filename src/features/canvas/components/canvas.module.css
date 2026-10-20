@@ -28,20 +28,19 @@
 }
 
 .canvasLocked {
-  max-width: 360px;
+  max-width: 520px; /* 유형 A/B 공통 — 폭에 맞춰 글씨도 같이 커진다(.noteFlat 참고). 폰에서는 화면 폭만큼 */
   aspect-ratio: 3 / 4;
   min-height: 0;
   align-self: flex-start;
 }
 
-/* 유형 A는 화면 가장자리까지 넓게 써서 좁은 폰에서도 캔버스가 커 보이게 */
-.canvasScroll:has(.canvasLamp) {
+/* 무드등 캔버스는 화면 가장자리까지 넓게 써서 좁은 폰에서도 최대한 크게 */
+.canvasScroll:has(.canvasLocked) {
   padding: 8px;
 }
 
 /* 무드등 캔버스 — 페이지/7_1.jpg에서 잘라낸 배경(검정 판 + 가운데 흰 칸). 배경 자체가 제품 비율 */
 .canvasLamp {
-  max-width: 390px; /* 기본 무드등 캔버스(360px)보다 30px 크게 — 비율은 그대로 */
   aspect-ratio: 307 / 389;
   /* 이미지의 모양(윗판 + 아래 받침)이 곧 캔버스 모양 — 사각 테두리/둥근 모서리는 쓰지 않는다 */
   background: url("/brand/lamp-canvas.png") center / 100% 100% no-repeat;
