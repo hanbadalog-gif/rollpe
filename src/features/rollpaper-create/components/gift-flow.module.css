@@ -9,7 +9,10 @@
 }
 
 .img {
-  width: 100%;
+  /* 안내 이미지도 스크롤 없이 — 버튼까지 한 화면에 들어오게 높이를 제한 */
+  max-width: 100%;
+  max-height: calc(100dvh - 172px);
+  width: auto;
   height: auto;
   border-radius: 14px;
 }
@@ -17,23 +20,29 @@
 .types {
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: 12px;
   max-width: 420px;
   margin: 0 auto;
-  padding: 8px 20px 40px;
+  padding: 0 20px 14px;
+  /* 스크롤 없이 한 화면에 — 헤더(약 64px)를 뺀 높이를 쓰고, 남는/모자란 높이는 카드 사진이 흡수한다 */
+  height: calc(100dvh - 64px);
+  min-height: 480px;
 }
 
 .title {
+  margin: 0;
   font-size: 20px;
   font-weight: 800;
   color: var(--ink);
 }
 
 .typeCard {
+  flex: 1 1 0;
+  min-height: 0;
   display: flex;
   flex-direction: column;
-  gap: 8px;
-  padding: 14px;
+  gap: 6px;
+  padding: 12px 14px;
   border: 1px solid var(--line);
   border-radius: 14px;
   background: var(--surface);
@@ -45,14 +54,15 @@
 }
 
 .typeCard p {
+  margin: 0;
   font-size: 12px;
   color: var(--ink-soft);
-  margin-bottom: 4px;
 }
 
 .typeImg {
+  flex: 1 1 0;
+  min-height: 56px;
   width: 100%;
-  height: 220px;
   object-fit: cover;
   border-radius: 10px;
 }
