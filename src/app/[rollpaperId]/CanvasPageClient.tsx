@@ -99,7 +99,7 @@ export function CanvasPageClient({
           <b>{rollpaper.toName}</b>
         </div>
         <span className={styles.counter}>
-          {isFinite(cfg.capacity) ? `${peopleCount} / ${cfg.capacity}개` : `${peopleCount}개 작성`}
+          {isFinite(cfg.capacity) ? `${peopleCount} / ${cfg.capacity}명` : `${peopleCount}개 작성`}
         </span>
         {/* 완성/수정 — 방장 전용, 제목 줄 오른쪽 끝에 항상 보이도록 */}
         {isOwner && !recipientView && (
@@ -137,7 +137,7 @@ export function CanvasPageClient({
 
       {!recipientView && atCap && isFinite(cfg.capacity) && (
         <div className={styles.capBanner}>
-          정원이 다 찼어요 ({cfg.capacity}개). 더 큰 사이즈로 바꾸면 계속 받을 수 있어요.
+          정원이 다 찼어요 ({cfg.capacity}명). {rollpaper.mode === "mood_b_8" ? "더 큰 A4 사이즈로 새로 만들면 20명까지 받을 수 있어요." : "이제 글리모리로 전달해 주세요."}
         </div>
       )}
 
@@ -170,13 +170,16 @@ export function CanvasPageClient({
               >
                 <PaletteIcon />
               </button>
-              <button
-                className={`${styles.tool} ${openPanel === "paper" ? styles.toolActive : ""}`}
-                onClick={() => setOpenPanel(openPanel === "paper" ? null : "paper")}
-                aria-label="용지"
-              >
-                <FrameIcon />
-              </button>
+              {/* 무드등은 제품 비율로 고정 — 용지 변경 없음 */}
+              {!cfg.locked && (
+                <button
+                  className={`${styles.tool} ${openPanel === "paper" ? styles.toolActive : ""}`}
+                  onClick={() => setOpenPanel(openPanel === "paper" ? null : "paper")}
+                  aria-label="용지"
+                >
+                  <FrameIcon />
+                </button>
+              )}
 
               </>
             )}

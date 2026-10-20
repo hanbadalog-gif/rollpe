@@ -108,7 +108,7 @@ export function CanvasBoard({
   // 기본값(var(--surface))일 땐 inline background를 비워서 canvas.module.css의
   // 은은한 그라데이션이 보이게 하고, 사용자가 배경색을 직접 고르거나(bgColor)
   // 모드 자체가 고정 배경(무드등 미리보기 등)일 때만 단색으로 덮어쓴다.
-  const customBg = rollpaper.bgColor ?? (cfg.bgColor === "var(--surface)" ? undefined : cfg.bgColor);
+  const customBg = cfg.locked ? undefined : rollpaper.bgColor ?? (cfg.bgColor === "var(--surface)" ? undefined : cfg.bgColor);
 
   const atFront = selectedNote ? ordered[ordered.length - 1].id === selectedNote.id : false;
   const atBack = selectedNote ? ordered[0].id === selectedNote.id : false;
@@ -117,14 +117,13 @@ export function CanvasBoard({
     <div className={styles.canvasScroll}>
       <div
         ref={canvasRef}
-        className={`${styles.canvas} ${cfg.locked ? styles.canvasLocked : ""} ${PAPER_CLASS[paperSize] ? styles[PAPER_CLASS[paperSize]] : ""}`}
+        className={`${styles.canvas} ${cfg.locked ? `${styles.canvasLocked} ${styles.canvasLamp}` : ""} ${PAPER_CLASS[paperSize] ? styles[PAPER_CLASS[paperSize]] : ""}`}
         style={customBg ? { background: customBg } : undefined}
         // 빈 곳을 누르면 선택 해제
         onPointerDown={(e) => {
           if (e.target === e.currentTarget) setSelectedNoteId(null);
         }}
       >
-        {cfg.locked && <div className={styles.safeArea} aria-hidden />}
         {rollpaper.notes.length === 0 && (
           <div className={styles.hint}>+ 빈 공간을 눌러 마음을 더해보세요</div>
         )}

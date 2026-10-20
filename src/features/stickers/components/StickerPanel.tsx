@@ -1,8 +1,8 @@
 "use client";
 
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import styles from "./sticker-panel.module.css";
-import { DEFAULT_STICKERS } from "../data/stickerSet";
+import { STICKER_CATEGORIES } from "../data/stickerSet";
 import type { CreateNoteInput } from "@/features/canvas/types";
 import { showToast } from "@/components/Toast";
 
@@ -16,6 +16,7 @@ export function StickerPanel({ onSubmit }: Props) {
   // 터치 이벤트로 onSubmit이 겹쳐 호출될 가능성을 막기 위한 방어적 가드 —
   // 이전 호출이 끝나기 전까지는 같은 클릭을 무시한다.
   const busyRef = useRef(false);
+  const [tab, setTab] = useState(0);
 
   async function handlePick(emoji: string) {
     if (busyRef.current) return;
@@ -35,9 +36,16 @@ export function StickerPanel({ onSubmit }: Props) {
     <div className={styles.panel}>
       <h4 className={styles.heading}>스티커</h4>
       <p className={styles.desc}>눌러서 캔버스에 바로 붙여보세요.</p>
+      <div className={styles.tabs} role="tablist">
+        {STICKER_CATEGORIES.map((c, i) => (
+          <button key={c.label} type="button" role="tab" aria-selected={i === tab} className={i === tab ? styles.tabOn : ""} onClick={() => setTab(i)}>
+            {c.label}
+          </button>
+        ))}
+      </div>
       <div className={styles.grid}>
-        {DEFAULT_STICKERS.map((emoji, i) => (
-          <button key={i} type="button" onClick={() => handlePick(emoji)}>
+        {STICKER_CATEGORIES[tab].stickers.map((emoji) => (
+          <button key={emoji} type="button" onClick={() => handlePick(emoji)}>
             {emoji}
           </button>
         ))}

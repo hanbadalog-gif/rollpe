@@ -34,6 +34,12 @@
   align-self: flex-start;
 }
 
+/* 무드등 캔버스 — 페이지/7_1.jpg에서 잘라낸 배경(검정 판 + 가운데 흰 칸). 배경 자체가 제품 비율 */
+.canvasLamp {
+  aspect-ratio: 307 / 389;
+  background: #000 url("/brand/lamp-canvas.png") center / 100% 100% no-repeat;
+}
+
 /* 용지 크기 고정 — 실물 인화/액자 비율 미리보기.
    A3/A4는 가로세로 "비율" 자체가 동일(ISO 216)해서 공통 고정 높이를 주면
    화면상 구분이 안 됐던 문제 — 실제 mm 치수를 기준으로 높이를 다르게 줘서

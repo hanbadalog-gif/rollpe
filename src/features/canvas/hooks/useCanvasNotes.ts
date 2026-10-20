@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { api, ApiError } from "@/lib/api-client";
 import { gridPosition } from "@/lib/gridPosition";
+import { MODE_CONFIG, type RollpaperMode } from "@/lib/theme";
 import { showToast } from "@/components/Toast";
 import { getEditToken, saveEditToken, removeEditToken, getOwnerToken } from "@/lib/editToken";
 import type { CreateNoteInput, NoteDTO, RollpaperDTO } from "../types";
@@ -55,7 +56,7 @@ export function useCanvasNotes(rollpaperId: string) {
     async (input: CreateNoteInput) => {
       const tempId = `tmp-${Math.random().toString(36).slice(2)}`;
       const current = latest.current?.notes ?? [];
-      const auto = gridPosition(current.length);
+      const auto = gridPosition(current.length, !!latest.current && MODE_CONFIG[latest.current.mode as RollpaperMode].locked);
       const sent: CreateNoteInput = {
         ...input,
         posX: input.posX ?? auto.posX,

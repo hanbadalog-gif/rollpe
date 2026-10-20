@@ -16,6 +16,30 @@
   line-height: 1.5;
 }
 
+.tabs {
+  display: flex;
+  gap: 6px;
+  overflow-x: auto;
+  margin-bottom: 12px;
+}
+
+.tabs button {
+  flex: none;
+  padding: 6px 12px;
+  font-size: 12px;
+  border-radius: 999px;
+  border: 1px solid var(--line);
+  background: var(--surface);
+  color: var(--ink-soft);
+  cursor: pointer;
+}
+
+.tabs .tabOn {
+  background: var(--ink);
+  border-color: var(--ink);
+  color: #fff;
+}
+
 .grid {
   display: grid;
   grid-template-columns: repeat(5, 1fr);

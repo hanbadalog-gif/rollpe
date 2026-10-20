@@ -66,10 +66,12 @@ export function ShareMenu({ mode, onOpenShare, canOrder, onOrder, variant }: Pro
             <button className={styles.item} onClick={copyLink}>
               <LinkIcon size={14} /> 링크 복사
             </button>
-            <button className={styles.item} onClick={copyRecipientLink}>
-              <MailIcon size={14} /> 주인공에게 전달하기
-            </button>
-            {mode === "online" && canOrder && (
+            {mode === "online" && (
+              <button className={styles.item} onClick={copyRecipientLink}>
+                <MailIcon size={14} /> 주인공에게 전달하기
+              </button>
+            )}
+            {canOrder && (
               <button
                 className={styles.item}
                 onClick={() => {
@@ -77,7 +79,7 @@ export function ShareMenu({ mode, onOpenShare, canOrder, onOrder, variant }: Pro
                   onOrder?.();
                 }}
               >
-                <LampIcon size={14} /> 무드등 제작 요청하기
+                <LampIcon size={14} /> {mode === "online" ? "무드등 제작 요청하기" : "글리모리로 전달하기"}
               </button>
             )}
           </div>

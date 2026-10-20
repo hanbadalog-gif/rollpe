@@ -49,7 +49,7 @@ export async function POST(
   // 새 메모는 항상 맨 위 — 기존 최대 z + 1 (서로 다른 값이어야 "앞으로/뒤로" 중간 삽입이 가능)
   const [{ top }] = await db.select({ top: max(notes.z) }).from(notes).where(eq(notes.rollpaperId, id));
   const editToken = generateToken();
-  const auto = gridPosition(noteCount);
+  const auto = gridPosition(noteCount, cfg.locked);
 
   const [note] = await db
     .insert(notes)

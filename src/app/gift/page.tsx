@@ -1,7 +1,20 @@
-import { redirect } from "next/navigation";
+import Link from "next/link";
+import styles from "../new/new.module.css";
+import { GiftFlow } from "@/features/rollpaper-create/components/GiftFlow";
 
-// 무드등은 이 사이트에서 따로 작성하지 않는다 — 온라인 롤링페이퍼를 완성한 뒤 "제작 요청"으로 보내고,
-// 제작은 별도 시스템에서 진행. 예전 링크(/gift)로 들어와도 온라인 롤링페이퍼 만들기로 안내한다.
+// 롤링페이퍼 무드등 선물하기 — 완성 예시 → 고정 디자인 안내 → To 입력 → 캔버스(/[id]) → 공유 → 글리모리 전달
 export default function GiftPage() {
-  redirect("/new");
+  return (
+    <div className={styles.page}>
+      <header className={styles.header}>
+        <Link href="/" aria-label="Rollpe 메인으로">
+          {/* eslint-disable-next-line @next/next/no-img-element -- 브랜드 로고, 단순 정적 이미지 */}
+          <img src="/brand/logo.png" alt="Rollpe" className={styles.logoImg} />
+        </Link>
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img src="/brand/mark.png" alt="" className={styles.markImg} aria-hidden />
+      </header>
+      <GiftFlow />
+    </div>
+  );
 }

@@ -8,13 +8,19 @@ const ROW_PATTERN: { y: number; xs: number[] }[] = [
   { y: 33, xs: [18, 51] },
   { y: 62, xs: [2, 35, 68] },
 ];
+// 무드등 캔버스(페이지/7_1.jpg) — 가운데 흰 칸(x 32~70%, y 25~62%)을 피해 위3/좌우2/아래3 총 8자리
+const LAMP_PATTERN: { y: number; xs: number[] }[] = [
+  { y: 2, xs: [2, 35, 68] },
+  { y: 31, xs: [1, 69] },
+  { y: 66, xs: [2, 35, 68] },
+];
 const SLOTS_PER_PAGE = ROW_PATTERN.reduce((sum, row) => sum + row.xs.length, 0);
 const PAGE_HEIGHT = 92;
 
-export function gridPosition(index: number) {
-  const page = Math.floor(index / SLOTS_PER_PAGE);
+export function gridPosition(index: number, lamp = false) {
+  const page = lamp ? 0 : Math.floor(index / SLOTS_PER_PAGE);
   let within = index % SLOTS_PER_PAGE;
-  for (const row of ROW_PATTERN) {
+  for (const row of lamp ? LAMP_PATTERN : ROW_PATTERN) {
     if (within < row.xs.length) {
       const jitterX = Math.random() * 6 - 3;
       const jitterY = Math.random() * 6 - 3;
