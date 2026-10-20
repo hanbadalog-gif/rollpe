@@ -51,6 +51,9 @@ const CANVAS_CLASS: Partial<Record<RollpaperMode, string>> = {
   mood_b_a4: `${styles.canvasPaper} ${styles.canvasPaperA4}`,
 };
 
+// 이벤트 처리기에서만 호출한다(렌더 중 호출 아님)
+const nowMs = () => Date.now();
+
 function zoneTextStyle(raw: string | undefined): React.CSSProperties {
   const st = parseZoneStyle(raw);
   return { fontFamily: st.font === "inherit" ? "var(--font-sans, 'Noto Sans KR', sans-serif)" : st.font, fontSize: `${st.size}cqw`, fontWeight: st.bold ? 700 : 400 };
@@ -124,15 +127,20 @@ export function CanvasBoard({
   const isOwner = !!getOwnerToken(rollpaperId); // 방장은 모두의 메모 배치를 바꿀 수 있다
   const canArrange = mine || isOwner;
 
+  // 같은 메모를 짧은 시간 안에 두 번 누르면(더블클릭 / 더블 탭) 수정창 — 마우스와 터치 모두 같은 방식
+  const lastTap = useRef<{ id: string; t: number } | null>(null);
   function handleTap(noteId: string) {
     if (readOnly) return;
     const note = rollpaper.notes.find((n) => n.id === noteId);
     if (!note) return;
-    // 이미 선택된 내 글을 한 번 더 누르면 수정창
-    if (selectedNoteId === noteId && note.type === "text" && getEditToken(rollpaperId, noteId)) {
+    const now = nowMs();
+    const last = lastTap.current;
+    if (last && last.id === noteId && now - last.t < 450 && note.type !== "sticker" && getEditToken(rollpaperId, noteId)) {
+      lastTap.current = null;
       onEditNote(noteId);
       return;
     }
+    lastTap.current = { id: noteId, t: now };
     setSelectedNoteId(noteId);
   }
 
@@ -245,11 +253,6 @@ export function CanvasBoard({
         <div className={styles.actionBar} role="toolbar" aria-label="선택한 메모">
           {canArrange ? (
             <>
-              {mine && selectedNote.type === "text" && (
-                <button type="button" className={`${styles.actionPill} ${styles.actionPillMain}`} onClick={() => onEditNote(selectedNote.id)}>
-                  수정
-                </button>
-              )}
               <button type="button" className={styles.actionPill} disabled={atFront} onClick={() => handleReorder(selectedNote.id, "front")}>
                 맨 앞
               </button>
