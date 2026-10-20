@@ -262,6 +262,7 @@
 }
 
 .deleteBtn {
+  scale: calc(1 / var(--ns, 1));
   position: absolute;
   top: -7px;
   right: -7px;
@@ -293,6 +294,7 @@
 
 /* 페이지/메모지 회전기능.JPG 레퍼런스 — 선택 시에만 보이는 4모서리 리사이즈 점 + 상단 회전 핸들 */
 .cornerHandle {
+  scale: calc(1 / var(--ns, 1));
   position: absolute;
   width: 16px;
   height: 16px;
@@ -326,6 +328,7 @@
 
 /* 옆(폭)·위아래(높이)로 늘리는 가운데 핸들 */
 .edgeHandle {
+  scale: calc(1 / var(--ns, 1));
   position: absolute;
   background: var(--surface);
   border: 2px solid var(--accent);
@@ -352,6 +355,7 @@
 }
 
 .rotateHandle {
+  scale: calc(1 / var(--ns, 1));
   position: absolute;
   top: -34px;
   left: 50%;

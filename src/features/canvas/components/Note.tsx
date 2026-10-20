@@ -87,6 +87,8 @@ export function Note({ note, canvasRef, editable, selected, onMoveEnd, onResizeE
     left: `${posX}%`,
     top: `${posY}%`,
     transform: `rotate(${rotation}deg) scale(${scale})`,
+    // 핸들·삭제 버튼은 메모가 작아져도 같은 크기로 보이게 역배율을 CSS에서 쓴다
+    ["--ns" as string]: scale,
     width: boxW ? `${boxW}%` : undefined,
     minHeight: boxH ? `${boxH}%` : undefined,
   };

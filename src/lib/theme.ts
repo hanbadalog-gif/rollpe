@@ -41,9 +41,9 @@ export interface ModeConfig {
 
 // 유형 A — 7_1.jpg 배경(검정 판 + 가운데 흰 칸)
 const ZONES_A: Zone[] = [
-  { key: "title", kind: "text", x: 3, y: 27, w: 27, h: 12, placeholder: "소속·직함" },
+  { key: "title", kind: "text", x: 3, y: 27, w: 27, h: 12, placeholder: "내용을 입력해주세요!" },
   { key: "photo", kind: "photo", x: 31.6, y: 25.4, w: 38.8, h: 37, placeholder: "+ 사진" },
-  { key: "label", kind: "text", x: 70.5, y: 50.5, w: 26, h: 7, placeholder: "라벨", defaultText: "오늘의 주인공", rotate: -6 },
+  { key: "label", kind: "text", x: 70.5, y: 50.5, w: 26, h: 7, placeholder: "내용을 입력해주세요!", rotate: -6 },
 ];
 const SLOTS_A: SlotRows = [
   { y: 1, xs: [2, 35, 68] },

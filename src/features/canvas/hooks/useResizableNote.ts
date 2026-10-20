@@ -2,7 +2,7 @@
 
 import { useRef, type PointerEvent as ReactPointerEvent } from "react";
 
-const MIN_SCALE = 0.6;
+const MIN_SCALE = 0.3; // 글씨까지 같이 줄어드는 최소 배율 — 8장을 넣으려고 많이 줄여도 계속 줄어들게
 const MAX_SCALE = 2.2;
 const PX_PER_SCALE_STEP = 120; // 대각선 120px 드래그 = scale 1.0 변화
 
