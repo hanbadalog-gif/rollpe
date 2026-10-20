@@ -13,7 +13,7 @@ import { showToast } from "@/components/Toast";
 import { ShareMenu } from "@/features/share/components/ShareMenu";
 import { ConversionBanner } from "@/features/share/components/ConversionBanner";
 import { hasBannerBeenSeen, markBannerSeen } from "@/features/share/lib/bannerSeen";
-import { downloadCanvasAsImage } from "@/features/share/lib/canvasExport";
+import { downloadCanvasAsImage, PRINT_WIDTH_PX, PRINT_WIDTH_A4_PX } from "@/features/share/lib/canvasExport";
 import { EnvelopeIntro } from "@/features/recipient/components/EnvelopeIntro";
 import { DownloadIcon, PhotoIcon, WriteIcon, StickerIcon, PaletteIcon } from "@/components/icons";
 import { BgColorPanel } from "@/features/canvas/components/BgColorPanel";
@@ -81,7 +81,7 @@ export function CanvasPageClient({
     if (!canvasExportRef.current || downloading) return;
     setDownloading(true);
     try {
-      await downloadCanvasAsImage(canvasExportRef.current, `rollpe-${rollpaperId}.png`);
+      await downloadCanvasAsImage(canvasExportRef.current, `rollpe-${rollpaperId}.png`, rollpaper!.mode === "mood_b_a4" ? PRINT_WIDTH_A4_PX : PRINT_WIDTH_PX);
     } catch {
       showToast("다운로드에 실패했어요");
     } finally {
