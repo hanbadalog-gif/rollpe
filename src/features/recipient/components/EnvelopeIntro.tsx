@@ -11,9 +11,9 @@ export function EnvelopeIntro({ toName, onDone }: { toName: string; onDone: () =
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img src="/brand/logo.png" alt="Rollpe" className={styles.logo} />
       <p className={styles.text}>
-        사랑하는 {toName}에게온
+        사랑하는 {toName}님에게
         <br />
-        롤링페이퍼
+        온 마음을 담은 감동의 롤링페이퍼
       </p>
       <button className={styles.openBtn} onClick={onDone}>
         열어보기
