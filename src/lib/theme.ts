@@ -54,8 +54,7 @@ const SLOTS_A: SlotRows = [
 
 // 유형 B — 드로잉 액자: 가운데 일러스트 사진 + 이름 문구, 나머지는 글로 채움 (참고: B제품 예시.png)
 const ZONES_B8: Zone[] = [
-  { key: "photo", kind: "photo", x: 31, y: 34, w: 38, h: 25, placeholder: "+ 사진" },
-  { key: "caption", kind: "text", x: 20, y: 60.5, w: 60, h: 6, placeholder: "사진 아래 문구 (예: 이름)" },
+  { key: "photo", kind: "photo", x: 31, y: 34, w: 38, h: 30, placeholder: "+ 사진" },
 ];
 const SLOTS_B8: SlotRows = [
   { y: 1, xs: [2, 35, 68] },
@@ -63,8 +62,7 @@ const SLOTS_B8: SlotRows = [
   { y: 71, xs: [2, 35, 68] },
 ];
 const ZONES_BA4: Zone[] = [
-  { key: "photo", kind: "photo", x: 31, y: 36, w: 38, h: 22, placeholder: "+ 사진" },
-  { key: "caption", kind: "text", x: 20, y: 59, w: 60, h: 5, placeholder: "사진 아래 문구 (예: 이름)" },
+  { key: "photo", kind: "photo", x: 31, y: 36, w: 38, h: 26, placeholder: "+ 사진" },
 ];
 const SLOTS_BA4: SlotRows = [
   { y: 1, xs: [2, 35, 68] },
