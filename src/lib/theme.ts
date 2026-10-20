@@ -17,6 +17,8 @@ export interface Zone {
   /** 비어 있을 때 보여줄 기본 문구 */
   defaultText?: string;
   rotate?: number;
+  /** 글이 칸보다 길 때 늘어나는 방향 — 위/아래 장식(화살표 등)을 덮지 않는 쪽으로 */
+  grow?: "down" | "up";
 }
 
 /** 새 메모가 차례로 들어가는 자리 — 고정 칸을 피해서 행 단위로 채운다 */
@@ -41,9 +43,9 @@ export interface ModeConfig {
 
 // 투명 아크릴(유형 B) — 7_1.jpg 배경(검정 판 + 가운데 흰 칸)
 const ZONES_A: Zone[] = [
-  { key: "title", kind: "text", x: 3, y: 27, w: 27, h: 12, placeholder: "내용을 입력해주세요!" },
+  { key: "title", kind: "text", x: 3, y: 27, w: 27, h: 12, placeholder: "내용을 입력해주세요!", grow: "up" },
   { key: "photo", kind: "photo", x: 31.6, y: 25.4, w: 38.8, h: 37, placeholder: "+ 사진" },
-  { key: "label", kind: "text", x: 70.5, y: 50.5, w: 26, h: 7, placeholder: "내용을 입력해주세요!", rotate: -6 },
+  { key: "label", kind: "text", x: 70.5, y: 50.5, w: 26, h: 7, placeholder: "내용을 입력해주세요!", rotate: -6, grow: "down" },
 ];
 const SLOTS_A: SlotRows = [
   { y: 1, xs: [2, 35, 68] },

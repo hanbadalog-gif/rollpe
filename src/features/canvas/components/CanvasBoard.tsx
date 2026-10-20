@@ -148,6 +148,8 @@ export function CanvasBoard({
             height: `${z.h}%`,
             color: cfg.fixedTextColor,
             transform: z.rotate ? `rotate(${z.rotate}deg)` : undefined,
+            // 글이 길면 칸 밖으로 넘치되 자르지 않는다 — 화살표가 있는 반대 방향으로 늘어남
+            ...(z.kind === "text" ? { overflow: "visible", alignItems: z.grow === "up" ? "flex-end" : z.grow === "down" ? "flex-start" : "center" } : {}),
           };
           const body = !value ? (
             <span data-no-export="1" className={styles.zonePlaceholder}>
