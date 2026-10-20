@@ -22,7 +22,7 @@ export function GiftFlow() {
     setSubmitting(true);
     try {
       const { id } = await createRollpaper(toName.trim(), "mood_a");
-      router.push(`/${id}`);
+      router.push(`/gift/${id}`);
     } catch {
       showToast("생성하지 못했어요. 잠시 후 다시 시도해주세요.");
       setSubmitting(false);

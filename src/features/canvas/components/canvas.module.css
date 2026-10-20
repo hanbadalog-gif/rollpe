@@ -73,6 +73,11 @@
   height: min(297mm, 78vh);
 }
 
+/* 빈 캔버스 안내가 아래 받침 위에 걸치지 않도록 검정 판 안쪽으로 */
+.canvasLamp .hint {
+  bottom: 9%;
+}
+
 .safeArea {
   position: absolute;
   inset: 16px;
