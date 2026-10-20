@@ -28,13 +28,11 @@ export default function HomePage() {
 
           {/* 페이지/1.jpg 재확인 — 헤드라인은 흰 배경 위, 파란 패널은 메모지 구역에만 적용 */}
           <div className={styles.heroText}>
-            {/* 메인 카피(기획서 1장) + 서브 카피 */}
             <h1 className={styles.title}>
-              마음을 모은
+              롤링페이퍼로
               <br />
-              <span className={styles.highlight}>감동 선물</span>
+              <span className={styles.highlight}>감동을 선물</span>하세요
             </h1>
-            <p className={styles.subtitle}>롤링페이퍼로 감동을 선물하세요</p>
           </div>
         </div>
 
@@ -60,7 +58,6 @@ export default function HomePage() {
             <Link href="/gift" className={styles.btnGhost}>
               롤링페이퍼 무드등 <span className={styles.btnGhostBlack}>선물하기</span>
             </Link>
-            <p className={styles.brandMark}>ROLLPE by GLIMORY</p>
           </div>
         </div>
       </main>

@@ -93,23 +93,6 @@
   -webkit-box-decoration-break: clone;
 }
 
-.subtitle {
-  margin: 10px 0 0;
-  font-size: 14px;
-  font-weight: 500;
-  line-height: 1.5;
-  color: var(--ink-soft);
-}
-
-.brandMark {
-  margin: -4px 0 0;
-  text-align: center;
-  font-size: 11px;
-  font-weight: 500;
-  letter-spacing: 0.14em;
-  color: var(--ink-soft);
-}
-
 .heroPanel {
   flex: 1; /* 메모지 구역이 .heroText/.heroCtaRow 사이 남는 공간을 전부 채움 */
   overflow: hidden;
