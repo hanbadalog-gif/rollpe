@@ -7,10 +7,10 @@ const SITE_URL = "https://rollpe-app.vercel.app";
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
   title: "ROLLPE by GLIMORY",
-  description: "마음을 모은 감동 선물 — 온라인 롤링페이퍼",
+  description: "마음을 모은 감동 선물 - 온라인 롤링페이퍼",
   openGraph: {
     title: "ROLLPE by GLIMORY",
-    description: "마음을 모은 감동 선물 — 온라인 롤링페이퍼",
+    description: "마음을 모은 감동 선물 - 온라인 롤링페이퍼",
     url: SITE_URL,
     siteName: "ROLLPE by GLIMORY",
     // 카톡 등 공유 미리보기 이미지(수정/15.png). 파일 이름을 바꿔 두면 이전 이미지가 캐시에 남아 있어도 새로 가져간다
@@ -21,7 +21,7 @@ export const metadata: Metadata = {
   twitter: {
     card: "summary_large_image",
     title: "ROLLPE by GLIMORY",
-    description: "마음을 모은 감동 선물 — 온라인 롤링페이퍼",
+    description: "마음을 모은 감동 선물 - 온라인 롤링페이퍼",
     images: ["/og-image-v2.png"],
   },
 };
