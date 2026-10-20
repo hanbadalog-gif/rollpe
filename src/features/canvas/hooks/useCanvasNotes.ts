@@ -8,6 +8,8 @@ import { showToast } from "@/components/Toast";
 import { getEditToken, saveEditToken, removeEditToken, getOwnerToken } from "@/lib/editToken";
 import type { CreateNoteInput, FixedFields, NoteDTO, RollpaperDTO } from "../types";
 
+type HistoryEntry = { undo: () => Promise<unknown>; redo: () => Promise<unknown> };
+
 const POLL_INTERVAL_MS = 7000; // TRD §3 "5~10초 폴링으로 충분" (NFR3)
 
 /**
@@ -27,6 +29,10 @@ export function useCanvasNotes(rollpaperId: string) {
   }, [rollpaper]);
 
   // 내가 바꾼 값(크기/위치 등)을 폴링 응답이 옛 값으로 되돌리지 못하게 막는 장치
+  const undoStack = useRef<HistoryEntry[]>([]);
+  const redoStack = useRef<HistoryEntry[]>([]);
+  const [counts, setCounts] = useState({ undo: 0, redo: 0 }); // 되돌리기/다시 실행 버튼 활성 상태(렌더 중 ref를 읽지 않기 위해 state로 복사)
+  const sync = () => setCounts({ undo: undoStack.current.length, redo: redoStack.current.length });
   const mutating = useRef(0); // 저장 중인 내 변경 수
   const lastMutationAt = useRef(0);
 
@@ -71,7 +77,7 @@ export function useCanvasNotes(rollpaperId: string) {
   // 낙관적 추가 — 누르는 즉시 임시 메모를 보여주고(위치도 서버와 같은 규칙으로 계산해 같이 보냄),
   // 서버 저장은 뒤에서. 성공하면 임시 메모를 진짜 메모로 바꾸고, 실패하면 지우고 안내한다.
   const addNote = useCallback(
-    async (input: CreateNoteInput) => {
+    async (input: CreateNoteInput, onSaved?: (note: NoteDTO) => void) => {
       const tempId = `tmp-${Math.random().toString(36).slice(2)}`;
       const current = latest.current?.notes ?? [];
       const auto = gridPosition(current.length, latest.current ? MODE_CONFIG[latest.current.mode as RollpaperMode].slots : undefined);
@@ -104,6 +110,7 @@ export function useCanvasNotes(rollpaperId: string) {
         createdAt: new Date().toISOString(),
       };
       setRollpaper((prev) => (prev ? { ...prev, notes: [...prev.notes, temp] } : prev));
+      mutating.current++; // POST가 끝날 때까지 폴링 응답이 임시 메모를 지우지 않도록
       api
         .post<NoteDTO & { editToken: string }>(`/api/rollpapers/${rollpaperId}/notes`, sent)
         .then((note) => {
@@ -112,6 +119,7 @@ export function useCanvasNotes(rollpaperId: string) {
           setRollpaper((prev) =>
             prev ? { ...prev, notes: [...prev.notes.filter((n) => n.id !== tempId && n.id !== note.id), note] } : prev,
           );
+          onSaved?.(note);
         })
         .catch((err) => {
           setRollpaper((prev) => (prev ? { ...prev, notes: prev.notes.filter((n) => n.id !== tempId) } : prev));
@@ -120,6 +128,10 @@ export function useCanvasNotes(rollpaperId: string) {
               ? "정원이 다 찼어요"
               : "추가하지 못했어요. 잠시 후 다시 시도해주세요.",
           );
+        })
+        .finally(() => {
+          mutating.current--;
+          lastMutationAt.current = Date.now();
         });
     },
     [rollpaperId],
@@ -272,10 +284,7 @@ export function useCanvasNotes(rollpaperId: string) {
       }
     };
 
-  return {
-    rollpaper,
-    loading,
-    error,
+  const tracked = {
     addNote: track(addNote),
     updateNote: track(updateNote),
     moveNote: track(moveNote),
@@ -283,7 +292,125 @@ export function useCanvasNotes(rollpaperId: string) {
     deleteNote: track(deleteNote),
     updateBgColor: track(updateBgColor),
     updateFixed: track(updateFixed),
+  };
+
+  // ── 되돌리기(Ctrl+Z) / 다시 실행 — 이 기기에서 한 변경만 기록한다 (이동·크기·글 수정·추가·삭제·배경색·고정 칸)
+  const noteOf = (id: string) => latest.current?.notes.find((n) => n.id === id);
+  const push = (entry: HistoryEntry) => {
+    undoStack.current.push(entry);
+    if (undoStack.current.length > 50) undoStack.current.shift();
+    redoStack.current = [];
+    sync();
+  };
+  const toInput = (n: NoteDTO): CreateNoteInput => ({
+    type: n.type,
+    fromName: n.fromName ?? undefined,
+    content: n.content ?? undefined,
+    font: n.font ?? undefined,
+    fontSize: n.fontSize ?? undefined,
+    bold: n.bold,
+    textColor: n.textColor ?? undefined,
+    bgColor: n.bgColor ?? undefined,
+    borderColor: n.borderColor ?? undefined,
+    photoUrl: n.photoUrl ?? undefined,
+    posX: n.posX,
+    posY: n.posY,
+    rotation: n.rotation,
+    scale: n.scale,
+    width: n.width ?? undefined,
+    height: n.height ?? undefined,
+  });
+
+  const recorded = {
+    addNote: async (input: CreateNoteInput) => {
+      // 서버 저장이 끝나 진짜 id를 받은 뒤에 기록한다 — 되돌리기=삭제, 다시 실행=같은 내용으로 다시 추가
+      tracked.addNote(input, (saved) => {
+        let cur = saved.id;
+        push({
+          undo: () => tracked.deleteNote(cur, getOwnerToken(rollpaperId)),
+          redo: () => tracked.addNote(toInput(saved), (n) => void (cur = n.id)),
+        });
+      });
+    },
+    moveNote: async (id: string, posX: number, posY: number, rotation?: number) => {
+      const n = noteOf(id);
+      const prev = n && { x: n.posX, y: n.posY, r: n.rotation };
+      await tracked.moveNote(id, posX, posY, rotation);
+      if (prev && (prev.x !== posX || prev.y !== posY || (rotation != null && prev.r !== rotation)))
+        push({ undo: () => tracked.moveNote(id, prev.x, prev.y, prev.r), redo: () => tracked.moveNote(id, posX, posY, rotation ?? prev.r) });
+    },
+    resizeNote: async (id: string, scale: number) => {
+      const prev = noteOf(id)?.scale;
+      await tracked.resizeNote(id, scale);
+      if (prev != null && prev !== scale) push({ undo: () => tracked.resizeNote(id, prev), redo: () => tracked.resizeNote(id, scale) });
+    },
+    updateNote: async (id: string, patch: Partial<CreateNoteInput>) => {
+      const n = noteOf(id) as unknown as Record<string, unknown> | undefined;
+      const prev: Record<string, unknown> = {};
+      if (n) for (const k of Object.keys(patch)) prev[k] = n[k] ?? null;
+      await tracked.updateNote(id, patch);
+      if (n) push({ undo: () => tracked.updateNote(id, prev as Partial<CreateNoteInput>), redo: () => tracked.updateNote(id, patch) });
+    },
+    deleteNote: async (id: string, ownerToken?: string | null) => {
+      const n = noteOf(id);
+      await tracked.deleteNote(id, ownerToken);
+      if (n) {
+        let cur = id;
+        push({
+          undo: () => tracked.addNote(toInput(n), (saved) => void (cur = saved.id)),
+          redo: () => tracked.deleteNote(cur, getOwnerToken(rollpaperId)),
+        });
+      }
+    },
+    updateBgColor: async (bgColor: string) => {
+      const prev = latest.current?.bgColor ?? null;
+      await tracked.updateBgColor(bgColor);
+      push({ undo: () => tracked.updateBgColor(prev ?? ""), redo: () => tracked.updateBgColor(bgColor) });
+    },
+    updateFixed: async (patch: FixedFields) => {
+      const cur = latest.current?.fixedFields ?? {};
+      const prev: FixedFields = {};
+      for (const k of Object.keys(patch) as (keyof FixedFields)[]) prev[k] = cur[k] ?? "";
+      await tracked.updateFixed(patch);
+      push({ undo: () => tracked.updateFixed(prev), redo: () => tracked.updateFixed(patch) });
+    },
+  };
+
+  const undo = async () => {
+    const entry = undoStack.current.pop();
+    if (!entry) return;
+    try {
+      await entry.undo();
+      redoStack.current.push(entry);
+      showToast("되돌렸어요");
+    } catch {
+      showToast("되돌리지 못했어요");
+    }
+    sync();
+  };
+  const redo = async () => {
+    const entry = redoStack.current.pop();
+    if (!entry) return;
+    try {
+      await entry.redo();
+      undoStack.current.push(entry);
+      showToast("다시 실행했어요");
+    } catch {
+      showToast("다시 실행하지 못했어요");
+    }
+    sync();
+  };
+
+  return {
+    rollpaper,
+    loading,
+    error,
+    ...recorded,
     setFinished: track(setFinished),
+    undo,
+    redo,
+    canUndo: counts.undo > 0,
+    canRedo: counts.redo > 0,
     canEdit,
     refresh,
   };

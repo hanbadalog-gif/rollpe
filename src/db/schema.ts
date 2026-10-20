@@ -95,6 +95,7 @@ export const orders = pgTable("orders", {
   memo: text("memo"),
   status: text("status").notNull().default("requested"), // requested → in_progress → shipped
   snapshot: jsonb("snapshot").notNull(),
+  image: text("image"), // 요청 시점 완성 이미지(PNG 데이터 URL, 인쇄 해상도) — 글자 배치 확인용. JSON에는 싣지 않고 별도 다운로드
   createdAt: timestamp("created_at").defaultNow().notNull(),
 });
 

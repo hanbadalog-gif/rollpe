@@ -37,7 +37,9 @@ export function Note({ note, canvasRef, editable, selected, onMoveEnd, onResizeE
   const boxDrag = useRef<{ axis: "w" | "h"; sx: number; sy: number; base: number; cw: number; ch: number; cos: number; sin: number; sc: number } | null>(null);
   const elRef = useRef<HTMLDivElement | null>(null);
 
-  const disabled = readOnly || !editable;
+  // 서버 저장이 끝나기 전의 임시 메모(tmp-…) — 이때 끌면 저장이 끝나며 원래 자리로 돌아가므로 "등록 중"으로 표시하고 잠근다
+  const pending = note.id.startsWith("tmp-");
+  const disabled = readOnly || !editable || pending;
 
   const drag = useDraggableNote({
     posX: note.posX,
@@ -162,7 +164,7 @@ export function Note({ note, canvasRef, editable, selected, onMoveEnd, onResizeE
   if (note.type === "sticker") {
     return (
       <div
-        className={`${styles.note} ${styles.noteSticker} ${selected ? styles.noteSelected : ""}`}
+        className={`${styles.note} ${styles.noteSticker} ${selected ? styles.noteSelected : ""} ${pending ? styles.notePending : ""}`}
         style={style}
         ref={setRefs}
         onPointerDown={drag.onPointerDown}
@@ -181,6 +183,11 @@ export function Note({ note, canvasRef, editable, selected, onMoveEnd, onResizeE
             ✕
           </span>
         )}
+        {pending && (
+          <span data-no-export="1" className={styles.pendingBadge}>
+            등록 중…
+          </span>
+        )}
         {handles}
       </div>
     );
@@ -189,7 +196,7 @@ export function Note({ note, canvasRef, editable, selected, onMoveEnd, onResizeE
   if (note.type === "photo" && !note.content) {
     return (
       <div
-        className={`${styles.note} ${styles.notePhotoOnly} ${selected ? styles.noteSelected : ""}`}
+        className={`${styles.note} ${styles.notePhotoOnly} ${selected ? styles.noteSelected : ""} ${pending ? styles.notePending : ""}`}
         style={style}
         ref={setRefs}
         onPointerDown={drag.onPointerDown}
@@ -205,6 +212,11 @@ export function Note({ note, canvasRef, editable, selected, onMoveEnd, onResizeE
             ✕
           </span>
         )}
+        {pending && (
+          <span data-no-export="1" className={styles.pendingBadge}>
+            등록 중…
+          </span>
+        )}
         {handles}
       </div>
     );
@@ -212,7 +224,7 @@ export function Note({ note, canvasRef, editable, selected, onMoveEnd, onResizeE
 
   return (
     <div
-      className={`${styles.note} ${selected ? styles.noteSelected : ""} ${flat ? styles.noteFlat : ""}`}
+      className={`${styles.note} ${selected ? styles.noteSelected : ""} ${pending ? styles.notePending : ""} ${flat ? styles.noteFlat : ""}`}
       ref={setRefs}
       style={{
         ...style,
@@ -240,7 +252,12 @@ export function Note({ note, canvasRef, editable, selected, onMoveEnd, onResizeE
           ✕
         </span>
       )}
-      {handles}
+      {pending && (
+          <span data-no-export="1" className={styles.pendingBadge}>
+            등록 중…
+          </span>
+        )}
+        {handles}
     </div>
   );
 }

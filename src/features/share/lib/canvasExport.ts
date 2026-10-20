@@ -46,7 +46,8 @@ function withDpi(dataUrl: string, dpi: number): string {
   return "data:image/png;base64," + btoa(s);
 }
 
-export async function downloadCanvasAsImage(canvasEl: HTMLElement, fileName: string, targetWidthPx = PRINT_WIDTH_PX) {
+/** 캔버스를 인쇄 해상도 PNG(300dpi 정보 포함) 데이터 URL로 만든다 — 다운로드와 글리모리 전달이 같은 결과를 쓴다 */
+export async function renderCanvasPng(canvasEl: HTMLElement, targetWidthPx = PRINT_WIDTH_PX): Promise<string> {
   await document.fonts.ready;
   const w = canvasEl.offsetWidth;
   const h = canvasEl.offsetHeight;
@@ -60,11 +61,15 @@ export async function downloadCanvasAsImage(canvasEl: HTMLElement, fileName: str
   const dataUrl = await toPng(canvasEl, {
     pixelRatio: ratio,
     cacheBust: true,
-    // 입력 안내(점선 칸/placeholder)는 저장 이미지에서 뺀다
+    // 입력 안내(점선 칸/placeholder/등록 중 표시)는 저장 이미지에서 뺀다
     filter: (node) => !(node instanceof HTMLElement && node.dataset.noExport),
   });
+  return withDpi(dataUrl, DPI);
+}
+
+export async function downloadCanvasAsImage(canvasEl: HTMLElement, fileName: string, targetWidthPx = PRINT_WIDTH_PX) {
   const a = document.createElement("a");
-  a.href = withDpi(dataUrl, DPI);
+  a.href = await renderCanvasPng(canvasEl, targetWidthPx);
   a.download = fileName;
   a.click();
 }

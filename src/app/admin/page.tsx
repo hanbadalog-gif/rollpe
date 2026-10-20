@@ -20,6 +20,7 @@ export default async function AdminHomePage() {
       createdAt: orders.createdAt,
       toName: sql<string>`${orders.snapshot}->>'toName'`,
       noteCount: sql<number>`jsonb_array_length(${orders.snapshot}->'notes')`,
+      hasImage: sql<boolean>`${orders.image} is not null`,
     })
     .from(orders)
     .orderBy(desc(orders.createdAt));
@@ -42,6 +43,11 @@ export default async function AdminHomePage() {
               {r.memo ? ` / ${r.memo}` : ""}
             </div>
             <div style={{ color: "#767676" }}>{r.createdAt.toLocaleString("ko-KR")}</div>
+            {r.hasImage && (
+              <a href={`/api/admin/orders/${r.id}/image`} download style={{ color: "#6c7fb7", fontWeight: 700, marginRight: 12 }}>
+                ⬇ 이미지(PNG)
+              </a>
+            )}
             <a href={`/api/admin/orders/${r.id}`} download style={{ color: "#6c7fb7", fontWeight: 700, marginRight: 12 }}>
               ⬇ JSON
             </a>

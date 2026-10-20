@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import styles from "./canvas-page.module.css";
 import { CanvasBoard } from "@/features/canvas/components/CanvasBoard";
 import { WritePanel } from "@/features/write-panel/components/WritePanel";
@@ -15,7 +15,7 @@ import { ConversionBanner } from "@/features/share/components/ConversionBanner";
 import { hasBannerBeenSeen, markBannerSeen } from "@/features/share/lib/bannerSeen";
 import { downloadCanvasAsImage, PRINT_WIDTH_PX, PRINT_WIDTH_A4_PX } from "@/features/share/lib/canvasExport";
 import { EnvelopeIntro } from "@/features/recipient/components/EnvelopeIntro";
-import { DownloadIcon, PhotoIcon, WriteIcon, StickerIcon, PaletteIcon } from "@/components/icons";
+import { DownloadIcon, PhotoIcon, UndoIcon, RedoIcon, WriteIcon, StickerIcon, PaletteIcon } from "@/components/icons";
 import { BgColorPanel } from "@/features/canvas/components/BgColorPanel";
 import { OrderPanel } from "@/features/order/components/OrderPanel";
 import { getOwnerToken } from "@/lib/editToken";
@@ -29,7 +29,7 @@ export function CanvasPageClient({
   rollpaperId: string;
   recipientView?: boolean;
 }) {
-  const { rollpaper, loading, error, addNote, updateNote, moveNote, resizeNote, deleteNote, updateBgColor, updateFixed, setFinished } =
+  const { rollpaper, loading, error, addNote, updateNote, moveNote, resizeNote, deleteNote, updateBgColor, updateFixed, setFinished, undo, redo, canUndo, canRedo } =
     useCanvasNotes(rollpaperId);
   const [openPanel, setOpenPanel] = useState<PanelKey>(null);
   const [showBanner, setShowBanner] = useState(false);
@@ -39,6 +39,28 @@ export function CanvasPageClient({
   const [editingId, setEditingId] = useState<string | null>(null); // 수정창에 열려 있는 메모
   const [editingZone, setEditingZone] = useState<Zone | null>(null); // 무드등 고정 칸 입력창
   const canvasExportRef = useRef<HTMLDivElement>(null);
+
+  const locked0 = recipientView || !!rollpaper?.finishedAt;
+
+  // Ctrl/⌘+Z 되돌리기, Ctrl/⌘+Shift+Z · Ctrl+Y 다시 실행 — 글 입력창 안에서는 브라우저 기본 동작을 그대로 둔다
+  useEffect(() => {
+    if (locked0) return;
+    function onKey(e: KeyboardEvent) {
+      if (!(e.ctrlKey || e.metaKey)) return;
+      const t = e.target as HTMLElement | null;
+      if (t && (t.tagName === "INPUT" || t.tagName === "TEXTAREA" || t.tagName === "SELECT" || t.isContentEditable)) return;
+      const k = e.key.toLowerCase();
+      if (k === "z" && !e.shiftKey) {
+        e.preventDefault();
+        undo();
+      } else if ((k === "z" && e.shiftKey) || k === "y") {
+        e.preventDefault();
+        redo();
+      }
+    }
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [locked0, undo, redo]);
 
   if (loading) return <div className={styles.loading}>불러오는 중…</div>;
   if (error || !rollpaper) return <div className={styles.loading}>{error ?? "오류가 발생했어요"}</div>;
@@ -147,6 +169,12 @@ export function CanvasPageClient({
           <div className={styles.toolbar}>
             {!finished && (
               <>
+              <button className={styles.tool} disabled={!canUndo} onClick={undo} aria-label="되돌리기" title="되돌리기 (Ctrl+Z)">
+                <UndoIcon />
+              </button>
+              <button className={styles.tool} disabled={!canRedo} onClick={redo} aria-label="다시 실행" title="다시 실행 (Ctrl+Shift+Z)">
+                <RedoIcon />
+              </button>
               <button
                 className={`${styles.tool} ${openPanel === "write" ? styles.toolActive : ""}`}
                 disabled={atCap && isFinite(cfg.capacity)}
@@ -242,6 +270,8 @@ export function CanvasPageClient({
               {openPanel === "bg" && <BgColorPanel current={rollpaper.bgColor} onPick={updateBgColor} />}
               {openPanel === "order" && <OrderPanel
                   rollpaperId={rollpaperId}
+                  getCanvasEl={() => canvasExportRef.current}
+                  imageWidthPx={rollpaper.mode === "mood_b_a4" ? PRINT_WIDTH_A4_PX : PRINT_WIDTH_PX}
                   onDone={() => setOpenPanel(null)}
                   getCanvas={() => {
                     const r = canvasExportRef.current?.getBoundingClientRect();

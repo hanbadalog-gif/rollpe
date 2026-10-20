@@ -21,6 +21,7 @@ export async function POST(request: NextRequest, ctx: RouteContext<"/api/rollpap
     contact?: string;
     memo?: string;
     canvas?: { width?: number; height?: number; paperSize?: string };
+    image?: string; // 요청 시점 완성 이미지(PNG 데이터 URL)
   } | null;
   const contactName = body?.contactName?.trim();
   const contact = body?.contact?.trim();
@@ -47,7 +48,11 @@ export async function POST(request: NextRequest, ctx: RouteContext<"/api/rollpap
     notes: noteRows.map(({ editToken: _t, userId: _u, rollpaperId: _r, ...n }) => n), // 토큰류는 제외
   };
 
-  const values = { rollpaperId: id, contactName, contact, memo: body?.memo?.trim() || null, snapshot };
+  // 완성 이미지는 PNG 데이터 URL만, 4MB 이하로 제한해 저장 (없으면 이미지 없이 접수)
+  const image =
+    typeof body?.image === "string" && body.image.startsWith("data:image/png;base64,") && body.image.length < 4_000_000 ? body.image : null;
+
+  const values = { rollpaperId: id, contactName, contact, memo: body?.memo?.trim() || null, snapshot, image };
   const [order] = await db
     .insert(orders)
     .values(values)

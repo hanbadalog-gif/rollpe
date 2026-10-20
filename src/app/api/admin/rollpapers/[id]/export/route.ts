@@ -4,6 +4,7 @@ import { eq } from "drizzle-orm";
 import { db } from "@/db";
 import { rollpapers, notes } from "@/db/schema";
 import { isAdmin } from "@/lib/adminAuth";
+import { withFontInfo } from "@/lib/orderExport";
 
 export async function GET(
   request: NextRequest,
@@ -27,15 +28,9 @@ export async function GET(
     fixedFields: rollpaper.fixedFields,
     createdAt: rollpaper.createdAt,
     noteCount: noteRows.length,
-    notes: noteRows.map((n) => ({
-      fromName: n.fromName,
-      content: n.content,
-      type: n.type,
-      photoUrl: n.photoUrl, // 데이터 URL(base64) — 사진이 있으면 그대로 포함됨
-      font: n.font,
-      bgColor: n.bgColor,
-      createdAt: n.createdAt,
-    })),
+    notes: noteRows.map(({ editToken: _t, userId: _u, rollpaperId: _r, ...n }) =>
+      withFontInfo(n), // 문구 + 글씨체(fontName/fontFamily) + 글자 크기·색·위치·회전·크기 — 사진은 데이터 URL(base64)
+    ),
   };
 
   return new NextResponse(JSON.stringify(payload, null, 2), {
