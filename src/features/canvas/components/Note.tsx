@@ -22,9 +22,11 @@ interface Props {
   readOnly?: boolean;
   /** 무드등 모드(수정/0번 피드백) — 메모지 그림자를 없애 실물 인화/아크릴 느낌에 가깝게 */
   flat?: boolean;
+  /** 메모가 머물 수 있는 영역 — useDraggableNote 참고 */
+  bounds?: { right: number; bottom: number };
 }
 
-export function Note({ note, canvasRef, editable, selected, onMoveEnd, onResizeEnd, onRotateEnd, onTap, onDelete, setRef, readOnly, flat }: Props) {
+export function Note({ note, canvasRef, editable, selected, onMoveEnd, onResizeEnd, onRotateEnd, onTap, onDelete, setRef, readOnly, flat, bounds }: Props) {
   // 드래그 중에는 서버 왕복 없이 로컬 좌표만 바꿔 즉시 반응하게 한다 (실시간 이동 체감용)
   const [dragPos, setDragPos] = useState<{ x: number; y: number } | null>(null);
   const [dragScale, setDragScale] = useState<number | null>(null);
@@ -44,6 +46,7 @@ export function Note({ note, canvasRef, editable, selected, onMoveEnd, onResizeE
     },
     onTap,
     disabled,
+    bounds,
   });
 
   const resize = useResizableNote({

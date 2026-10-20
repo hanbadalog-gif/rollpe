@@ -34,6 +34,9 @@ const PAPER_CLASS: Record<PaperSize, string> = {
   a3l: "canvasA3l",
 };
 
+// 무드등 캔버스에서 글이 놓일 수 있는 검정 판 영역 — 아래 받침(이미지 하단 7%)은 제외
+const LAMP_PLATE = { right: 100, bottom: 93 };
+
 type Reorder = "front" | "forward" | "backward" | "back";
 
 /**
@@ -135,6 +138,7 @@ export function CanvasBoard({
             editable
             readOnly={readOnly}
             flat={cfg.locked}
+            bounds={cfg.locked ? LAMP_PLATE : undefined}
             selected={note.id === selectedNote?.id}
             onMoveEnd={(posX, posY) => moveNote(note.id, posX, posY, note.rotation)}
             onResizeEnd={(scale) => resizeNote(note.id, scale)}
