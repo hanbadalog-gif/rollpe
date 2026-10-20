@@ -18,22 +18,20 @@
   flex-direction: column;
   align-items: center;
   gap: 14px;
-  padding: 30px 22px 20px;
+  padding: 22px 22px 16px;
   text-align: center;
   background: var(--surface);
   border-radius: 20px;
   box-shadow: var(--shadow);
 }
 
-.thumb {
-  width: 54px;
-  height: 54px;
+.hero {
+  width: 100%;
+  height: 170px;
+  object-fit: cover;
+  object-position: center 35%; /* 아크릴판과 사진이 함께 보이도록 */
   border-radius: 14px;
-  background: var(--accent-soft);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 26px;
+  display: block;
 }
 
 .text strong {
@@ -79,63 +77,15 @@
 
 .closeBtn {
   position: absolute;
-  top: 8px;
-  right: 8px;
-  width: 32px;
-  height: 32px;
+  top: 30px;
+  right: 30px;
+  z-index: 1;
+  width: 30px;
+  height: 30px;
   border: none;
-  background: none;
-  color: var(--ink-soft);
-  font-size: 14px;
-  cursor: pointer;
-}
-
-.calRow {
-  width: 100%;
-  padding-top: 10px;
-  border-top: 1px solid var(--line);
-}
-
-.calBtn {
-  border: none;
-  background: none;
-  color: var(--accent-deep);
-  font-size: 11px;
-  font-weight: 700;
-  cursor: pointer;
-  padding: 2px 0;
-  text-decoration: underline;
-  text-underline-offset: 2px;
-}
-
-.calPicker {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 8px;
-}
-
-.dateInput {
-  font-size: 11.5px;
-  padding: 6px 8px;
-  border-radius: 7px;
-  border: 1px solid var(--line);
-  background: var(--surface);
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.92);
   color: var(--ink);
-}
-
-.calSaveBtn {
-  font-size: 11px;
-  font-weight: 700;
-  background: var(--accent);
-  color: var(--accent-ink);
-  border: none;
-  padding: 6px 11px;
-  border-radius: 7px;
+  font-size: 13px;
   cursor: pointer;
-}
-
-.calSaveBtn:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
 }
