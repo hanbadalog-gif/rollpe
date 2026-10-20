@@ -10,6 +10,13 @@ import { MODE_CONFIG, type RollpaperMode } from "@/lib/theme";
 
 type Kind = "online" | "gift";
 
+// yy.mm.dd (예: 26.10.20)
+function shortDate(ts: number) {
+  const d = new Date(ts);
+  const p = (n: number) => String(n).padStart(2, "0");
+  return `${p(d.getFullYear() % 100)}.${p(d.getMonth() + 1)}.${p(d.getDate())}`;
+}
+
 // 수정/8번 피드백 — 생성 직후 링크 복사 전에 페이지를 나가면 되찾을 방법이 없던 문제.
 // 이 기기에서 만든 목록(로컬 저장)을 다시 보여주는 복구용 목록. 만든 버튼별로 따로 보여준다:
 // "무료 롤링페이퍼 방 만들기"(online)와 "롤링페이퍼 무드등 선물하기"(gift)는 서로의 목록에 나오지 않는다.
@@ -67,11 +74,11 @@ export function MyRollpapers({ kind }: { kind: Kind }) {
             {list.map((r) => (
               <li key={r.id} className={styles.item}>
                 <Link href={r.mode === "online" ? `/${r.id}` : `/gift/${r.id}`} className={styles.card}>
-                  <span className={styles.cardTo}>
-                    To. {r.toName}
-                    {r.mode !== "online" && ` · ${MODE_CONFIG[r.mode as RollpaperMode]?.label ?? "무드등"}`}
+                  <span className={styles.cardMain}>
+                    <span className={styles.cardTo}>To. {r.toName}</span>
+                    {r.mode !== "online" && <span className={styles.cardKind}>{MODE_CONFIG[r.mode as RollpaperMode]?.label ?? "무드등"}</span>}
                   </span>
-                  <span className={styles.cardDate}>{new Date(r.createdAt).toLocaleDateString("ko-KR")}</span>
+                  <span className={styles.cardDate}>{shortDate(r.createdAt)}</span>
                 </Link>
                 <button type="button" className={styles.delBtn} onClick={() => handleDelete(r)} aria-label={`To. ${r.toName} 삭제`}>
                   삭제
