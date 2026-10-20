@@ -54,6 +54,8 @@ export async function PATCH(
     "bgColor",
     "borderColor",
     "scale",
+    "width",
+    "height",
     "z",
   ] as const;
   const data: Record<string, unknown> = { updatedAt: new Date() };

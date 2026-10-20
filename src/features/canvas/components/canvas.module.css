@@ -204,8 +204,9 @@
   box-shadow: none;
   /* 폭·여백·글씨를 모두 캔버스 폭에 비례시킨다(기준 360px) — 화면 크기가 달라도 메모 모양이 같다 */
   width: 30%;
-  padding: 3.05cqw 3.33cqw;
-  font-size: 3.6cqw;
+  padding: 2.4cqw 2.8cqw;
+  font-size: 3.1cqw;
+  line-height: 1.4;
 }
 .noteFlat .noteFrom {
   font-size: 3.33cqw;
@@ -321,6 +322,33 @@
 .cornerBR {
   bottom: -8px;
   right: -8px;
+}
+
+/* 옆(폭)·위아래(높이)로 늘리는 가운데 핸들 */
+.edgeHandle {
+  position: absolute;
+  background: var(--surface);
+  border: 2px solid var(--accent);
+  border-radius: 6px;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.25);
+  touch-action: none;
+  z-index: 5;
+}
+.edgeR {
+  right: -7px;
+  top: 50%;
+  width: 12px;
+  height: 26px;
+  translate: 0 -50%;
+  cursor: ew-resize;
+}
+.edgeB {
+  bottom: -7px;
+  left: 50%;
+  width: 26px;
+  height: 12px;
+  translate: -50% 0;
+  cursor: ns-resize;
 }
 
 .rotateHandle {

@@ -69,6 +69,8 @@ export async function POST(
       posY: body.posY ?? auto.posY,
       rotation: body.rotation ?? auto.rotation,
       scale: body.scale,
+      width: body.width,
+      height: body.height,
       z: (top ?? 0) + 1,
       editToken,
     })

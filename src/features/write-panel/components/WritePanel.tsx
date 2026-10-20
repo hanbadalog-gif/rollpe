@@ -21,6 +21,14 @@ const FONT_SIZES = [
   { label: "크게", value: 20 },
 ];
 
+// 무드등은 캔버스가 작아 8장이 겹치지 않게 하려면 글씨가 작아야 한다 — 기준 폭 360px에서 9/11/14, 기본 11
+// (실물 샘플 7.jpg도 손글씨가 작다. 캔버스 폭에 비례하므로 큰 화면에서는 같은 비율로 커진다)
+const MOOD_FONT_SIZES = [
+  { label: "작게", value: 9 },
+  { label: "보통", value: 11 },
+  { label: "크게", value: 14 },
+];
+
 const TEXT_COLORS = NOTE_TEXT_COLORS;
 const BG_COLORS = NOTE_BG_COLORS;
 
@@ -60,6 +68,7 @@ function SwatchRow({
 /** 글쓰기 패널 — Epic 4 (Story 4.1~4.4). /design-preview 프로토타입과 시각적으로 맞춤(스와치/토글 UI) */
 export function WritePanel({ mode, onSubmit, onDone, initial }: Props) {
   const cfg = MODE_CONFIG[mode];
+  const sizes = cfg.locked ? MOOD_FONT_SIZES : FONT_SIZES;
 
   const [fromName, setFromName] = useState(initial?.fromName ?? "");
   const [content, setContent] = useState(initial?.content ?? "");
@@ -67,8 +76,8 @@ export function WritePanel({ mode, onSubmit, onDone, initial }: Props) {
   // 예전에 다른 값(11/14/18)으로 저장된 메모도 가장 가까운 칸이 선택되도록
   const [fontSize, setFontSize] = useState(
     initial?.fontSize
-      ? FONT_SIZES.reduce((best, s) => (Math.abs(s.value - initial.fontSize!) < Math.abs(best.value - initial.fontSize!) ? s : best)).value
-      : 16,
+      ? sizes.reduce((best, s) => (Math.abs(s.value - initial.fontSize!) < Math.abs(best.value - initial.fontSize!) ? s : best)).value
+      : cfg.locked ? 11 : 16,
   );
   const [bold, setBold] = useState(initial?.bold ?? false);
   const [textColor, setTextColor] = useState(initial?.textColor ?? cfg.fixedTextColor ?? TEXT_COLORS[0]);
@@ -184,6 +193,11 @@ export function WritePanel({ mode, onSubmit, onDone, initial }: Props) {
           style={{ fontFamily: font }}
           required={!initial}
         />
+        {cfg.locked && (
+          <p style={{ margin: "4px 0 0", fontSize: 11, color: "var(--ink-soft)" }}>
+            {content.length}자 · 8장이 겹치지 않으려면 40자 안팎이 적당해요 (제한은 없어요)
+          </p>
+        )}
       </div>
 
       <div className={styles.field}>
@@ -208,7 +222,7 @@ export function WritePanel({ mode, onSubmit, onDone, initial }: Props) {
             글자 크기
           </label>
           <select id="fontSize" value={fontSize} onChange={(e) => setFontSize(Number(e.target.value))}>
-            {FONT_SIZES.map((s) => (
+            {sizes.map((s) => (
               <option key={s.value} value={s.value}>
                 {s.label}
               </option>

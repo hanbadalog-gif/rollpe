@@ -20,6 +20,10 @@ export interface NoteDTO {
   posY: number;
   rotation: number;
   scale: number;
+  /** 캔버스 폭 대비 %, null이면 기본 폭 */
+  width: number | null;
+  /** 캔버스 높이 대비 % (최소 높이), null이면 글 길이에 맞춤 */
+  height: number | null;
   z: number;
   createdAt: string;
 }
@@ -54,5 +58,7 @@ export interface CreateNoteInput {
   posY?: number;
   rotation?: number;
   scale?: number;
+  width?: number;
+  height?: number;
   z?: number;
 }

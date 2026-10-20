@@ -12,7 +12,7 @@ import type { PaperSize } from "./PaperSizePanel";
 interface Props {
   rollpaperId: string;
   rollpaper: RollpaperDTO;
-  updateNote: (noteId: string, patch: { z?: number }) => Promise<void>;
+  updateNote: (noteId: string, patch: { z?: number; width?: number; height?: number }) => Promise<void>;
   moveNote: (noteId: string, posX: number, posY: number, rotation?: number) => Promise<void>;
   resizeNote: (noteId: string, scale: number) => Promise<void>;
   deleteNote: (noteId: string, ownerToken?: string | null) => Promise<void>;
@@ -182,6 +182,7 @@ export function CanvasBoard({
             selected={note.id === selectedNote?.id}
             onMoveEnd={(posX, posY) => moveNote(note.id, posX, posY, note.rotation)}
             onResizeEnd={(scale) => resizeNote(note.id, scale)}
+            onBoxEnd={(box) => updateNote(note.id, box).catch(() => showToast("내가 쓴 메모만 바꿀 수 있어요"))}
             onRotateEnd={(rotation) => moveNote(note.id, note.posX, note.posY, rotation)}
             onTap={() => handleTap(note.id)}
             onDelete={() => handleDelete(note.id)}

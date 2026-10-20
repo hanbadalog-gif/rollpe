@@ -87,6 +87,8 @@ export function useCanvasNotes(rollpaperId: string) {
         posY: sent.posY!,
         rotation: sent.rotation!,
         scale: sent.scale ?? 1,
+        width: sent.width ?? null,
+        height: sent.height ?? null,
         z: Math.max(0, ...current.map((n) => n.z)) + 1,
         createdAt: new Date().toISOString(),
       };

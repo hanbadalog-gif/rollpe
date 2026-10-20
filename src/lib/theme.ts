@@ -46,10 +46,10 @@ const ZONES_A: Zone[] = [
   { key: "label", kind: "text", x: 70.5, y: 50.5, w: 26, h: 7, placeholder: "라벨", defaultText: "오늘의 주인공", rotate: -6 },
 ];
 const SLOTS_A: SlotRows = [
-  { y: 2, xs: [2, 35, 68] },
-  { y: 21, xs: [69] },
-  { y: 48, xs: [1] },
-  { y: 72, xs: [2, 35, 68] },
+  { y: 1, xs: [2, 35, 68] },
+  { y: 25, xs: [69] },
+  { y: 47, xs: [1] },
+  { y: 69, xs: [2, 35, 68] },
 ];
 
 // 유형 B — 드로잉 액자: 가운데 일러스트 사진 + 이름 문구, 나머지는 글로 채움 (참고: B제품 예시.png)

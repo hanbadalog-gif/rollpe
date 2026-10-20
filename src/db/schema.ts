@@ -61,6 +61,8 @@ export const notes = pgTable(
     posY: real("pos_y").notNull().default(10), // % 기준, 0~100
     rotation: real("rotation").notNull().default(0),
     scale: real("scale").notNull().default(1), // 꼭짓점 드래그 리사이즈 (0.6~2.2)
+    width: real("width"), // 메모 폭 — 캔버스 폭 대비 %, null이면 기본 폭 (옆으로 늘리기)
+    height: real("height"), // 메모 최소 높이 — 캔버스 높이 대비 %, null이면 글 길이에 맞춤 (위·아래로 늘리기)
     z: real("z").notNull().default(0), // 겹침 순서 — 클수록 위. 실수라 "앞으로/뒤로"는 이웃 사이 중간값으로 끼워 넣음
 
     editToken: text("edit_token").notNull(), // 작성자 본인 식별용 (비로그인)
