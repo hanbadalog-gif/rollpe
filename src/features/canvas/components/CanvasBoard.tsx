@@ -5,6 +5,7 @@ import styles from "./canvas.module.css";
 import { Note } from "./Note";
 import { MODE_CONFIG, type RollpaperMode, type Zone } from "@/lib/theme";
 import { parseZoneStyle } from "@/lib/fonts";
+import { UndoIcon, RedoIcon } from "@/components/icons";
 import { getEditToken, getOwnerToken } from "@/lib/editToken";
 import { showToast } from "@/components/Toast";
 import type { RollpaperDTO } from "../types";
@@ -28,6 +29,11 @@ interface Props {
   /** 무드등 고정 칸(사진/제목/문구)을 방장이 눌러 입력할 수 있는지 */
   editableZones?: boolean;
   onEditZone?: (key: Zone["key"]) => void;
+  /** 되돌리기 / 다시 실행 — 메모를 눌렀을 때 나오는 동작 막대에 함께 보여준다 */
+  onUndo?: () => void;
+  onRedo?: () => void;
+  canUndo?: boolean;
+  canRedo?: boolean;
 }
 
 const PAPER_CLASS: Record<PaperSize, string> = {
@@ -72,6 +78,10 @@ export function CanvasBoard({
   paperSize = "free",
   editableZones,
   onEditZone,
+  onUndo,
+  onRedo,
+  canUndo,
+  canRedo,
 }: Props) {
   const ownRef = useRef<HTMLDivElement>(null);
   const canvasRef = externalRef ?? ownRef;
@@ -205,6 +215,12 @@ export function CanvasBoard({
 
       {selectedNote && (
         <div className={styles.actionBar} role="toolbar" aria-label="선택한 메모">
+          <button type="button" className={`${styles.actionPill} ${styles.actionIcon}`} disabled={!canUndo} onClick={onUndo} aria-label="되돌리기" title="되돌리기 (Ctrl+Z)">
+            <UndoIcon size={15} />
+          </button>
+          <button type="button" className={`${styles.actionPill} ${styles.actionIcon}`} disabled={!canRedo} onClick={onRedo} aria-label="다시 실행" title="다시 실행 (Ctrl+Shift+Z)">
+            <RedoIcon size={15} />
+          </button>
           {canArrange ? (
             <>
               {mine && selectedNote.type === "text" && (

@@ -15,7 +15,7 @@ import { ConversionBanner } from "@/features/share/components/ConversionBanner";
 import { hasBannerBeenSeen, markBannerSeen } from "@/features/share/lib/bannerSeen";
 import { downloadCanvasAsImage, PRINT_WIDTH_PX, PRINT_WIDTH_A4_PX } from "@/features/share/lib/canvasExport";
 import { EnvelopeIntro } from "@/features/recipient/components/EnvelopeIntro";
-import { DownloadIcon, PhotoIcon, UndoIcon, RedoIcon, WriteIcon, StickerIcon, PaletteIcon } from "@/components/icons";
+import { DownloadIcon, PhotoIcon, WriteIcon, StickerIcon, PaletteIcon } from "@/components/icons";
 import { BgColorPanel } from "@/features/canvas/components/BgColorPanel";
 import { OrderPanel } from "@/features/order/components/OrderPanel";
 import { getOwnerToken } from "@/lib/editToken";
@@ -169,12 +169,6 @@ export function CanvasPageClient({
           <div className={styles.toolbar}>
             {!finished && (
               <>
-              <button className={styles.tool} disabled={!canUndo} onClick={undo} aria-label="되돌리기" title="되돌리기 (Ctrl+Z)">
-                <UndoIcon />
-              </button>
-              <button className={styles.tool} disabled={!canRedo} onClick={redo} aria-label="다시 실행" title="다시 실행 (Ctrl+Shift+Z)">
-                <RedoIcon />
-              </button>
               <button
                 className={`${styles.tool} ${openPanel === "write" ? styles.toolActive : ""}`}
                 disabled={atCap && isFinite(cfg.capacity)}
@@ -227,6 +221,10 @@ export function CanvasPageClient({
           canvasRef={canvasExportRef}
           readOnly={locked}
           onEditNote={setEditingId}
+          onUndo={undo}
+          onRedo={redo}
+          canUndo={canUndo}
+          canRedo={canRedo}
           editableZones={isOwner && !locked}
           onEditZone={(key) => setEditingZone(cfg.zones?.find((z) => z.key === key) ?? null)}
         />
