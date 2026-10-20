@@ -91,10 +91,10 @@ export function Note({ note, canvasRef, editable, selected, onMoveEnd, onResizeE
   // 페이지/메모지 회전기능.JPG 레퍼런스 — 선택 시 4모서리 리사이즈 점 + 상단 회전 핸들
   const handles = !disabled && selected && (
     <>
-      <span className={`${styles.cornerHandle} ${styles.cornerTL}`} onPointerDown={resize.onPointerDown} onPointerMove={resize.onPointerMove} onPointerUp={resize.onPointerUp} onClick={(e) => e.stopPropagation()} />
-      <span className={`${styles.cornerHandle} ${styles.cornerTR}`} onPointerDown={resize.onPointerDown} onPointerMove={resize.onPointerMove} onPointerUp={resize.onPointerUp} onClick={(e) => e.stopPropagation()} />
-      <span className={`${styles.cornerHandle} ${styles.cornerBL}`} onPointerDown={resize.onPointerDown} onPointerMove={resize.onPointerMove} onPointerUp={resize.onPointerUp} onClick={(e) => e.stopPropagation()} />
-      <span className={`${styles.cornerHandle} ${styles.cornerBR}`} onPointerDown={resize.onPointerDown} onPointerMove={resize.onPointerMove} onPointerUp={resize.onPointerUp} onClick={(e) => e.stopPropagation()} />
+      <span className={`${styles.cornerHandle} ${styles.cornerTL}`} onPointerDown={(e) => resize.onPointerDown(e, -1, -1)} onPointerMove={resize.onPointerMove} onPointerUp={resize.onPointerUp} onClick={(e) => e.stopPropagation()} />
+      <span className={`${styles.cornerHandle} ${styles.cornerTR}`} onPointerDown={(e) => resize.onPointerDown(e, 1, -1)} onPointerMove={resize.onPointerMove} onPointerUp={resize.onPointerUp} onClick={(e) => e.stopPropagation()} />
+      <span className={`${styles.cornerHandle} ${styles.cornerBL}`} onPointerDown={(e) => resize.onPointerDown(e, -1, 1)} onPointerMove={resize.onPointerMove} onPointerUp={resize.onPointerUp} onClick={(e) => e.stopPropagation()} />
+      <span className={`${styles.cornerHandle} ${styles.cornerBR}`} onPointerDown={(e) => resize.onPointerDown(e, 1, 1)} onPointerMove={resize.onPointerMove} onPointerUp={resize.onPointerUp} onClick={(e) => e.stopPropagation()} />
       <span className={styles.rotateHandle} onPointerDown={rotate.onPointerDown} onPointerMove={rotate.onPointerMove} onPointerUp={rotate.onPointerUp} onClick={(e) => e.stopPropagation()}>
         ⟳
       </span>

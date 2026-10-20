@@ -17,34 +17,35 @@ function clampScale(v: number) {
   return Math.max(MIN_SCALE, Math.min(MAX_SCALE, v));
 }
 
-/** 메모 카드 우하단 꼭짓점 핸들 — 대각선 드래그 거리로 scale 조절 */
+/** 메모 카드 네 꼭짓점 핸들 — 바깥쪽 대각선으로 끌면 커지고 안쪽으로 끌면 작아진다(우하단 기준을 모든 모서리에 동일 적용) */
 export function useResizableNote({ scale, onResize, onResizeEnd, disabled }: Options) {
-  const dragState = useRef<{ startX: number; startY: number; baseScale: number } | null>(null);
+  // sx/sy: 모서리 방향 부호 — 우하단(1,1), 우상단(1,-1), 좌하단(-1,1), 좌상단(-1,-1)
+  const dragState = useRef<{ startX: number; startY: number; baseScale: number; sx: number; sy: number } | null>(null);
 
-  function onPointerDown(e: ReactPointerEvent<HTMLDivElement>) {
+  function onPointerDown(e: ReactPointerEvent<HTMLElement>, sx = 1, sy = 1) {
     if (disabled) return;
     e.stopPropagation();
     (e.target as HTMLElement).setPointerCapture(e.pointerId);
-    dragState.current = { startX: e.clientX, startY: e.clientY, baseScale: scale };
+    dragState.current = { startX: e.clientX, startY: e.clientY, baseScale: scale, sx, sy };
   }
 
-  function onPointerMove(e: ReactPointerEvent<HTMLDivElement>) {
+  function onPointerMove(e: ReactPointerEvent<HTMLElement>) {
     const st = dragState.current;
     if (!st) return;
     e.stopPropagation();
     const dx = e.clientX - st.startX;
     const dy = e.clientY - st.startY;
-    const delta = (dx + dy) / 2; // 대각선(우하단) 방향 평균
+    const delta = (st.sx * dx + st.sy * dy) / 2; // 모서리 방향 기준 대각선 평균
     onResize(clampScale(st.baseScale + delta / PX_PER_SCALE_STEP));
   }
 
-  function onPointerUp(e: ReactPointerEvent<HTMLDivElement>) {
+  function onPointerUp(e: ReactPointerEvent<HTMLElement>) {
     const st = dragState.current;
     if (!st) return;
     e.stopPropagation();
     const dx = e.clientX - st.startX;
     const dy = e.clientY - st.startY;
-    const delta = (dx + dy) / 2;
+    const delta = (st.sx * dx + st.sy * dy) / 2;
     onResizeEnd(clampScale(st.baseScale + delta / PX_PER_SCALE_STEP));
     dragState.current = null;
   }
