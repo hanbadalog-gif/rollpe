@@ -1,6 +1,7 @@
 // 글리모리에 전달하는 JSON — 이미지는 "글자 배치", JSON은 "이미지로 보이지 않는 정보(글씨체·글자 크기·색·정확한 문구)" 확인용.
 // DB에 저장된 값(font는 CSS 문자열)을 사람이 읽을 수 있는 이름으로 풀어서 함께 내려준다.
 import { MODE_CONFIG, type RollpaperMode } from "@/lib/theme";
+import { parseZoneStyle } from "@/lib/fonts";
 
 const FONT_NAMES: Record<string, { name: string; family: string }> = {
   "'Gaegu',cursive": { name: "손글씨체", family: "Gaegu" },
@@ -28,7 +29,18 @@ export function enrichSnapshot(snapshot: unknown) {
   return {
     ...s,
     notes: (s.notes ?? []).map(withFontInfo),
-    fixedTextStyle: cfg?.zones ? { fontFamily: "Gaegu", fontWeight: "bold (700)", color: cfg.fixedTextColor ?? null } : undefined,
+    // 고정 칸(제목/문구/라벨) — 칸별 문구와 글씨체·크기(캔버스 폭 대비 cqw)·굵기·글자색
+    fixedFieldStyles: cfg?.zones
+      ? Object.fromEntries(
+          cfg.zones
+            .filter((z) => z.kind === "text" && (s.fixedFields?.[z.key] ?? z.defaultText))
+            .map((z) => {
+              const st = parseZoneStyle(s.fixedFields?.[`${z.key}Style`]);
+              const f = describeFont(st.font);
+              return [z.key, { text: s.fixedFields?.[z.key] ?? z.defaultText, fontName: f.name, fontFamily: f.family, sizeCqw: st.size, bold: st.bold, color: cfg.fixedTextColor ?? null }];
+            }),
+        )
+      : undefined,
     guide: {
       image: "orders의 이미지(PNG)가 완성된 글자 배치입니다 (가로 2400px 이상, 300dpi).",
       fontSize: "fontSize는 캔버스 폭 360px 기준 px입니다. 무드등 캔버스는 폭에 비례해 확대되므로 이미지 기준으로 환산하세요.",

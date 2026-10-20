@@ -7,13 +7,8 @@ import type { CreateNoteInput, NoteDTO } from "@/features/canvas/types";
 import { showToast } from "@/components/Toast";
 import { NOTE_BG_COLORS, NOTE_TEXT_COLORS } from "@/features/canvas/lib/palette";
 import { ApiError } from "@/lib/api-client";
+import { FONTS } from "@/lib/fonts";
 
-// 페이지/4.JPG 레퍼런스 — 손글씨체/세리프체/고딕체 3개 필(NoteEditPopover와 동일 값)
-const FONTS = [
-  { label: "손글씨체", value: "'Gaegu',cursive" },
-  { label: "세리프체", value: "'Gowun Batang',serif" },
-  { label: "고딕체", value: "inherit" },
-];
 
 const FONT_SIZES = [
   { label: "작게", value: 14 },

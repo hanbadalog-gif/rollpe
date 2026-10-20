@@ -4,6 +4,7 @@ import { useRef, useState } from "react";
 import styles from "./canvas.module.css";
 import { Note } from "./Note";
 import { MODE_CONFIG, type RollpaperMode, type Zone } from "@/lib/theme";
+import { parseZoneStyle } from "@/lib/fonts";
 import { getEditToken, getOwnerToken } from "@/lib/editToken";
 import { showToast } from "@/components/Toast";
 import type { RollpaperDTO } from "../types";
@@ -43,6 +44,11 @@ const CANVAS_CLASS: Partial<Record<RollpaperMode, string>> = {
   mood_b_8: `${styles.canvasPaper} ${styles.canvasPaperSquare}`,
   mood_b_a4: `${styles.canvasPaper} ${styles.canvasPaperA4}`,
 };
+
+function zoneTextStyle(raw: string | undefined): React.CSSProperties {
+  const st = parseZoneStyle(raw);
+  return { fontFamily: st.font === "inherit" ? "var(--font-sans, 'Noto Sans KR', sans-serif)" : st.font, fontSize: `${st.size}cqw`, fontWeight: st.bold ? 700 : 400 };
+}
 
 type Reorder = "front" | "forward" | "backward" | "back";
 
@@ -150,6 +156,8 @@ export function CanvasBoard({
             transform: z.rotate ? `rotate(${z.rotate}deg)` : undefined,
             // 글이 길면 칸 밖으로 넘치되 자르지 않는다 — 화살표가 있는 반대 방향으로 늘어남
             ...(z.kind === "text" ? { overflow: "visible", alignItems: z.grow === "up" ? "flex-end" : z.grow === "down" ? "flex-start" : "center" } : {}),
+            // 방장이 고른 글씨체·크기·굵기 (없으면 기본 손글씨 굵게)
+            ...(z.kind === "text" ? zoneTextStyle(rollpaper.fixedFields?.[`${z.key}Style` as keyof typeof rollpaper.fixedFields]) : {}),
           };
           const body = !value ? (
             <span data-no-export="1" className={styles.zonePlaceholder}>
@@ -172,7 +180,7 @@ export function CanvasBoard({
           );
         })}
         {rollpaper.notes.length === 0 && (
-          <div className={styles.hint}>+ 빈 공간을 눌러 마음을 더해보세요</div>
+          <div className={styles.hint} data-no-export="1">+ 빈 공간을 눌러 마음을 더해보세요</div>
         )}
         {ordered.map((note) => (
           <Note

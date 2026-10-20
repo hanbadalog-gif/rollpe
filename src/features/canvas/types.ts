@@ -28,8 +28,8 @@ export interface NoteDTO {
   createdAt: string;
 }
 
-/** 무드등 고정 레이아웃 칸 내용 — 키는 theme.ts의 ZONES와 같다 */
-export type FixedFields = Partial<Record<"title" | "photo" | "caption" | "label", string>>;
+/** 무드등 고정 레이아웃 칸 내용 — 키는 theme.ts의 ZONES와 같고, 문구 칸은 `${키}Style`에 글씨체/크기/굵기(JSON 문자열)가 따로 저장된다 */
+export type FixedFields = Partial<Record<"title" | "photo" | "caption" | "label" | "titleStyle" | "captionStyle" | "labelStyle", string>>;
 
 export interface RollpaperDTO {
   id: string;

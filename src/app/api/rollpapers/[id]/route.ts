@@ -7,6 +7,7 @@ import { db } from "@/db";
 import { rollpapers, notes, orders } from "@/db/schema";
 import { finishedResponse } from "@/lib/finished";
 import { MODE_CONFIG, type RollpaperMode } from "@/lib/theme";
+import { parseZoneStyle } from "@/lib/fonts";
 
 export async function GET(
   _request: NextRequest,
@@ -97,6 +98,13 @@ export async function PATCH(
       const ok = z.kind === "photo" ? v.startsWith("data:image/") && v.length < 2_000_000 : v.length <= 60;
       if (v === "") delete fixedFields[z.key];
       else if (ok) fixedFields[z.key] = v;
+    }
+    // 문구 칸의 글씨체/크기/굵기 — 허용된 글씨체·범위로 정리한 JSON만 저장
+    for (const z of zones.filter((z) => z.kind === "text")) {
+      const sv = body.fixedFields[`${z.key}Style`];
+      if (typeof sv !== "string") continue;
+      if (sv === "") delete fixedFields[`${z.key}Style`];
+      else fixedFields[`${z.key}Style`] = JSON.stringify(parseZoneStyle(sv));
     }
   }
 

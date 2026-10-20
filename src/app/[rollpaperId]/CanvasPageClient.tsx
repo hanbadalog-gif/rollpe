@@ -238,7 +238,8 @@ export function CanvasPageClient({
                 key={editingZone.key}
                 zone={editingZone}
                 value={rollpaper.fixedFields?.[editingZone.key] ?? ""}
-                onSave={(v) => updateFixed({ [editingZone.key]: v })}
+                styleRaw={rollpaper.fixedFields?.[`${editingZone.key}Style` as "titleStyle"]}
+                onSave={updateFixed}
                 onDone={() => setEditingZone(null)}
               />
             </div>
