@@ -4,7 +4,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { eq, asc } from "drizzle-orm";
 import { db } from "@/db";
-import { rollpapers, notes } from "@/db/schema";
+import { rollpapers, notes, orders } from "@/db/schema";
 import { finishedResponse } from "@/lib/finished";
 import { MODE_CONFIG, type RollpaperMode } from "@/lib/theme";
 
@@ -29,6 +29,33 @@ export async function GET(
     .orderBy(asc(notes.createdAt));
 
   return NextResponse.json({ ...rollpaper, notes: rollpaperNotes });
+}
+
+// DELETE /api/rollpapers/:id — 롤링페이퍼 삭제 (방장만, 메모는 함께 삭제). 제작 요청이 접수된 건은 삭제 불가
+export async function DELETE(
+  request: NextRequest,
+  ctx: RouteContext<"/api/rollpapers/[id]">,
+) {
+  const { id } = await ctx.params;
+  const ownerToken = request.headers.get("x-owner-token");
+
+  const [rollpaper] = await db.select().from(rollpapers).where(eq(rollpapers.id, id));
+  if (!rollpaper) {
+    return NextResponse.json({ code: "NOT_FOUND", message: "이미 삭제됐거나 없는 롤링페이퍼예요." }, { status: 404 });
+  }
+  if (!ownerToken || ownerToken !== rollpaper.ownerToken) {
+    return NextResponse.json({ code: "FORBIDDEN", message: "방장만 삭제할 수 있어요." }, { status: 403 });
+  }
+  const [order] = await db.select({ id: orders.id }).from(orders).where(eq(orders.rollpaperId, id));
+  if (order) {
+    return NextResponse.json(
+      { code: "ORDER_EXISTS", message: "제작 요청이 접수된 롤링페이퍼는 삭제할 수 없어요. 글리모리로 문의해 주세요." },
+      { status: 409 },
+    );
+  }
+
+  await db.delete(rollpapers).where(eq(rollpapers.id, id)); // notes는 FK cascade
+  return new NextResponse(null, { status: 204 });
 }
 
 export async function PATCH(

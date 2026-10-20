@@ -9,7 +9,7 @@ import { createRollpaper } from "../api";
 import { showToast } from "@/components/Toast";
 import type { RollpaperMode } from "@/lib/theme";
 
-// 무드등 선물하기 — 유형 선택(예시 사진) → [유형 A만: 고정 레이아웃 안내(7_0.jpg)] → To 입력 → 캔버스(/gift/[id])
+// 무드등 선물하기 — 유형 선택(예시 사진, 유형 A=드로잉 액자 / 유형 B=투명 아크릴) → [투명 아크릴(유형 B)만: 고정 레이아웃 안내(7_0.jpg)] → To 입력 → 캔버스(/gift/[id])
 type Step = "type" | "intro" | "to";
 
 export function GiftFlow() {
@@ -42,18 +42,9 @@ export function GiftFlow() {
       <div className={styles.types}>
         <h1 className={styles.title}>어떤 무드등을 만들까요?</h1>
         <div className={styles.typeCard}>
-          {/* eslint-disable-next-line @next/next/no-img-element -- 예시 사진 */}
-          <img src="/brand/type-a.jpg" alt="투명 아크릴 무드등 예시" className={styles.typeImg} />
-          <strong>유형 A · 투명 아크릴 무드등</strong>
-          <p>어두운 배경에 흰 글씨 · 최대 8명</p>
-          <button type="button" className={newStyles.submit} onClick={() => pick("mood_a")}>
-            유형 A로 만들기
-          </button>
-        </div>
-        <div className={styles.typeCard}>
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img src="/brand/type-b.jpg" alt="드로잉 액자 무드등 예시" className={styles.typeImg} />
-          <strong>유형 B · 드로잉 액자 무드등</strong>
+          <strong>유형 A · 드로잉 액자 무드등</strong>
           <p>흰 배경 고정 · 가운데 사진 + 글</p>
           <div className={styles.sizeRow}>
             <button type="button" className={newStyles.submit} onClick={() => pick("mood_b_8")}>
@@ -64,8 +55,17 @@ export function GiftFlow() {
             </button>
           </div>
         </div>
-        <Link href="/my" className={newStyles.myLink}>
-          이전에 만든 롤링페이퍼 찾기
+        <div className={styles.typeCard}>
+          {/* eslint-disable-next-line @next/next/no-img-element -- 예시 사진 */}
+          <img src="/brand/type-a.jpg" alt="투명 아크릴 무드등 예시" className={styles.typeImg} />
+          <strong>유형 B · 투명 아크릴 무드등</strong>
+          <p>어두운 배경에 흰 글씨 · 최대 8명</p>
+          <button type="button" className={newStyles.submit} onClick={() => pick("mood_a")}>
+            유형 B로 만들기
+          </button>
+        </div>
+        <Link href="/gift/my" className={newStyles.myLink}>
+          이전에 만든 무드등 찾기
         </Link>
       </div>
     );
@@ -98,8 +98,8 @@ export function GiftFlow() {
         <button type="submit" className={newStyles.submit} disabled={submitting}>
           {submitting ? "생성 중…" : "생성하기"}
         </button>
-        <Link href="/my" className={newStyles.myLink}>
-          이전에 만든 롤링페이퍼 찾기
+        <Link href="/gift/my" className={newStyles.myLink}>
+          이전에 만든 무드등 찾기
         </Link>
       </form>
     </div>

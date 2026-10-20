@@ -37,7 +37,7 @@ const PAPER_CLASS: Record<PaperSize, string> = {
   a3l: "canvasA3l",
 };
 
-// 유형 A는 7_1.jpg 배경 이미지, 유형 B는 흰 종이(8인치 정사각 / A4 비율)
+// 투명 아크릴(유형 B)은 7_1.jpg 배경 이미지, 드로잉 액자(유형 A)는 흰 종이(8인치 정사각 / A4 비율)
 const CANVAS_CLASS: Partial<Record<RollpaperMode, string>> = {
   mood_a: styles.canvasLamp,
   mood_b_8: `${styles.canvasPaper} ${styles.canvasPaperSquare}`,
@@ -75,7 +75,9 @@ export function CanvasBoard({
   // 겹침 순서 — z가 작을수록 뒤. 화면에서는 DOM 순서가 곧 쌓임 순서라 정렬해서 그린다
   const ordered = [...rollpaper.notes].sort((a, b) => a.z - b.z);
   const selectedNote = readOnly ? null : (rollpaper.notes.find((n) => n.id === selectedNoteId) ?? null);
-  const mine = selectedNote ? !!getEditToken(rollpaperId, selectedNote.id) : false;
+  const mine = selectedNote ? !!getEditToken(rollpaperId, selectedNote.id) : false; // 글 내용 수정 가능(쓴 사람)
+  const isOwner = !!getOwnerToken(rollpaperId); // 방장은 모두의 메모 배치를 바꿀 수 있다
+  const canArrange = mine || isOwner;
 
   function handleTap(noteId: string) {
     if (readOnly) return;
@@ -176,7 +178,7 @@ export function CanvasBoard({
             note={note}
             canvasRef={canvasRef}
             // 수정 권한(작성한 기기의 토큰)이 있는 메모만 끌 수 있다 — 없는 메모는 끌어도 저장이 거부돼 제자리로 돌아가므로 아예 못 끌게 한다
-            editable={!!getEditToken(rollpaperId, note.id)}
+            editable={!!getEditToken(rollpaperId, note.id) || isOwner}
             readOnly={readOnly}
             flat={cfg.locked}
             bounds={cfg.bounds}
@@ -193,9 +195,9 @@ export function CanvasBoard({
 
       {selectedNote && (
         <div className={styles.actionBar} role="toolbar" aria-label="선택한 메모">
-          {mine ? (
+          {canArrange ? (
             <>
-              {selectedNote.type === "text" && (
+              {mine && selectedNote.type === "text" && (
                 <button type="button" className={`${styles.actionPill} ${styles.actionPillMain}`} onClick={() => onEditNote(selectedNote.id)}>
                   수정
                 </button>

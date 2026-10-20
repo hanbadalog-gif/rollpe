@@ -51,7 +51,14 @@
   padding: 0;
 }
 
+.item {
+  display: flex;
+  gap: 8px;
+  align-items: stretch;
+}
+
 .card {
+  flex: 1;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -70,4 +77,16 @@
 .cardDate {
   font-size: 12px;
   color: var(--ink-soft);
+}
+
+.delBtn {
+  flex: none;
+  padding: 0 14px;
+  font-size: 13px;
+  font-weight: 700;
+  color: #c0392b;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  cursor: pointer;
 }

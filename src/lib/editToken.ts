@@ -100,6 +100,27 @@ export function saveMyRollpaper(id: string, toName: string, mode: string) {
   }
 }
 
+/** 이 기기 기록에서 지운다 — 목록과 이 롤링페이퍼의 방장/수정 권한 토큰 */
+export function removeMyRollpaper(id: string) {
+  try {
+    const raw = window.localStorage.getItem(MY_ROLLPAPERS_KEY);
+    const list = raw ? (JSON.parse(raw) as MyRollpaper[]) : [];
+    window.localStorage.setItem(MY_ROLLPAPERS_KEY, JSON.stringify(list.filter((r) => r.id !== id)));
+
+    const owners = window.localStorage.getItem(OWNER_STORAGE_KEY);
+    if (owners) {
+      const map = JSON.parse(owners) as Record<string, string>;
+      delete map[id];
+      window.localStorage.setItem(OWNER_STORAGE_KEY, JSON.stringify(map));
+    }
+    const edits = readAll();
+    delete edits[id];
+    writeAll(edits);
+  } catch {
+    notifySaveFailed();
+  }
+}
+
 export function getMyRollpapers(): MyRollpaper[] {
   if (typeof window === "undefined") return [];
   try {

@@ -57,6 +57,17 @@ export function useCanvasNotes(rollpaperId: string) {
     };
   }, [refresh]);
 
+  // 메모를 바꿀 권한 헤더 — 쓴 사람(수정 토큰) 또는 방장(방장 토큰). 둘 다 없으면 null
+  const authHeaders = useCallback(
+    (noteId: string): Record<string, string> | null => {
+      const edit = getEditToken(rollpaperId, noteId);
+      const owner = getOwnerToken(rollpaperId);
+      if (!edit && !owner) return null;
+      return { ...(edit ? { "x-edit-token": edit } : {}), ...(owner ? { "x-owner-token": owner } : {}) };
+    },
+    [rollpaperId],
+  );
+
   // 낙관적 추가 — 누르는 즉시 임시 메모를 보여주고(위치도 서버와 같은 규칙으로 계산해 같이 보냄),
   // 서버 저장은 뒤에서. 성공하면 임시 메모를 진짜 메모로 바꾸고, 실패하면 지우고 안내한다.
   const addNote = useCallback(
@@ -117,25 +128,25 @@ export function useCanvasNotes(rollpaperId: string) {
   // 낙관적 업데이트 — 서버 응답을 기다리지 않고 화면부터 바꾸고, 실패하면 서버 상태로 되돌린다
   const updateNote = useCallback(
     async (noteId: string, patch: Partial<CreateNoteInput>) => {
-      const token = getEditToken(rollpaperId, noteId);
-      if (!token) throw new Error("NO_EDIT_TOKEN");
+      const headers = authHeaders(noteId);
+      if (!headers) throw new Error("NO_EDIT_TOKEN");
       setRollpaper((prev) =>
         prev ? { ...prev, notes: prev.notes.map((n) => (n.id === noteId ? { ...n, ...patch } : n)) } : prev,
       );
       try {
-        await api.patch(`/api/rollpapers/${rollpaperId}/notes/${noteId}`, patch, { "x-edit-token": token });
+        await api.patch(`/api/rollpapers/${rollpaperId}/notes/${noteId}`, patch, headers);
       } catch (err) {
         await refresh(true);
         throw err;
       }
     },
-    [rollpaperId, refresh],
+    [rollpaperId, refresh, authHeaders],
   );
 
   const moveNote = useCallback(
     async (noteId: string, posX: number, posY: number, rotation?: number) => {
-      const token = getEditToken(rollpaperId, noteId);
-      if (!token) return; // 내 글이 아니면 드래그 자체를 UI에서 막음 — 조용히 무시
+      const headers = authHeaders(noteId);
+      if (!headers) return; // 내 글도 방장도 아니면 드래그 자체를 UI에서 막음 — 조용히 무시
       // 낙관적 업데이트: 다음 폴링(최대 7초)을 기다리지 않고 드롭 즉시 화면에 반영
       setRollpaper((prev) =>
         prev
@@ -151,31 +162,31 @@ export function useCanvasNotes(rollpaperId: string) {
         await api.post(
           `/api/rollpapers/${rollpaperId}/notes/${noteId}/position`,
           { posX, posY, rotation },
-          { "x-edit-token": token },
+          headers,
         );
       } catch {
         await refresh(true); // 저장 실패 시 서버 상태로 되돌림
       }
     },
-    [rollpaperId, refresh],
+    [rollpaperId, refresh, authHeaders],
   );
 
   const resizeNote = useCallback(
     async (noteId: string, scale: number) => {
-      const token = getEditToken(rollpaperId, noteId);
-      if (!token) return; // moveNote와 동일하게 — 내 글이 아니면 조용히 무시(드래그가 스냅백됨)
+      const headers = authHeaders(noteId);
+      if (!headers) return; // moveNote와 동일하게 — 내 글도 방장도 아니면 조용히 무시
       setRollpaper((prev) =>
         prev
           ? { ...prev, notes: prev.notes.map((n) => (n.id === noteId ? { ...n, scale } : n)) }
           : prev,
       );
       try {
-        await api.patch(`/api/rollpapers/${rollpaperId}/notes/${noteId}`, { scale }, { "x-edit-token": token });
+        await api.patch(`/api/rollpapers/${rollpaperId}/notes/${noteId}`, { scale }, headers);
       } catch {
         await refresh(true);
       }
     },
-    [rollpaperId, refresh],
+    [rollpaperId, refresh, authHeaders],
   );
 
   const updateBgColor = useCallback(

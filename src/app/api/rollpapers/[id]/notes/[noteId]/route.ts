@@ -26,6 +26,7 @@ export async function PATCH(
 ) {
   const { id, noteId } = await ctx.params;
   const editToken = request.headers.get("x-edit-token");
+  const ownerToken = request.headers.get("x-owner-token");
 
   const found = await loadNoteAndRollpaper(id, noteId);
   if (!found) {
@@ -35,7 +36,9 @@ export async function PATCH(
     );
   }
   if (found.rollpaper?.finishedAt) return finishedResponse();
-  if (!editToken || editToken !== found.note.editToken) {
+  const isAuthor = !!editToken && editToken === found.note.editToken;
+  const isOwner = !!ownerToken && ownerToken === found.rollpaper?.ownerToken;
+  if (!isAuthor && !isOwner) {
     return NextResponse.json(
       { code: "FORBIDDEN", message: "이 글은 작성한 기기에서만 수정할 수 있어요." },
       { status: 403 },
@@ -43,23 +46,17 @@ export async function PATCH(
   }
 
   const body = (await request.json().catch(() => ({}))) as Record<string, unknown>;
-  const allowed = [
-    "fromName",
-    "photoUrl",
-    "content",
-    "font",
-    "fontSize",
-    "bold",
-    "textColor",
-    "bgColor",
-    "borderColor",
-    "scale",
-    "width",
-    "height",
-    "z",
-  ] as const;
+  // 배치(크기·폭·높이·앞뒤)는 방장도 바꿀 수 있고, 글 내용·모양은 쓴 사람만 바꿀 수 있다
+  const layoutKeys = ["scale", "width", "height", "z"] as const;
+  const contentKeys = ["fromName", "photoUrl", "content", "font", "fontSize", "bold", "textColor", "bgColor", "borderColor"] as const;
+  if (!isAuthor && contentKeys.some((k) => k in body)) {
+    return NextResponse.json(
+      { code: "FORBIDDEN", message: "글 내용은 쓴 사람만 수정할 수 있어요. 방장은 배치만 바꿀 수 있어요." },
+      { status: 403 },
+    );
+  }
   const data: Record<string, unknown> = { updatedAt: new Date() };
-  for (const key of allowed) {
+  for (const key of [...contentKeys, ...layoutKeys]) {
     if (key in body) data[key] = body[key];
   }
 

@@ -31,7 +31,7 @@ export interface ModeConfig {
   locked: boolean;
   stickerEnabled: boolean;
   bgPickerEnabled: boolean;
-  /** 고정 글자색 (예: 유형A는 흰색 고정) */
+  /** 고정 글자색 (예: 투명 아크릴(유형 B)은 흰색 고정) */
   fixedTextColor?: string;
   zones?: Zone[];
   slots?: SlotRows;
@@ -39,7 +39,7 @@ export interface ModeConfig {
   bounds?: { right: number; bottom: number };
 }
 
-// 유형 A — 7_1.jpg 배경(검정 판 + 가운데 흰 칸)
+// 투명 아크릴(유형 B) — 7_1.jpg 배경(검정 판 + 가운데 흰 칸)
 const ZONES_A: Zone[] = [
   { key: "title", kind: "text", x: 3, y: 27, w: 27, h: 12, placeholder: "내용을 입력해주세요!" },
   { key: "photo", kind: "photo", x: 31.6, y: 25.4, w: 38.8, h: 37, placeholder: "+ 사진" },
@@ -52,7 +52,7 @@ const SLOTS_A: SlotRows = [
   { y: 69, xs: [2, 35, 68] },
 ];
 
-// 유형 B — 드로잉 액자: 가운데 일러스트 사진 + 이름 문구, 나머지는 글로 채움 (참고: B제품 예시.png)
+// 드로잉 액자(유형 A) — 가운데 일러스트 사진 + 이름 문구, 나머지는 글로 채움 (참고: B제품 예시.png)
 const ZONES_B8: Zone[] = [
   { key: "photo", kind: "photo", x: 31, y: 34, w: 38, h: 30, placeholder: "+ 사진" },
 ];
@@ -84,7 +84,7 @@ export const MODE_CONFIG: Record<RollpaperMode, ModeConfig> = {
     bgPickerEnabled: true,
   },
   mood_a: {
-    label: "무드등 A (아크릴)",
+    label: "무드등 B (투명 아크릴)",
     capacity: 8,
     bgColor: "var(--mood-dark)",
     locked: true,
@@ -96,7 +96,7 @@ export const MODE_CONFIG: Record<RollpaperMode, ModeConfig> = {
     bounds: { right: 100, bottom: 93 }, // 아래 받침(이미지 하단 7%)은 제외
   },
   mood_b_8: {
-    label: "무드등 B (8인치)",
+    label: "무드등 A (드로잉 액자 8인치)",
     capacity: 8,
     bgColor: "#ffffff",
     locked: true,
@@ -108,7 +108,7 @@ export const MODE_CONFIG: Record<RollpaperMode, ModeConfig> = {
     bounds: { right: 100, bottom: 100 },
   },
   mood_b_a4: {
-    label: "무드등 B (A4)",
+    label: "무드등 A (드로잉 액자 A4)",
     capacity: 20,
     bgColor: "#ffffff",
     locked: true,

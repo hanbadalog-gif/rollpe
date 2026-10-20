@@ -11,6 +11,7 @@ export async function POST(
 ) {
   const { id, noteId } = await ctx.params;
   const editToken = request.headers.get("x-edit-token");
+  const ownerToken = request.headers.get("x-owner-token");
 
   const [note] = await db
     .select()
@@ -22,11 +23,14 @@ export async function POST(
       { status: 404 },
     );
   }
-  const [rollpaper] = await db.select({ finishedAt: rollpapers.finishedAt }).from(rollpapers).where(eq(rollpapers.id, id));
+  const [rollpaper] = await db.select({ finishedAt: rollpapers.finishedAt, ownerToken: rollpapers.ownerToken }).from(rollpapers).where(eq(rollpapers.id, id));
   if (rollpaper?.finishedAt) return finishedResponse();
-  if (!editToken || editToken !== note.editToken) {
+  // 위치는 쓴 사람 또는 방장이 바꿀 수 있다 (방장은 모두의 글 배치를 정리)
+  const isAuthor = !!editToken && editToken === note.editToken;
+  const isOwner = !!ownerToken && ownerToken === rollpaper?.ownerToken;
+  if (!isAuthor && !isOwner) {
     return NextResponse.json(
-      { code: "FORBIDDEN", message: "이 글은 작성한 기기에서만 수정할 수 있어요." },
+      { code: "FORBIDDEN", message: "이 글은 작성한 기기나 방장만 옮길 수 있어요." },
       { status: 403 },
     );
   }
