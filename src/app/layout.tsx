@@ -13,8 +13,9 @@ export const metadata: Metadata = {
     description: "마음을 모은 감동 선물 - 온라인 롤링페이퍼",
     url: SITE_URL,
     siteName: "ROLLPE by GLIMORY",
-    // 카톡 등 공유 미리보기 이미지(수정/15.png). 파일 이름을 바꿔 두면 이전 이미지가 캐시에 남아 있어도 새로 가져간다
-    images: [{ url: "/og-image-v2.png", width: 481, height: 505, alt: "ROLLPE by GLIMORY" }],
+    // 카톡 등 공유 미리보기 이미지 — 메인 화면 윗부분을 가로 카드 비율(1.91:1, 1200x630)로 잘라 헤드라인이 잘리지 않게 한 것.
+    // 파일 이름을 바꿔 두면 이전 이미지가 캐시에 남아 있어도 새로 가져간다
+    images: [{ url: "/og-image-v3.png", width: 1200, height: 630, alt: "ROLLPE by GLIMORY" }],
     locale: "ko_KR",
     type: "website",
   },
@@ -22,7 +23,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "ROLLPE by GLIMORY",
     description: "마음을 모은 감동 선물 - 온라인 롤링페이퍼",
-    images: ["/og-image-v2.png"],
+    images: ["/og-image-v3.png"],
   },
 };
 
