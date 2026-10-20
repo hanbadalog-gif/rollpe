@@ -1,80 +1,99 @@
-.banner {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  padding: 11px 16px;
-  background: var(--accent-soft);
-  border-bottom: 1px solid var(--line);
-}
-
-.row {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-}
-
-.thumb {
-  flex: none;
-  width: 34px;
-  height: 44px;
-  border-radius: 5px;
-  background: var(--surface);
-  border: 1px solid var(--line);
+/* 공유 후 안내 — 화면 가운데에 뜨는 모달 (뒤 배경을 누르면 닫힘) */
+.backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 60;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 16px;
-  box-shadow: 0 4px 10px -6px rgba(0, 0, 0, 0.3);
+  padding: 20px;
+  background: rgba(20, 18, 14, 0.5);
 }
 
-.text {
-  flex: 1;
-  min-width: 0;
+.banner {
+  position: relative;
+  width: 100%;
+  max-width: 360px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+  padding: 30px 22px 20px;
+  text-align: center;
+  background: var(--surface);
+  border-radius: 20px;
+  box-shadow: var(--shadow);
+}
+
+.thumb {
+  width: 54px;
+  height: 54px;
+  border-radius: 14px;
+  background: var(--accent-soft);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 26px;
 }
 
 .text strong {
   display: block;
-  font-size: 12.5px;
-  color: var(--accent-deep);
+  font-size: 16px;
+  color: var(--ink);
 }
 
 .text p {
-  font-size: 11px;
+  font-size: 12.5px;
+  line-height: 1.5;
   color: var(--ink-soft);
-  margin-top: 2px;
+  margin-top: 6px;
 }
 
 .actions {
+  width: 100%;
   display: flex;
-  align-items: center;
-  gap: 8px;
-  flex: none;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 6px;
 }
 
 .cta {
-  font-size: 11.5px;
+  font-size: 14px;
   font-weight: 700;
   background: var(--accent);
   color: var(--accent-ink);
-  padding: 8px 12px;
-  border-radius: 9px;
+  padding: 13px 16px;
+  border-radius: 12px;
   border: none;
   cursor: pointer;
-  white-space: nowrap;
 }
 
-.closeBtn {
-  width: 24px;
-  height: 24px;
+.laterBtn {
   border: none;
   background: none;
   color: var(--ink-soft);
-  font-size: 12px;
+  font-size: 12.5px;
+  padding: 8px;
+  cursor: pointer;
+}
+
+.closeBtn {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  width: 32px;
+  height: 32px;
+  border: none;
+  background: none;
+  color: var(--ink-soft);
+  font-size: 14px;
   cursor: pointer;
 }
 
 .calRow {
-  padding-left: 46px;
+  width: 100%;
+  padding-top: 10px;
+  border-top: 1px solid var(--line);
 }
 
 .calBtn {
@@ -91,6 +110,7 @@
 
 .calPicker {
   display: flex;
+  justify-content: center;
   align-items: center;
   gap: 8px;
 }

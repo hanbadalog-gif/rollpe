@@ -19,8 +19,11 @@ export function ConversionBanner({ onClose, onOrder, toName }: { onClose: () => 
   }
 
   return (
-    <div className={styles.banner}>
-      <div className={styles.row}>
+    <div className={styles.backdrop} onClick={onClose}>
+      <div className={styles.banner} role="dialog" aria-modal="true" aria-label="무드등 제작 안내" onClick={(e) => e.stopPropagation()}>
+        <button className={styles.closeBtn} onClick={onClose} aria-label="닫기">
+          ✕
+        </button>
         <div className={styles.thumb} aria-hidden>
           🕯️
         </div>
@@ -32,30 +35,25 @@ export function ConversionBanner({ onClose, onOrder, toName }: { onClose: () => 
           <button className={styles.cta} onClick={onOrder}>
             제작 요청하기
           </button>
-          <button className={styles.closeBtn} onClick={onClose} aria-label="닫기">
-            ✕
+          <button className={styles.laterBtn} onClick={onClose}>
+            닫기
           </button>
         </div>
-      </div>
 
-      <div className={styles.calRow}>
-        {!showDatePicker ? (
-          <button className={styles.calBtn} onClick={() => setShowDatePicker(true)}>
-            📅 다음엔 언제 또 만드실 건가요? — 날짜 저장
-          </button>
-        ) : (
-          <div className={styles.calPicker}>
-            <input
-              type="date"
-              value={date}
-              onChange={(e) => setDate(e.target.value)}
-              className={styles.dateInput}
-            />
-            <button className={styles.calSaveBtn} onClick={handleSaveDate} disabled={!date}>
-              저장
+        <div className={styles.calRow}>
+          {!showDatePicker ? (
+            <button className={styles.calBtn} onClick={() => setShowDatePicker(true)}>
+              📅 다음엔 언제 또 만드실 건가요? - 날짜 저장
             </button>
-          </div>
-        )}
+          ) : (
+            <div className={styles.calPicker}>
+              <input type="date" value={date} onChange={(e) => setDate(e.target.value)} className={styles.dateInput} />
+              <button className={styles.calSaveBtn} onClick={handleSaveDate} disabled={!date}>
+                저장
+              </button>
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );
