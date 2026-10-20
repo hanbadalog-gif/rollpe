@@ -45,15 +45,10 @@ export function GiftFlow() {
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img src="/brand/type-b.jpg" alt="드로잉 액자 무드등 예시" className={styles.typeImg} />
           <strong>유형 A · 드로잉 액자 무드등</strong>
-          <p>흰 배경 고정 · 가운데 사진 + 글</p>
-          <div className={styles.sizeRow}>
-            <button type="button" className={newStyles.submit} onClick={() => pick("mood_b_8")}>
-              8인치 · 6~8명
-            </button>
-            <button type="button" className={newStyles.submit} onClick={() => pick("mood_b_a4")}>
-              A4 · 최대 20명
-            </button>
-          </div>
+          <p>흰 배경 고정 · 8인치 · 6~8명</p>
+          <button type="button" className={newStyles.submit} onClick={() => pick("mood_b_8")}>
+            유형 A로 만들기
+          </button>
         </div>
         <div className={styles.typeCard}>
           {/* eslint-disable-next-line @next/next/no-img-element -- 예시 사진 */}
