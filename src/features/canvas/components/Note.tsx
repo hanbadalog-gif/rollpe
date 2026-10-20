@@ -14,8 +14,6 @@ interface Props {
   selected: boolean;
   onMoveEnd: (posX: number, posY: number) => void;
   onResizeEnd: (scale: number) => void;
-  /** 옆(폭) / 위·아래(최소 높이)로 늘린 결과 — 캔버스 대비 % */
-  onBoxEnd: (box: { width?: number; height?: number }) => void;
   onRotateEnd: (rotation: number) => void;
   onTap: () => void;
   onDelete: () => void;
@@ -28,13 +26,11 @@ interface Props {
   bounds?: { right: number; bottom: number };
 }
 
-export function Note({ note, canvasRef, editable, selected, onMoveEnd, onResizeEnd, onBoxEnd, onRotateEnd, onTap, onDelete, setRef, readOnly, flat, bounds }: Props) {
+export function Note({ note, canvasRef, editable, selected, onMoveEnd, onResizeEnd, onRotateEnd, onTap, onDelete, setRef, readOnly, flat, bounds }: Props) {
   // 드래그 중에는 서버 왕복 없이 로컬 좌표만 바꿔 즉시 반응하게 한다 (실시간 이동 체감용)
   const [dragPos, setDragPos] = useState<{ x: number; y: number } | null>(null);
   const [dragScale, setDragScale] = useState<number | null>(null);
   const [dragRotation, setDragRotation] = useState<number | null>(null);
-  const [dragBox, setDragBox] = useState<{ w?: number; h?: number } | null>(null);
-  const boxDrag = useRef<{ axis: "w" | "h"; sx: number; sy: number; base: number; cw: number; ch: number; cos: number; sin: number; sc: number } | null>(null);
   const elRef = useRef<HTMLDivElement | null>(null);
 
   // 서버 저장이 끝나기 전의 임시 메모(tmp-…) — 이때 끌면 저장이 끝나며 원래 자리로 돌아가므로 "등록 중"으로 표시하고 잠근다
@@ -83,59 +79,13 @@ export function Note({ note, canvasRef, editable, selected, onMoveEnd, onResizeE
   const posY = dragPos?.y ?? note.posY;
   const scale = dragScale ?? note.scale ?? 1;
   const rotation = dragRotation ?? note.rotation;
-  const boxW = dragBox?.w ?? note.width;
-  const boxH = dragBox?.h ?? note.height;
   const style: React.CSSProperties = {
     left: `${posX}%`,
     top: `${posY}%`,
     transform: `rotate(${rotation}deg) scale(${scale})`,
     // 핸들·삭제 버튼은 메모가 작아져도 같은 크기로 보이게 역배율을 CSS에서 쓴다
     ["--ns" as string]: scale,
-    width: boxW ? `${boxW}%` : undefined,
-    minHeight: boxH ? `${boxH}%` : undefined,
   };
-
-  // 오른쪽 가운데 핸들 = 폭(옆으로), 아래쪽 가운데 핸들 = 최소 높이(위·아래로). 회전·확대 상태에서도 메모 기준 방향으로 계산
-  function boxDown(e: React.PointerEvent<HTMLElement>, axis: "w" | "h") {
-    e.stopPropagation();
-    const c = canvasRef.current?.getBoundingClientRect();
-    const el = elRef.current;
-    if (!c || !el) return;
-    e.currentTarget.setPointerCapture(e.pointerId);
-    const r = (rotation * Math.PI) / 180;
-    boxDrag.current = {
-      axis,
-      sx: e.clientX,
-      sy: e.clientY,
-      base: axis === "w" ? (el.offsetWidth / c.width) * 100 : (el.offsetHeight / c.height) * 100,
-      cw: c.width,
-      ch: c.height,
-      cos: Math.cos(r),
-      sin: Math.sin(r),
-      sc: scale,
-    };
-  }
-  function boxValue(e: React.PointerEvent<HTMLElement>) {
-    const d = boxDrag.current!;
-    const dx = e.clientX - d.sx;
-    const dy = e.clientY - d.sy;
-    if (d.axis === "w") return Math.max(18, Math.min(95, d.base + (((dx * d.cos + dy * d.sin) / d.sc) / d.cw) * 100));
-    return Math.max(8, Math.min(95, d.base + (((-dx * d.sin + dy * d.cos) / d.sc) / d.ch) * 100));
-  }
-  function boxMove(e: React.PointerEvent<HTMLElement>) {
-    if (!boxDrag.current) return;
-    e.stopPropagation();
-    const v = boxValue(e);
-    setDragBox((prev) => ({ ...prev, [boxDrag.current!.axis]: v }));
-  }
-  function boxUp(e: React.PointerEvent<HTMLElement>) {
-    if (!boxDrag.current) return;
-    e.stopPropagation();
-    const v = boxValue(e);
-    onBoxEnd(boxDrag.current.axis === "w" ? { width: v } : { height: v });
-    boxDrag.current = null;
-    setDragBox(null);
-  }
 
   function setRefs(el: HTMLDivElement | null) {
     elRef.current = el;
@@ -149,12 +99,6 @@ export function Note({ note, canvasRef, editable, selected, onMoveEnd, onResizeE
       <span className={`${styles.cornerHandle} ${styles.cornerTR}`} onPointerDown={(e) => resize.onPointerDown(e, 1, -1)} onPointerMove={resize.onPointerMove} onPointerUp={resize.onPointerUp} onClick={(e) => e.stopPropagation()} />
       <span className={`${styles.cornerHandle} ${styles.cornerBL}`} onPointerDown={(e) => resize.onPointerDown(e, -1, 1)} onPointerMove={resize.onPointerMove} onPointerUp={resize.onPointerUp} onClick={(e) => e.stopPropagation()} />
       <span className={`${styles.cornerHandle} ${styles.cornerBR}`} onPointerDown={(e) => resize.onPointerDown(e, 1, 1)} onPointerMove={resize.onPointerMove} onPointerUp={resize.onPointerUp} onClick={(e) => e.stopPropagation()} />
-      {note.type === "text" && (
-        <>
-          <span className={`${styles.edgeHandle} ${styles.edgeR}`} onPointerDown={(e) => boxDown(e, "w")} onPointerMove={boxMove} onPointerUp={boxUp} onClick={(e) => e.stopPropagation()} />
-          <span className={`${styles.edgeHandle} ${styles.edgeB}`} onPointerDown={(e) => boxDown(e, "h")} onPointerMove={boxMove} onPointerUp={boxUp} onClick={(e) => e.stopPropagation()} />
-        </>
-      )}
       <span className={styles.rotateHandle} onPointerDown={rotate.onPointerDown} onPointerMove={rotate.onPointerMove} onPointerUp={rotate.onPointerUp} onClick={(e) => e.stopPropagation()}>
         ⟳
       </span>
@@ -167,6 +111,7 @@ export function Note({ note, canvasRef, editable, selected, onMoveEnd, onResizeE
         className={`${styles.note} ${styles.noteSticker} ${selected ? styles.noteSelected : ""} ${pending ? styles.notePending : ""}`}
         style={style}
         ref={setRefs}
+        data-note-id={note.id}
         onPointerDown={drag.onPointerDown}
         onPointerMove={drag.onPointerMove}
         onPointerUp={drag.onPointerUp}
@@ -199,6 +144,7 @@ export function Note({ note, canvasRef, editable, selected, onMoveEnd, onResizeE
         className={`${styles.note} ${styles.notePhotoOnly} ${selected ? styles.noteSelected : ""} ${pending ? styles.notePending : ""}`}
         style={style}
         ref={setRefs}
+        data-note-id={note.id}
         onPointerDown={drag.onPointerDown}
         onPointerMove={drag.onPointerMove}
         onPointerUp={drag.onPointerUp}
@@ -226,6 +172,7 @@ export function Note({ note, canvasRef, editable, selected, onMoveEnd, onResizeE
     <div
       className={`${styles.note} ${selected ? styles.noteSelected : ""} ${pending ? styles.notePending : ""} ${flat ? styles.noteFlat : ""}`}
       ref={setRefs}
+        data-note-id={note.id}
       style={{
         ...style,
         background: note.bgColor ?? undefined,

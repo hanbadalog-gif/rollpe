@@ -338,34 +338,6 @@
   right: -8px;
 }
 
-/* 옆(폭)·위아래(높이)로 늘리는 가운데 핸들 */
-.edgeHandle {
-  scale: calc(1 / var(--ns, 1));
-  position: absolute;
-  background: var(--surface);
-  border: 2px solid var(--accent);
-  border-radius: 6px;
-  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.25);
-  touch-action: none;
-  z-index: 5;
-}
-.edgeR {
-  right: -7px;
-  top: 50%;
-  width: 12px;
-  height: 26px;
-  translate: 0 -50%;
-  cursor: ew-resize;
-}
-.edgeB {
-  bottom: -7px;
-  left: 50%;
-  width: 26px;
-  height: 12px;
-  translate: -50% 0;
-  cursor: ns-resize;
-}
-
 .rotateHandle {
   scale: calc(1 / var(--ns, 1));
   position: absolute;
@@ -525,6 +497,20 @@
   color: var(--ink);
   cursor: pointer;
   white-space: nowrap;
+}
+
+.undoPill {
+  /* left/top은 선택한 메모 테두리 바로 아래로 CanvasBoard가 계산해 넣는다 */
+  position: absolute;
+  transform: translateX(-50%);
+  z-index: 36;
+  display: flex;
+  gap: 2px;
+  padding: 3px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.14);
 }
 
 .actionIcon {

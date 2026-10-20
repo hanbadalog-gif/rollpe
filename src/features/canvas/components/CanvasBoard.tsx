@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import styles from "./canvas.module.css";
 import { Note } from "./Note";
 import { MODE_CONFIG, type RollpaperMode, type Zone } from "@/lib/theme";
@@ -29,7 +29,7 @@ interface Props {
   /** 무드등 고정 칸(사진/제목/문구)을 방장이 눌러 입력할 수 있는지 */
   editableZones?: boolean;
   onEditZone?: (key: Zone["key"]) => void;
-  /** 되돌리기 / 다시 실행 — 메모를 눌렀을 때 나오는 동작 막대에 함께 보여준다 */
+  /** 되돌리기 / 다시 실행 — 선택한 메모의 크기 조절 테두리 바로 아래에 보여준다 */
   onUndo?: () => void;
   onRedo?: () => void;
   canUndo?: boolean;
@@ -84,6 +84,9 @@ export function CanvasBoard({
   canRedo,
 }: Props) {
   const ownRef = useRef<HTMLDivElement>(null);
+  const scrollRef = useRef<HTMLDivElement>(null);
+  const barRef = useRef<HTMLDivElement>(null);
+  const [barPos, setBarPos] = useState<{ left: number; top: number } | null>(null);
   const canvasRef = externalRef ?? ownRef;
   const [selectedNoteId, setSelectedNoteId] = useState<string | null>(null);
 
@@ -91,6 +94,32 @@ export function CanvasBoard({
   // 겹침 순서 — z가 작을수록 뒤. 화면에서는 DOM 순서가 곧 쌓임 순서라 정렬해서 그린다
   const ordered = [...rollpaper.notes].sort((a, b) => a.z - b.z);
   const selectedNote = readOnly ? null : (rollpaper.notes.find((n) => n.id === selectedNoteId) ?? null);
+  // 되돌리기·다시 실행 알약을 선택한 메모 테두리(크기 조절 핸들) 바로 아래에 붙인다 — 끌기·크기·회전·스크롤 중에도 따라가도록 매 프레임 위치를 읽는다.
+  // 아래 공간이 모자라면 메모 위로 올린다.
+  const selId = selectedNote?.id ?? null;
+  useEffect(() => {
+    if (!selId) return;
+    let raf = 0;
+    const tick = () => {
+      const sc = scrollRef.current;
+      const el = canvasRef.current?.querySelector(`[data-note-id="${selId}"]`);
+      const bar = barRef.current;
+      if (sc && el && bar) {
+        const s = sc.getBoundingClientRect();
+        const r = el.getBoundingClientRect();
+        const bw = bar.offsetWidth;
+        const bh = bar.offsetHeight;
+        const left = Math.max(bw / 2 + 8, Math.min(sc.clientWidth - bw / 2 - 8, r.left + r.width / 2 - s.left)) + sc.scrollLeft;
+        let top = r.bottom - s.top + sc.scrollTop + 18; // 모서리 핸들(반지름 8px) 아래
+        if (top + bh > sc.scrollTop + sc.clientHeight - 6) top = r.top - s.top + sc.scrollTop - bh - 44; // 회전 핸들 위로
+        setBarPos((prev) => (prev && Math.abs(prev.left - left) < 0.5 && Math.abs(prev.top - top) < 0.5 ? prev : { left, top }));
+      }
+      raf = requestAnimationFrame(tick);
+    };
+    raf = requestAnimationFrame(tick);
+    return () => cancelAnimationFrame(raf);
+  }, [selId, canvasRef]);
+
   const mine = selectedNote ? !!getEditToken(rollpaperId, selectedNote.id) : false; // 글 내용 수정 가능(쓴 사람)
   const isOwner = !!getOwnerToken(rollpaperId); // 방장은 모두의 메모 배치를 바꿀 수 있다
   const canArrange = mine || isOwner;
@@ -144,7 +173,7 @@ export function CanvasBoard({
   const atBack = selectedNote ? ordered[0].id === selectedNote.id : false;
 
   return (
-    <div className={styles.canvasScroll}>
+    <div className={styles.canvasScroll} ref={scrollRef}>
       <div
         ref={canvasRef}
         className={`${styles.canvas} ${cfg.locked ? `${styles.canvasLocked} ${CANVAS_CLASS[rollpaper.mode as RollpaperMode] ?? ""}` : ""} ${PAPER_CLASS[paperSize] ? styles[PAPER_CLASS[paperSize]] : ""}`}
@@ -205,7 +234,6 @@ export function CanvasBoard({
             selected={note.id === selectedNote?.id}
             onMoveEnd={(posX, posY) => moveNote(note.id, posX, posY, note.rotation)}
             onResizeEnd={(scale) => resizeNote(note.id, scale)}
-            onBoxEnd={(box) => updateNote(note.id, box).catch(() => showToast("내가 쓴 메모만 바꿀 수 있어요"))}
             onRotateEnd={(rotation) => moveNote(note.id, note.posX, note.posY, rotation)}
             onTap={() => handleTap(note.id)}
             onDelete={() => handleDelete(note.id)}
@@ -215,12 +243,6 @@ export function CanvasBoard({
 
       {selectedNote && (
         <div className={styles.actionBar} role="toolbar" aria-label="선택한 메모">
-          <button type="button" className={`${styles.actionPill} ${styles.actionIcon}`} disabled={!canUndo} onClick={onUndo} aria-label="되돌리기" title="되돌리기 (Ctrl+Z)">
-            <UndoIcon size={15} />
-          </button>
-          <button type="button" className={`${styles.actionPill} ${styles.actionIcon}`} disabled={!canRedo} onClick={onRedo} aria-label="다시 실행" title="다시 실행 (Ctrl+Shift+Z)">
-            <RedoIcon size={15} />
-          </button>
           {canArrange ? (
             <>
               {mine && selectedNote.type === "text" && (
@@ -246,6 +268,24 @@ export function CanvasBoard({
           )}
           <button type="button" className={styles.actionPill} onClick={() => setSelectedNoteId(null)} aria-label="선택 해제">
             ✕
+          </button>
+        </div>
+      )}
+
+      {selectedNote && (
+        // 선택한 메모의 크기 조절 테두리 바로 아래 — 되돌리기 / 다시 실행
+        <div
+          className={styles.undoPill}
+          ref={barRef}
+          role="toolbar"
+          aria-label="되돌리기"
+          style={barPos ? { left: barPos.left, top: barPos.top } : { left: 0, top: 0, visibility: "hidden" }}
+        >
+          <button type="button" className={`${styles.actionPill} ${styles.actionIcon}`} disabled={!canUndo} onClick={onUndo} aria-label="되돌리기" title="되돌리기 (Ctrl+Z)">
+            <UndoIcon size={16} />
+          </button>
+          <button type="button" className={`${styles.actionPill} ${styles.actionIcon}`} disabled={!canRedo} onClick={onRedo} aria-label="다시 실행" title="다시 실행 (Ctrl+Shift+Z)">
+            <RedoIcon size={16} />
           </button>
         </div>
       )}
