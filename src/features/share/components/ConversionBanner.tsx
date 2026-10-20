@@ -29,11 +29,11 @@ export function ConversionBanner({ onClose, onOrder, toName }: { onClose: () => 
         </div>
         <div className={styles.text}>
           <strong>모은 마음, 무드등으로 간직해 볼까요?</strong>
-          <p>지금까지 모인 메시지 그대로 무드등 제작을 요청할 수 있어요.</p>
+          <p>마음에 드는 유형을 골라 무드등으로 만들어 보세요.</p>
         </div>
         <div className={styles.actions}>
           <button className={styles.cta} onClick={onOrder}>
-            제작 요청하기
+            무드등으로 만들기
           </button>
           <button className={styles.laterBtn} onClick={onClose}>
             닫기

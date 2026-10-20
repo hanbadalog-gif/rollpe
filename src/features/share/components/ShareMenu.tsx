@@ -8,7 +8,8 @@ import type { RollpaperMode } from "@/lib/theme";
 
 interface Props {
   mode: RollpaperMode;
-  onOpenShare: () => void;
+  /** 링크를 복사했을 때(친구초대 링크 / 주인공 전달 링크) — 무드등 제작 제안 모달을 띄우는 데 쓴다 */
+  onCopied?: () => void;
   /** 방장이면 "무드등 제작 요청" 노출 — 새 작성 화면이 아니라 이미 모은 롤링페이퍼를 그대로 요청 */
   canOrder?: boolean;
   onOrder?: () => void; // Story 7.3 — 공유 버튼 처음 누른 시점을 상위에 알림(배너 트리거)
@@ -17,11 +18,10 @@ interface Props {
 }
 
 /** Epic 7 Story 7.1 — 공유 메뉴 */
-export function ShareMenu({ mode, onOpenShare, canOrder, onOrder, variant }: Props) {
+export function ShareMenu({ mode, onCopied, canOrder, onOrder, variant }: Props) {
   const [open, setOpen] = useState(false);
 
   function toggle() {
-    if (!open) onOpenShare();
     setOpen((v) => !v);
   }
 
@@ -29,6 +29,7 @@ export function ShareMenu({ mode, onOpenShare, canOrder, onOrder, variant }: Pro
     try {
       await navigator.clipboard.writeText(window.location.href);
       showToast("링크를 복사했어요");
+      onCopied?.();
     } catch {
       showToast("복사에 실패했어요");
     }
@@ -41,6 +42,7 @@ export function ShareMenu({ mode, onOpenShare, canOrder, onOrder, variant }: Pro
       url.searchParams.set("view", "recipient");
       await navigator.clipboard.writeText(url.toString());
       showToast("주인공에게 전달할 링크를 복사했어요");
+      onCopied?.();
     } catch {
       showToast("복사에 실패했어요");
     }

@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { useRouter } from "next/navigation";
 import styles from "./canvas-page.module.css";
 import { CanvasBoard } from "@/features/canvas/components/CanvasBoard";
 import { WritePanel } from "@/features/write-panel/components/WritePanel";
@@ -12,7 +13,6 @@ import { FixedFieldPanel } from "@/features/canvas/components/FixedFieldPanel";
 import { showToast } from "@/components/Toast";
 import { ShareMenu } from "@/features/share/components/ShareMenu";
 import { ConversionBanner } from "@/features/share/components/ConversionBanner";
-import { hasBannerBeenSeen, markBannerSeen } from "@/features/share/lib/bannerSeen";
 import { downloadCanvasAsImage, PRINT_WIDTH_PX, PRINT_WIDTH_A4_PX } from "@/features/share/lib/canvasExport";
 import { EnvelopeIntro } from "@/features/recipient/components/EnvelopeIntro";
 import { DownloadIcon, PhotoIcon, WriteIcon, StickerIcon, PaletteIcon } from "@/components/icons";
@@ -32,6 +32,7 @@ export function CanvasPageClient({
   const { rollpaper, loading, error, addNote, updateNote, moveNote, resizeNote, deleteNote, updateBgColor, updateFixed, setFinished, undo, redo, canUndo, canRedo } =
     useCanvasNotes(rollpaperId);
   const [openPanel, setOpenPanel] = useState<PanelKey>(null);
+  const router = useRouter();
   const [showBanner, setShowBanner] = useState(false);
   const [downloading, setDownloading] = useState(false);
   const [showEnvelope, setShowEnvelope] = useState(recipientView);
@@ -87,16 +88,18 @@ export function CanvasPageClient({
       showToast("처리하지 못했어요. 잠시 후 다시 시도해주세요.");
     }
   }
+  // 무료 롤링페이퍼에서의 "무드등 제작 요청하기" / 안내 모달 버튼 — 메인의 "롤링페이퍼 무드등 선물하기"와 같은 유형 A/B 선택 화면으로
+  function goGift() {
+    router.push("/gift");
+  }
   function openOrder() {
     setShowBanner(false);
     setOpenPanel("order");
   }
 
-  function handleOpenShare() {
-    if (rollpaper!.mode === "online" && isOwner && !hasBannerBeenSeen(rollpaperId)) {
-      markBannerSeen(rollpaperId);
-      setShowBanner(true);
-    }
+  // 이미지 저장 / 친구초대 링크 복사 / 주인공 전달 링크 복사 직후에 무드등 제작 제안 모달을 띄운다 (무료 롤링페이퍼의 방장만)
+  function offerLamp() {
+    if (rollpaper!.mode === "online" && isOwner) setShowBanner(true);
   }
 
   async function handleDownload() {
@@ -104,6 +107,7 @@ export function CanvasPageClient({
     setDownloading(true);
     try {
       await downloadCanvasAsImage(canvasExportRef.current, `rollpe-${rollpaperId}.png`, rollpaper!.mode === "mood_b_a4" ? PRINT_WIDTH_A4_PX : PRINT_WIDTH_PX);
+      offerLamp();
     } catch {
       showToast("다운로드에 실패했어요");
     } finally {
@@ -156,7 +160,7 @@ export function CanvasPageClient({
         </div>
       )}
 
-      {showBanner && <ConversionBanner onClose={() => setShowBanner(false)} onOrder={openOrder} toName={rollpaper.toName} />}
+      {showBanner && <ConversionBanner onClose={() => setShowBanner(false)} onOrder={goGift} toName={rollpaper.toName} />}
 
       {!recipientView && atCap && isFinite(cfg.capacity) && (
         <div className={styles.capBanner}>
@@ -207,7 +211,7 @@ export function CanvasPageClient({
               <button className={styles.downloadBtn} onClick={handleDownload} disabled={downloading} aria-label="이미지로 저장">
                 {downloading ? "⋯" : <DownloadIcon size={19} />}
               </button>
-              <ShareMenu mode={rollpaper.mode as RollpaperMode} onOpenShare={handleOpenShare} canOrder={isOwner} onOrder={openOrder} variant="rail" />
+              <ShareMenu mode={rollpaper.mode as RollpaperMode} onCopied={offerLamp} canOrder={isOwner} onOrder={rollpaper.mode === "online" ? goGift : openOrder} variant="rail" />
           </div>
         )}
 
