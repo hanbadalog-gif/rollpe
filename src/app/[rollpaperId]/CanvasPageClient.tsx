@@ -15,13 +15,12 @@ import { ConversionBanner } from "@/features/share/components/ConversionBanner";
 import { hasBannerBeenSeen, markBannerSeen } from "@/features/share/lib/bannerSeen";
 import { downloadCanvasAsImage } from "@/features/share/lib/canvasExport";
 import { EnvelopeIntro } from "@/features/recipient/components/EnvelopeIntro";
-import { DownloadIcon, PhotoIcon, WriteIcon, StickerIcon, PaletteIcon, FrameIcon } from "@/components/icons";
+import { DownloadIcon, PhotoIcon, WriteIcon, StickerIcon, PaletteIcon } from "@/components/icons";
 import { BgColorPanel } from "@/features/canvas/components/BgColorPanel";
-import { PaperSizePanel, type PaperSize } from "@/features/canvas/components/PaperSizePanel";
 import { OrderPanel } from "@/features/order/components/OrderPanel";
 import { getOwnerToken } from "@/lib/editToken";
 
-type PanelKey = "write" | "photo" | "sticker" | "bg" | "paper" | "order" | null;
+type PanelKey = "write" | "photo" | "sticker" | "bg" | "order" | null;
 
 export function CanvasPageClient({
   rollpaperId,
@@ -33,7 +32,6 @@ export function CanvasPageClient({
   const { rollpaper, loading, error, addNote, updateNote, moveNote, resizeNote, deleteNote, updateBgColor, updateFixed, setFinished } =
     useCanvasNotes(rollpaperId);
   const [openPanel, setOpenPanel] = useState<PanelKey>(null);
-  const [paperSize, setPaperSize] = useState<PaperSize>("free");
   const [showBanner, setShowBanner] = useState(false);
   const [downloading, setDownloading] = useState(false);
   const [showEnvelope, setShowEnvelope] = useState(recipientView);
@@ -181,16 +179,6 @@ export function CanvasPageClient({
               >
                 <PaletteIcon />
               </button>
-              {/* 무드등은 제품 비율로 고정 — 용지 변경 없음 */}
-              {!cfg.locked && (
-                <button
-                  className={`${styles.tool} ${openPanel === "paper" ? styles.toolActive : ""}`}
-                  onClick={() => setOpenPanel(openPanel === "paper" ? null : "paper")}
-                  aria-label="용지"
-                >
-                  <FrameIcon />
-                </button>
-              )}
 
               </>
             )}
@@ -211,7 +199,6 @@ export function CanvasPageClient({
           canvasRef={canvasExportRef}
           readOnly={locked}
           onEditNote={setEditingId}
-          paperSize={paperSize}
           editableZones={isOwner && !locked}
           onEditZone={(key) => setEditingZone(cfg.zones?.find((z) => z.key === key) ?? null)}
         />
@@ -253,13 +240,12 @@ export function CanvasPageClient({
               {openPanel === "photo" && <PhotoPanel onSubmit={addNote} onDone={() => setOpenPanel(null)} />}
               {openPanel === "sticker" && <StickerPanel onSubmit={addNote} />}
               {openPanel === "bg" && <BgColorPanel current={rollpaper.bgColor} onPick={updateBgColor} />}
-              {openPanel === "paper" && <PaperSizePanel value={paperSize} onPick={setPaperSize} />}
               {openPanel === "order" && <OrderPanel
                   rollpaperId={rollpaperId}
                   onDone={() => setOpenPanel(null)}
                   getCanvas={() => {
                     const r = canvasExportRef.current?.getBoundingClientRect();
-                    return r ? { width: r.width, height: r.height, paperSize } : null;
+                    return r ? { width: r.width, height: r.height, paperSize: "free" } : null;
                   }}
                 />}
             </div>
