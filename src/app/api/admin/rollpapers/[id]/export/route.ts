@@ -24,6 +24,7 @@ export async function GET(
     rollpaperId: rollpaper.id,
     toName: rollpaper.toName,
     mode: rollpaper.mode,
+    fixedFields: rollpaper.fixedFields,
     createdAt: rollpaper.createdAt,
     noteCount: noteRows.length,
     notes: noteRows.map((n) => ({

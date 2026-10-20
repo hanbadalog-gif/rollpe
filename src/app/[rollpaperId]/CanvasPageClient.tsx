@@ -6,20 +6,22 @@ import { CanvasBoard } from "@/features/canvas/components/CanvasBoard";
 import { WritePanel } from "@/features/write-panel/components/WritePanel";
 import { StickerPanel } from "@/features/stickers/components/StickerPanel";
 import { useCanvasNotes } from "@/features/canvas/hooks/useCanvasNotes";
-import { MODE_CONFIG, type RollpaperMode } from "@/lib/theme";
+import { MODE_CONFIG, type RollpaperMode, type Zone } from "@/lib/theme";
+import { PhotoPanel } from "@/features/canvas/components/PhotoPanel";
+import { FixedFieldPanel } from "@/features/canvas/components/FixedFieldPanel";
 import { showToast } from "@/components/Toast";
 import { ShareMenu } from "@/features/share/components/ShareMenu";
 import { ConversionBanner } from "@/features/share/components/ConversionBanner";
 import { hasBannerBeenSeen, markBannerSeen } from "@/features/share/lib/bannerSeen";
 import { downloadCanvasAsImage } from "@/features/share/lib/canvasExport";
 import { EnvelopeIntro } from "@/features/recipient/components/EnvelopeIntro";
-import { DownloadIcon, WriteIcon, StickerIcon, PaletteIcon, FrameIcon } from "@/components/icons";
+import { DownloadIcon, PhotoIcon, WriteIcon, StickerIcon, PaletteIcon, FrameIcon } from "@/components/icons";
 import { BgColorPanel } from "@/features/canvas/components/BgColorPanel";
 import { PaperSizePanel, type PaperSize } from "@/features/canvas/components/PaperSizePanel";
 import { OrderPanel } from "@/features/order/components/OrderPanel";
 import { getOwnerToken } from "@/lib/editToken";
 
-type PanelKey = "write" | "sticker" | "bg" | "paper" | "order" | null;
+type PanelKey = "write" | "photo" | "sticker" | "bg" | "paper" | "order" | null;
 
 export function CanvasPageClient({
   rollpaperId,
@@ -28,7 +30,7 @@ export function CanvasPageClient({
   rollpaperId: string;
   recipientView?: boolean;
 }) {
-  const { rollpaper, loading, error, addNote, updateNote, moveNote, resizeNote, deleteNote, updateBgColor, setFinished } =
+  const { rollpaper, loading, error, addNote, updateNote, moveNote, resizeNote, deleteNote, updateBgColor, updateFixed, setFinished } =
     useCanvasNotes(rollpaperId);
   const [openPanel, setOpenPanel] = useState<PanelKey>(null);
   const [paperSize, setPaperSize] = useState<PaperSize>("free");
@@ -37,6 +39,7 @@ export function CanvasPageClient({
   const [showEnvelope, setShowEnvelope] = useState(recipientView);
   const [confirmFinish, setConfirmFinish] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null); // 수정창에 열려 있는 메모
+  const [editingZone, setEditingZone] = useState<Zone | null>(null); // 무드등 고정 칸 입력창
   const canvasExportRef = useRef<HTMLDivElement>(null);
 
   if (loading) return <div className={styles.loading}>불러오는 중…</div>;
@@ -155,6 +158,14 @@ export function CanvasPageClient({
                 <WriteIcon />
               </button>
               <button
+                className={`${styles.tool} ${openPanel === "photo" ? styles.toolActive : ""}`}
+                disabled={atCap && isFinite(cfg.capacity)}
+                onClick={() => setOpenPanel(openPanel === "photo" ? null : "photo")}
+                aria-label="사진"
+              >
+                <PhotoIcon />
+              </button>
+              <button
                 className={`${styles.tool} ${openPanel === "sticker" ? styles.toolActive : ""}`}
                 disabled={!cfg.stickerEnabled}
                 onClick={() => setOpenPanel(openPanel === "sticker" ? null : "sticker")}
@@ -201,7 +212,23 @@ export function CanvasPageClient({
           readOnly={locked}
           onEditNote={setEditingId}
           paperSize={paperSize}
+          editableZones={isOwner && !locked}
+          onEditZone={(key) => setEditingZone(cfg.zones?.find((z) => z.key === key) ?? null)}
         />
+
+        {!locked && editingZone && (
+          <div className={styles.modalBackdrop} onClick={() => setEditingZone(null)}>
+            <div className={styles.modalCard} onClick={(e) => e.stopPropagation()}>
+              <FixedFieldPanel
+                key={editingZone.key}
+                zone={editingZone}
+                value={rollpaper.fixedFields?.[editingZone.key] ?? ""}
+                onSave={(v) => updateFixed({ [editingZone.key]: v })}
+                onDone={() => setEditingZone(null)}
+              />
+            </div>
+          </div>
+        )}
 
         {!locked && editingId && rollpaper.notes.find((n) => n.id === editingId) && (
           <div className={styles.modalBackdrop} onClick={() => setEditingId(null)}>
@@ -223,6 +250,7 @@ export function CanvasPageClient({
               {openPanel === "write" && (
                 <WritePanel mode={rollpaper.mode as RollpaperMode} onSubmit={addNote} onDone={() => setOpenPanel(null)} />
               )}
+              {openPanel === "photo" && <PhotoPanel onSubmit={addNote} onDone={() => setOpenPanel(null)} />}
               {openPanel === "sticker" && <StickerPanel onSubmit={addNote} />}
               {openPanel === "bg" && <BgColorPanel current={rollpaper.bgColor} onPick={updateBgColor} />}
               {openPanel === "paper" && <PaperSizePanel value={paperSize} onPick={setPaperSize} />}

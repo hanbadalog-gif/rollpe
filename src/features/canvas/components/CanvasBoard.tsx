@@ -3,7 +3,7 @@
 import { useRef, useState } from "react";
 import styles from "./canvas.module.css";
 import { Note } from "./Note";
-import { MODE_CONFIG, type RollpaperMode } from "@/lib/theme";
+import { MODE_CONFIG, type RollpaperMode, type Zone } from "@/lib/theme";
 import { getEditToken, getOwnerToken } from "@/lib/editToken";
 import { showToast } from "@/components/Toast";
 import type { RollpaperDTO } from "../types";
@@ -24,6 +24,9 @@ interface Props {
   readOnly?: boolean;
   /** 용지 크기 미리보기(실물 인화/액자 비율) — 로컬 뷰 전용, 서버에 저장하지 않음 */
   paperSize?: PaperSize;
+  /** 무드등 고정 칸(사진/제목/문구)을 방장이 눌러 입력할 수 있는지 */
+  editableZones?: boolean;
+  onEditZone?: (key: Zone["key"]) => void;
 }
 
 const PAPER_CLASS: Record<PaperSize, string> = {
@@ -34,8 +37,12 @@ const PAPER_CLASS: Record<PaperSize, string> = {
   a3l: "canvasA3l",
 };
 
-// 무드등 캔버스에서 글이 놓일 수 있는 검정 판 영역 — 아래 받침(이미지 하단 7%)은 제외
-const LAMP_PLATE = { right: 100, bottom: 93 };
+// 유형 A는 7_1.jpg 배경 이미지, 유형 B는 흰 종이(8인치 정사각 / A4 비율)
+const CANVAS_CLASS: Partial<Record<RollpaperMode, string>> = {
+  mood_a: styles.canvasLamp,
+  mood_b_8: `${styles.canvasPaper} ${styles.canvasPaperSquare}`,
+  mood_b_a4: `${styles.canvasPaper} ${styles.canvasPaperA4}`,
+};
 
 type Reorder = "front" | "forward" | "backward" | "back";
 
@@ -57,6 +64,8 @@ export function CanvasBoard({
   canvasRef: externalRef,
   readOnly,
   paperSize = "free",
+  editableZones,
+  onEditZone,
 }: Props) {
   const ownRef = useRef<HTMLDivElement>(null);
   const canvasRef = externalRef ?? ownRef;
@@ -73,7 +82,7 @@ export function CanvasBoard({
     const note = rollpaper.notes.find((n) => n.id === noteId);
     if (!note) return;
     // 이미 선택된 내 글을 한 번 더 누르면 수정창
-    if (selectedNoteId === noteId && note.type !== "sticker" && getEditToken(rollpaperId, noteId)) {
+    if (selectedNoteId === noteId && note.type === "text" && getEditToken(rollpaperId, noteId)) {
       onEditNote(noteId);
       return;
     }
@@ -120,13 +129,44 @@ export function CanvasBoard({
     <div className={styles.canvasScroll}>
       <div
         ref={canvasRef}
-        className={`${styles.canvas} ${cfg.locked ? `${styles.canvasLocked} ${styles.canvasLamp}` : ""} ${PAPER_CLASS[paperSize] ? styles[PAPER_CLASS[paperSize]] : ""}`}
+        className={`${styles.canvas} ${cfg.locked ? `${styles.canvasLocked} ${CANVAS_CLASS[rollpaper.mode as RollpaperMode] ?? ""}` : ""} ${PAPER_CLASS[paperSize] ? styles[PAPER_CLASS[paperSize]] : ""}`}
         style={customBg ? { background: customBg } : undefined}
         // 빈 곳을 누르면 선택 해제
         onPointerDown={(e) => {
           if (e.target === e.currentTarget) setSelectedNoteId(null);
         }}
       >
+        {cfg.zones?.map((z) => {
+          const value = rollpaper.fixedFields?.[z.key] ?? z.defaultText;
+          if (!value && !editableZones) return null;
+          const style: React.CSSProperties = {
+            left: `${z.x}%`,
+            top: `${z.y}%`,
+            width: `${z.w}%`,
+            height: `${z.h}%`,
+            color: cfg.fixedTextColor,
+            transform: z.rotate ? `rotate(${z.rotate}deg)` : undefined,
+          };
+          const body = !value ? (
+            <span data-no-export="1" className={styles.zonePlaceholder}>
+              {z.placeholder}
+            </span>
+          ) : z.kind === "photo" ? (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img src={value} alt="" className={styles.zonePhoto} draggable={false} />
+          ) : (
+            <span className={styles.zoneText}>{value}</span>
+          );
+          return editableZones ? (
+            <button key={z.key} type="button" className={`${styles.zone} ${styles.zoneEditable}`} style={style} onClick={() => onEditZone?.(z.key)} aria-label={z.placeholder}>
+              {body}
+            </button>
+          ) : (
+            <div key={z.key} className={styles.zone} style={style}>
+              {body}
+            </div>
+          );
+        })}
         {rollpaper.notes.length === 0 && (
           <div className={styles.hint}>+ 빈 공간을 눌러 마음을 더해보세요</div>
         )}
@@ -138,7 +178,7 @@ export function CanvasBoard({
             editable
             readOnly={readOnly}
             flat={cfg.locked}
-            bounds={cfg.locked ? LAMP_PLATE : undefined}
+            bounds={cfg.bounds}
             selected={note.id === selectedNote?.id}
             onMoveEnd={(posX, posY) => moveNote(note.id, posX, posY, note.rotation)}
             onResizeEnd={(scale) => resizeNote(note.id, scale)}
@@ -153,7 +193,7 @@ export function CanvasBoard({
         <div className={styles.actionBar} role="toolbar" aria-label="선택한 메모">
           {mine ? (
             <>
-              {selectedNote.type !== "sticker" && (
+              {selectedNote.type === "text" && (
                 <button type="button" className={`${styles.actionPill} ${styles.actionPillMain}`} onClick={() => onEditNote(selectedNote.id)}>
                   수정
                 </button>

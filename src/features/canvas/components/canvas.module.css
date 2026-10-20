@@ -34,8 +34,14 @@
   align-self: flex-start;
 }
 
+/* 유형 A는 화면 가장자리까지 넓게 써서 좁은 폰에서도 캔버스가 커 보이게 */
+.canvasScroll:has(.canvasLamp) {
+  padding: 8px;
+}
+
 /* 무드등 캔버스 — 페이지/7_1.jpg에서 잘라낸 배경(검정 판 + 가운데 흰 칸). 배경 자체가 제품 비율 */
 .canvasLamp {
+  max-width: 390px; /* 기본 무드등 캔버스(360px)보다 30px 크게 — 비율은 그대로 */
   aspect-ratio: 307 / 389;
   /* 이미지의 모양(윗판 + 아래 받침)이 곧 캔버스 모양 — 사각 테두리/둥근 모서리는 쓰지 않는다 */
   background: url("/brand/lamp-canvas.png") center / 100% 100% no-repeat;
@@ -71,6 +77,64 @@
 .canvasA3l {
   aspect-ratio: 420 / 297;
   height: min(297mm, 78vh);
+}
+
+/* 유형 B — 흰 종이. 8인치는 정사각, A4는 210:297 */
+.canvasPaper {
+  background: #fff;
+}
+.canvasPaperSquare {
+  aspect-ratio: 1 / 1;
+}
+.canvasPaperA4 {
+  aspect-ratio: 210 / 297;
+}
+
+/* 무드등 고정 칸(사진/제목/문구) — 방장이 눌러서 입력 */
+.canvas {
+  container-type: inline-size;
+}
+.zone {
+  position: absolute;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  border: none;
+  background: none;
+  font-family: 'Gaegu', cursive;
+  font-weight: 700;
+  font-size: 4.6cqw;
+  line-height: 1.25;
+  text-align: center;
+  white-space: pre-wrap;
+  word-break: keep-all;
+  overflow: hidden;
+}
+.zoneEditable {
+  cursor: pointer;
+}
+.zonePhoto {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 6px;
+  display: block;
+}
+.zoneText {
+  width: 100%;
+}
+.zonePlaceholder {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1.5px dashed #8d8fa0;
+  border-radius: 8px;
+  color: #8d8fa0;
+  font-size: 3.4cqw;
+  font-weight: 400;
 }
 
 /* 빈 캔버스 안내가 아래 받침 위에 걸치지 않도록 검정 판 안쪽으로 */
@@ -139,6 +203,17 @@
 /* 수정/0번 피드백(무드등 전용) — 그림자 없이 평평하게, 실물 인화/아크릴 느낌에 가깝게 */
 .noteFlat {
   box-shadow: none;
+  /* 폭·여백·글씨를 모두 캔버스 폭에 비례시킨다(기준 360px) — 화면 크기가 달라도 메모 모양이 같다 */
+  width: 30%;
+  padding: 3.05cqw 3.33cqw;
+  font-size: 3.6cqw;
+}
+.noteFlat .noteFrom {
+  font-size: 3.33cqw;
+  margin-top: 3cqw;
+}
+.canvasLocked .notePhotoOnly {
+  width: 30%;
 }
 
 .noteSticker {

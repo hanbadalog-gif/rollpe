@@ -5,6 +5,8 @@ import { NextRequest, NextResponse } from "next/server";
 import { eq, asc } from "drizzle-orm";
 import { db } from "@/db";
 import { rollpapers, notes } from "@/db/schema";
+import { finishedResponse } from "@/lib/finished";
+import { MODE_CONFIG, type RollpaperMode } from "@/lib/theme";
 
 export async function GET(
   _request: NextRequest,
@@ -50,12 +52,32 @@ export async function PATCH(
     );
   }
 
-  const body = (await request.json().catch(() => ({}))) as { bgColor?: string; finished?: boolean };
+  const body = (await request.json().catch(() => ({}))) as {
+    bgColor?: string;
+    finished?: boolean;
+    fixedFields?: Record<string, unknown>;
+  };
+
+  // 무드등 고정 칸 — 모드가 가진 칸(zones)의 키만, 문구는 짧게, 사진은 이미지 데이터 URL만 받는다. 빈 문자열이면 비움
+  let fixedFields: Record<string, string> | undefined;
+  if (body.fixedFields) {
+    if (rollpaper.finishedAt) return finishedResponse();
+    const zones = MODE_CONFIG[rollpaper.mode as RollpaperMode].zones ?? [];
+    fixedFields = { ...((rollpaper.fixedFields as Record<string, string> | null) ?? {}) };
+    for (const z of zones) {
+      const v = body.fixedFields[z.key];
+      if (typeof v !== "string") continue;
+      const ok = z.kind === "photo" ? v.startsWith("data:image/") && v.length < 2_000_000 : v.length <= 60;
+      if (v === "") delete fixedFields[z.key];
+      else if (ok) fixedFields[z.key] = v;
+    }
+  }
 
   const [updated] = await db
     .update(rollpapers)
     .set({
       bgColor: body.bgColor,
+      fixedFields,
       // 완성 = 시각 기록, 다시 열기 = null. 완성 중에는 방장만 이 값을 바꿀 수 있음(위에서 방장 확인)
       finishedAt: body.finished === true ? new Date() : body.finished === false ? null : undefined,
     })

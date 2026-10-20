@@ -155,7 +155,8 @@ export function Note({ note, canvasRef, editable, selected, onMoveEnd, onResizeE
         background: note.bgColor ?? undefined,
         color: note.textColor ?? undefined,
         fontFamily: note.font ?? undefined,
-        fontSize: note.fontSize ? `${note.fontSize}px` : undefined,
+        // 무드등(flat)은 캔버스 폭(기준 360px)에 비례해 글씨도 함께 줄고 늘어, 기기마다 메모 크기가 달라 보이지 않게 한다
+        fontSize: note.fontSize ? (flat ? `${note.fontSize / 3.6}cqw` : `${note.fontSize}px`) : undefined,
         fontWeight: note.bold ? 700 : undefined,
         border: note.borderColor ? `2px solid ${note.borderColor}` : undefined,
       }}

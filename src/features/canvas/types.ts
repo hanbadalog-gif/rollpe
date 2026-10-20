@@ -24,6 +24,9 @@ export interface NoteDTO {
   createdAt: string;
 }
 
+/** 무드등 고정 레이아웃 칸 내용 — 키는 theme.ts의 ZONES와 같다 */
+export type FixedFields = Partial<Record<"title" | "photo" | "caption" | "label", string>>;
+
 export interface RollpaperDTO {
   id: string;
   toName: string;
@@ -31,6 +34,7 @@ export interface RollpaperDTO {
   bgColor: string | null;
   /** 방장이 "완성"한 시각 — 값이 있으면 작성/수정이 잠김 */
   finishedAt: string | null;
+  fixedFields: FixedFields | null;
   createdAt: string;
   notes: NoteDTO[];
 }

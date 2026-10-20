@@ -8,19 +8,15 @@ const ROW_PATTERN: { y: number; xs: number[] }[] = [
   { y: 33, xs: [18, 51] },
   { y: 62, xs: [2, 35, 68] },
 ];
-// 무드등 캔버스(페이지/7_1.jpg) — 가운데 흰 칸(x 32~70%, y 25~62%)을 피해 위3/좌우2/아래3 총 8자리
-const LAMP_PATTERN: { y: number; xs: number[] }[] = [
-  { y: 2, xs: [2, 35, 68] },
-  { y: 31, xs: [1, 69] },
-  { y: 66, xs: [2, 35, 68] },
-];
-const SLOTS_PER_PAGE = ROW_PATTERN.reduce((sum, row) => sum + row.xs.length, 0);
 const PAGE_HEIGHT = 92;
 
-export function gridPosition(index: number, lamp = false) {
-  const page = lamp ? 0 : Math.floor(index / SLOTS_PER_PAGE);
-  let within = index % SLOTS_PER_PAGE;
-  for (const row of lamp ? LAMP_PATTERN : ROW_PATTERN) {
+/** slots가 있으면(무드등) 그 자리만 쓰고 한 바퀴 돌면 처음 자리로, 없으면 "페이지"를 아래로 이어 붙인다 */
+export function gridPosition(index: number, slots?: { y: number; xs: number[] }[]) {
+  const pattern = slots ?? ROW_PATTERN;
+  const perPage = pattern.reduce((sum, row) => sum + row.xs.length, 0);
+  const page = slots ? 0 : Math.floor(index / perPage);
+  let within = index % perPage;
+  for (const row of pattern) {
     if (within < row.xs.length) {
       const jitterX = Math.random() * 6 - 3;
       const jitterY = Math.random() * 6 - 3;

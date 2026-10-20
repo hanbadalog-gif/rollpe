@@ -38,6 +38,7 @@ export async function POST(request: NextRequest, ctx: RouteContext<"/api/rollpap
     toName: rollpaper.toName,
     mode: rollpaper.mode,
     bgColor: rollpaper.bgColor,
+    fixedFields: rollpaper.fixedFields, // 무드등 고정 칸(제목/사진/문구/라벨)
     // 위치(posX/posY)는 캔버스 폭·높이에 대한 % — 같은 비율로 복원하려면 요청 시점 크기가 필요
     canvas:
       typeof body?.canvas?.width === "number" && typeof body.canvas.height === "number"

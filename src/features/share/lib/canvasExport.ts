@@ -8,7 +8,12 @@ export async function downloadCanvasAsImage(canvasEl: HTMLElement, fileName: str
   // SVG 안에 직접 인라인해야만 커스텀 폰트가 적용된다. skipFonts:true로 인라인을 건너뛰면
   // 다운로드 이미지에서 기본 폰트로 떨어져 보이던 게 원인 — layout.tsx에 Google Fonts
   // 스타일시트 crossOrigin="anonymous"를 추가해 cssRules를 읽을 수 있게 하고 임베딩을 켬.
-  const dataUrl = await toPng(canvasEl, { pixelRatio: 2, cacheBust: true });
+  const dataUrl = await toPng(canvasEl, {
+    pixelRatio: 2,
+    cacheBust: true,
+    // 입력 안내(점선 칸/placeholder)는 저장 이미지에서 뺀다
+    filter: (node) => !(node instanceof HTMLElement && node.dataset.noExport),
+  });
   const a = document.createElement("a");
   a.href = dataUrl;
   a.download = fileName;

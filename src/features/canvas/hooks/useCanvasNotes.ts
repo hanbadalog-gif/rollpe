@@ -6,7 +6,7 @@ import { gridPosition } from "@/lib/gridPosition";
 import { MODE_CONFIG, type RollpaperMode } from "@/lib/theme";
 import { showToast } from "@/components/Toast";
 import { getEditToken, saveEditToken, removeEditToken, getOwnerToken } from "@/lib/editToken";
-import type { CreateNoteInput, NoteDTO, RollpaperDTO } from "../types";
+import type { CreateNoteInput, FixedFields, NoteDTO, RollpaperDTO } from "../types";
 
 const POLL_INTERVAL_MS = 7000; // TRD §3 "5~10초 폴링으로 충분" (NFR3)
 
@@ -26,9 +26,16 @@ export function useCanvasNotes(rollpaperId: string) {
     latest.current = rollpaper;
   }, [rollpaper]);
 
-  const refresh = useCallback(async () => {
+  // 내가 바꾼 값(크기/위치 등)을 폴링 응답이 옛 값으로 되돌리지 못하게 막는 장치
+  const mutating = useRef(0); // 저장 중인 내 변경 수
+  const lastMutationAt = useRef(0);
+
+  const refresh = useCallback(async (force = false) => {
+    const startedAt = Date.now();
     try {
       const data = await api.get<RollpaperDTO>(`/api/rollpapers/${rollpaperId}`);
+      // 조회를 시작한 뒤 내 변경이 있었거나 아직 저장 중이면, 이 응답은 변경 이전 상태라 버린다 (force: 저장 실패 되돌리기)
+      if (!force && (mutating.current > 0 || lastMutationAt.current > startedAt)) return;
       setRollpaper(data);
       setError(null);
     } catch {
@@ -56,7 +63,7 @@ export function useCanvasNotes(rollpaperId: string) {
     async (input: CreateNoteInput) => {
       const tempId = `tmp-${Math.random().toString(36).slice(2)}`;
       const current = latest.current?.notes ?? [];
-      const auto = gridPosition(current.length, !!latest.current && MODE_CONFIG[latest.current.mode as RollpaperMode].locked);
+      const auto = gridPosition(current.length, latest.current ? MODE_CONFIG[latest.current.mode as RollpaperMode].slots : undefined);
       const sent: CreateNoteInput = {
         ...input,
         posX: input.posX ?? auto.posX,
@@ -116,7 +123,7 @@ export function useCanvasNotes(rollpaperId: string) {
       try {
         await api.patch(`/api/rollpapers/${rollpaperId}/notes/${noteId}`, patch, { "x-edit-token": token });
       } catch (err) {
-        await refresh();
+        await refresh(true);
         throw err;
       }
     },
@@ -145,7 +152,7 @@ export function useCanvasNotes(rollpaperId: string) {
           { "x-edit-token": token },
         );
       } catch {
-        await refresh(); // 저장 실패 시 서버 상태로 되돌림
+        await refresh(true); // 저장 실패 시 서버 상태로 되돌림
       }
     },
     [rollpaperId, refresh],
@@ -163,7 +170,7 @@ export function useCanvasNotes(rollpaperId: string) {
       try {
         await api.patch(`/api/rollpapers/${rollpaperId}/notes/${noteId}`, { scale }, { "x-edit-token": token });
       } catch {
-        await refresh();
+        await refresh(true);
       }
     },
     [rollpaperId, refresh],
@@ -177,8 +184,24 @@ export function useCanvasNotes(rollpaperId: string) {
       try {
         await api.patch(`/api/rollpapers/${rollpaperId}`, { bgColor }, { "x-owner-token": token });
       } catch {
-        await refresh();
+        await refresh(true);
         throw new Error("BG_UPDATE_FAILED");
+      }
+    },
+    [rollpaperId, refresh],
+  );
+
+  // 무드등 고정 칸 입력 — 방장만. 빈 문자열이면 칸을 비운다
+  const updateFixed = useCallback(
+    async (patch: FixedFields) => {
+      const token = getOwnerToken(rollpaperId);
+      if (!token) throw new Error("NO_OWNER_TOKEN");
+      try {
+        const updated = await api.patch<{ fixedFields: FixedFields | null }>(`/api/rollpapers/${rollpaperId}`, { fixedFields: patch }, { "x-owner-token": token });
+        setRollpaper((prev) => (prev ? { ...prev, fixedFields: updated.fixedFields } : prev));
+      } catch (e) {
+        await refresh(true);
+        throw e;
       }
     },
     [rollpaperId, refresh],
@@ -193,7 +216,7 @@ export function useCanvasNotes(rollpaperId: string) {
       try {
         await api.patch(`/api/rollpapers/${rollpaperId}`, { finished }, { "x-owner-token": token });
       } catch (err) {
-        await refresh();
+        await refresh(true);
         throw err;
       }
     },
@@ -210,7 +233,7 @@ export function useCanvasNotes(rollpaperId: string) {
       try {
         await api.delete(`/api/rollpapers/${rollpaperId}/notes/${noteId}`, headers);
       } catch (err) {
-        await refresh();
+        await refresh(true);
         throw err;
       }
       removeEditToken(rollpaperId, noteId);
@@ -223,5 +246,32 @@ export function useCanvasNotes(rollpaperId: string) {
     [rollpaperId],
   );
 
-  return { rollpaper, loading, error, addNote, updateNote, moveNote, resizeNote, deleteNote, updateBgColor, setFinished, canEdit, refresh };
+  const track =
+    <A extends unknown[], R>(fn: (...args: A) => Promise<R>) =>
+    async (...args: A): Promise<R> => {
+      mutating.current++;
+      lastMutationAt.current = Date.now();
+      try {
+        return await fn(...args);
+      } finally {
+        mutating.current--;
+        lastMutationAt.current = Date.now();
+      }
+    };
+
+  return {
+    rollpaper,
+    loading,
+    error,
+    addNote: track(addNote),
+    updateNote: track(updateNote),
+    moveNote: track(moveNote),
+    resizeNote: track(resizeNote),
+    deleteNote: track(deleteNote),
+    updateBgColor: track(updateBgColor),
+    updateFixed: track(updateFixed),
+    setFinished: track(setFinished),
+    canEdit,
+    refresh,
+  };
 }
