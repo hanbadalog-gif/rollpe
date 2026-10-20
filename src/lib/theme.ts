@@ -84,7 +84,7 @@ export const MODE_CONFIG: Record<RollpaperMode, ModeConfig> = {
     bgPickerEnabled: true,
   },
   mood_a: {
-    label: "무드등 B",
+    label: "아크릴 무드등",
     capacity: 8,
     bgColor: "var(--mood-dark)",
     locked: true,
@@ -96,7 +96,7 @@ export const MODE_CONFIG: Record<RollpaperMode, ModeConfig> = {
     bounds: { right: 100, bottom: 93 }, // 아래 받침(이미지 하단 7%)은 제외
   },
   mood_b_8: {
-    label: "무드등 A",
+    label: "액자 무드등",
     capacity: 8,
     bgColor: "#ffffff",
     locked: true,
@@ -108,7 +108,7 @@ export const MODE_CONFIG: Record<RollpaperMode, ModeConfig> = {
     bounds: { right: 100, bottom: 100 },
   },
   mood_b_a4: {
-    label: "무드등 A",
+    label: "액자 무드등",
     capacity: 20,
     bgColor: "#ffffff",
     locked: true,
