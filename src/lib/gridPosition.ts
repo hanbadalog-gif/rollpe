@@ -21,8 +21,8 @@ export function gridPosition(index: number, slots?: { y: number; xs: number[] }[
       const jitterX = Math.random() * 6 - 3;
       const jitterY = Math.random() * 6 - 3;
       return {
-        posX: Math.round(row.xs[within] + jitterX),
-        posY: Math.round(row.y + page * PAGE_HEIGHT + jitterY),
+        posX: Math.max(0, Math.round(row.xs[within] + jitterX)), // 흔들림으로 캔버스 밖(음수)에 놓이지 않게
+        posY: Math.max(0, Math.round(row.y + page * PAGE_HEIGHT + jitterY)),
         rotation: Math.round(Math.random() * 24 - 12),
       };
     }

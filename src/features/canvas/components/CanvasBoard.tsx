@@ -175,7 +175,8 @@ export function CanvasBoard({
             key={note.id}
             note={note}
             canvasRef={canvasRef}
-            editable
+            // 수정 권한(작성한 기기의 토큰)이 있는 메모만 끌 수 있다 — 없는 메모는 끌어도 저장이 거부돼 제자리로 돌아가므로 아예 못 끌게 한다
+            editable={!!getEditToken(rollpaperId, note.id)}
             readOnly={readOnly}
             flat={cfg.locked}
             bounds={cfg.bounds}

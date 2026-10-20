@@ -37,7 +37,7 @@ export function Note({ note, canvasRef, editable, selected, onMoveEnd, onResizeE
   const boxDrag = useRef<{ axis: "w" | "h"; sx: number; sy: number; base: number; cw: number; ch: number; cos: number; sin: number; sc: number } | null>(null);
   const elRef = useRef<HTMLDivElement | null>(null);
 
-  const disabled = readOnly || (!editable && note.type !== "sticker");
+  const disabled = readOnly || !editable;
 
   const drag = useDraggableNote({
     posX: note.posX,
