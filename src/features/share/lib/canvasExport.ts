@@ -61,6 +61,8 @@ export async function renderCanvasPng(canvasEl: HTMLElement, targetWidthPx = PRI
   const dataUrl = await toPng(canvasEl, {
     pixelRatio: ratio,
     cacheBust: true,
+    // 무드등 캔버스는 margin:auto로 화면 가운데에 놓는다. 이 계산된 여백이 복제본에 그대로 따라가면 그림이 오른쪽·아래로 밀려 잘리므로 뺀다
+    style: { margin: "0" },
     // 입력 안내(점선 칸/placeholder/등록 중 표시)는 저장 이미지에서 뺀다
     filter: (node) => !(node instanceof HTMLElement && node.dataset.noExport),
   });
