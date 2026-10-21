@@ -10,8 +10,8 @@ import { scryptSync, timingSafeEqual } from "node:crypto";
 
 if (typeof window !== "undefined") throw new Error("adminCredentials는 서버에서만 사용할 수 있습니다.");
 
-export const ADMIN_ID = "gilmory";
-const ADMIN_PASSWORD_HASH = "scrypt$6a2154e51760bef50f596ca755ccda5d$f023670c8f33e17e05ca2258ba3b0945e74f8a6945df36dc8c438bfc234fd23c";
+export const ADMIN_ID = "glimory";
+const ADMIN_PASSWORD_HASH = "scrypt$3189c5bdac9d627bec8d7e8124b836c4$ffa77e4faa6a22772f14440ca8631b68fba6028f28c514b74692c78e4c03ff98";
 
 /** 아이디·비밀번호 확인 — 항상 둘 다 계산하고 시간차 비교(timingSafeEqual)로 어느 쪽이 틀렸는지 알 수 없게 한다 */
 export function verifyAdmin(id: string, password: string): boolean {

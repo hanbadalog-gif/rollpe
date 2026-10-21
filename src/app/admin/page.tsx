@@ -33,6 +33,11 @@ export default async function AdminHomePage() {
     <>
       <AdminEntryForm />
       <div style={{ maxWidth: 640, margin: "0 auto", padding: "0 16px 80px", fontSize: 13 }}>
+        <form action="/api/admin/logout" method="post" style={{ textAlign: "right", marginBottom: 6 }}>
+          <button type="submit" style={{ border: "1px solid #ddd", background: "#fff", borderRadius: 999, padding: "4px 12px", fontSize: 12, cursor: "pointer" }}>
+            로그아웃
+          </button>
+        </form>
         <h2 style={{ fontSize: 16, margin: "0 0 10px" }}>무드등 제작 요청 ({rows.length})</h2>
         {rows.length > 0 && (
           <a href="/api/admin/orders" download style={{ display: "inline-block", marginBottom: 14, color: "#6c7fb7", fontWeight: 700 }}>

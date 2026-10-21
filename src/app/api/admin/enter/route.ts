@@ -36,13 +36,12 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ code: "FORBIDDEN", message: "아이디 또는 비밀번호가 올바르지 않습니다." }, { status: 403 });
   }
 
-  // 로그인 성공 시 세션 쿠키 — 비밀번호 자체는 쿠키에 넣지 않는다
+  // 로그인 성공 시 세션 쿠키(maxAge 없음 = 브라우저를 닫으면 로그아웃) — 비밀번호 자체는 쿠키에 넣지 않는다
   const res = NextResponse.json({ ok: true });
   res.cookies.set(ADMIN_COOKIE, process.env.ADMIN_SECRET, {
     httpOnly: true,
     secure: process.env.NODE_ENV === "production",
     sameSite: "lax",
-    maxAge: 60 * 60 * 24 * 30,
     path: "/",
   });
   return res;
