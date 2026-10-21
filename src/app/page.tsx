@@ -10,6 +10,24 @@ const HERO_NOTES = [
   { from: "수연", text: "그동안 정말\n고생 많았어요!\n새로운 시작도\n늘 응원할게요.\n자주 연락하고\n지내요 우리 :)" },
 ];
 
+// 고객 피드백(롤페작업/0.jpg) — 메모지 위에 스티커를 얹는다. 스티커는 메모지 안에 두어 메모지와 함께 움직이고,
+// PC와 모바일에서 같은 자리에 붙는다(화면 폭이 달라도 스티커만 따로 밀려나지 않음).
+const HERO_STICKERS: Record<number, { src: string; cls: string }[]> = {
+  0: [
+    { src: "clip", cls: "stClip" },
+    { src: "heart", cls: "stHeart" },
+    { src: "star", cls: "stStar" },
+  ],
+  1: [
+    { src: "balloon", cls: "stBalloon" },
+    { src: "heart2", cls: "stHearts" },
+  ],
+  2: [
+    { src: "thankyou", cls: "stThanks" },
+    { src: "flower", cls: "stFlower" },
+  ],
+};
+
 // 페이지/1.jpg 레퍼런스 — 로고+악센트마크 헤더, 보라 패널 위 메모 콜라주, 하단 2버튼.
 // 1.jpg는 스크롤 없는 단일 화면이라 그 아래 다른 섹션(Point/사용처/하단CTA)은 두지 않는다.
 export default function HomePage() {
@@ -39,8 +57,12 @@ export default function HomePage() {
         {/* 와이드뷰 피드백 — 파란 패널만 .shell 밖에 둬서 화면 폭 전체를 채움 */}
         <div className={styles.heroPanel}>
           <div className={styles.heroCards}>
-            {HERO_NOTES.map((note) => (
+            {HERO_NOTES.map((note, i) => (
               <div key={note.from} className={styles.heroCard}>
+                {HERO_STICKERS[i].map((st) => (
+                  // eslint-disable-next-line @next/next/no-img-element -- 정적 스티커 PNG
+                  <img key={st.src} src={`/stickers/${st.src}.png`} alt="" className={`${styles.heroSticker} ${styles[st.cls]}`} draggable={false} />
+                ))}
                 <p className={styles.heroCardText}>{note.text}</p>
                 <span className={styles.heroCardFrom}>
                   From <span className={styles.heroCardName}>{note.from}</span>

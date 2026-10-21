@@ -31,7 +31,7 @@
   flex: 1;
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
+  justify-content: flex-start; /* 파란 영역 높이를 줄인 뒤 제목-파란 영역-버튼이 떨어져 보이지 않게 위로 붙인다 */
 }
 
 .header {
@@ -54,6 +54,8 @@
   height: 22px;
   width: auto;
   display: block;
+  /* 고객 피드백(1.jpg) — 별이 로고보다 아래로 쏠려 보임. 글자 가운데 높이에 맞춰 위로 올린다 */
+  transform: translateY(-4px);
 }
 
 .heroText {
@@ -258,4 +260,50 @@
 
 .btnGhostBlack {
   color: var(--ink);
+}
+
+/* 고객 피드백(0.jpg) — 메모지 위 스티커. 메모지(.heroCard) 안에 절대 배치해서 PC/모바일 같은 자리 */
+.heroSticker {
+  position: absolute;
+  object-fit: contain;
+  pointer-events: none;
+  z-index: 4;
+}
+.stClip { width: 52px; top: -26px; left: 22px; transform: rotate(-14deg); }
+.stHeart { width: 56px; left: -34px; top: 38%; transform: rotate(-12deg); }
+.stStar { width: 60px; left: 22px; bottom: -34px; }
+.stBalloon { width: 84px; right: -34px; top: -46px; }
+.stHearts { width: 58px; right: -4px; bottom: -30px; }
+.stThanks { width: 84px; right: -10px; top: -30px; }
+.stFlower { width: 66px; right: -30px; top: 44%; }
+
+/* PC: 파란 배경은 위아래 약 400px로 줄이고, 메모지 글씨는 가운데 정렬 (고객 피드백 1.jpg) */
+@media (min-width: 768px) {
+  .heroPanel {
+    flex: none;
+    height: 400px;
+    padding: 0;
+  }
+  .heroCardText {
+    text-align: center;
+  }
+  .heroCardFrom {
+    display: block;
+    text-align: center;
+  }
+}
+
+/* 모바일: 메모지와 스티커 묶음을 화면 폭 안에 맞춰 줄이고 파란 영역도 짧게 (고객 피드백 0.jpg).
+   transform:scale 대신 zoom을 써서 글씨가 처음부터 줄어든 크기로 그려져 흐려지지 않는다 */
+@media (max-width: 480px) {
+  .heroPanel {
+    flex: none;
+    height: 300px;
+    padding: 0;
+  }
+  .heroCards {
+    zoom: 0.78;
+    left: 0;
+    margin-top: 0;
+  }
 }
