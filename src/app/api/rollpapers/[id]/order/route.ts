@@ -1,4 +1,5 @@
 // POST /api/rollpapers/:id/order — 무드등 제작 요청 (방장 전용, 요청 시점 snapshot 고정)
+// PUT  /api/rollpapers/:id/order — 완성 이미지(PNG)만 따로 저장. 서버리스 요청 본문 4.5MB 제한을 사진·이미지가 나눠 쓰지 않도록 요청을 분리했다
 import { NextRequest, NextResponse } from "next/server";
 import { eq, asc } from "drizzle-orm";
 import { db } from "@/db";
@@ -60,4 +61,23 @@ export async function POST(request: NextRequest, ctx: RouteContext<"/api/rollpap
     .returning({ id: orders.id });
 
   return NextResponse.json({ id: order.id }, { status: 201 });
+}
+
+/** 완성 이미지 저장 — POST로 접수된 주문에 이미지만 붙인다. 4.5MB 요청 제한 바로 아래(4.4M자)까지 허용 */
+export async function PUT(request: NextRequest, ctx: RouteContext<"/api/rollpapers/[id]/order">) {
+  const { id } = await ctx.params;
+  const [rollpaper] = await db.select({ ownerToken: rollpapers.ownerToken }).from(rollpapers).where(eq(rollpapers.id, id));
+  if (!rollpaper) return NextResponse.json({ code: "NOT_FOUND", message: "롤링페이퍼를 찾을 수 없습니다." }, { status: 404 });
+  const ownerToken = request.headers.get("x-owner-token");
+  if (!ownerToken || ownerToken !== rollpaper.ownerToken) {
+    return NextResponse.json({ code: "FORBIDDEN", message: "방장만 할 수 있습니다." }, { status: 403 });
+  }
+  const body = (await request.json().catch(() => null)) as { image?: string } | null;
+  const image = body?.image;
+  if (typeof image !== "string" || !image.startsWith("data:image/png;base64,") || image.length >= 4_400_000) {
+    return NextResponse.json({ code: "INVALID_BODY", message: "이미지가 올바르지 않거나 너무 커요." }, { status: 400 });
+  }
+  const updated = await db.update(orders).set({ image }).where(eq(orders.rollpaperId, id)).returning({ id: orders.id });
+  if (updated.length === 0) return NextResponse.json({ code: "NOT_FOUND", message: "제작 요청이 없습니다." }, { status: 404 });
+  return NextResponse.json({ ok: true });
 }
