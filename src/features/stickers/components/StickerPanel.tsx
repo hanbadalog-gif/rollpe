@@ -21,11 +21,11 @@ export function StickerPanel({ onSubmit }: Props) {
   const busyRef = useRef(false);
   const [tab, setTab] = useState(0);
 
-  async function handlePick(emoji: string) {
+  async function handlePick(src: string) {
     if (busyRef.current) return;
     busyRef.current = true;
     try {
-      await onSubmit({ type: "sticker", content: emoji });
+      await onSubmit({ type: "sticker", photoUrl: src });
       showToast("스티커를 추가했어요");
       setTimeout(() => showToast("친구들한테도 공유해서 꽉 채워봐요 🔗"), 2400);
     } catch {
@@ -73,9 +73,10 @@ export function StickerPanel({ onSubmit }: Props) {
         ))}
       </div>
       <div className={styles.grid}>
-        {STICKER_CATEGORIES[tab].stickers.map((emoji) => (
-          <button key={emoji} type="button" onClick={() => handlePick(emoji)}>
-            {emoji}
+        {STICKER_CATEGORIES[tab].stickers.map((src) => (
+          <button key={src} type="button" onClick={() => handlePick(src)}>
+            {/* eslint-disable-next-line @next/next/no-img-element -- 정적 스티커 PNG */}
+            <img src={src} alt="" draggable={false} />
           </button>
         ))}
       </div>
