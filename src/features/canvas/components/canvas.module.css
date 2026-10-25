@@ -232,6 +232,15 @@
   font-size: 3.33cqw;
   margin-top: 3cqw;
 }
+.canvasFree .noteScaled {
+  /* 한 줄에 더 많은 글자가 들어가도록(참고 사이트 수준) 글씨·여백을 작게 */
+  padding: 2cqw 2.4cqw;
+  font-size: 2.5cqw;
+}
+.canvasFree .noteScaled .noteFrom {
+  font-size: 2.7cqw;
+  margin-top: 2.4cqw;
+}
 .stickerImg {
   width: min(110px, 24cqw); /* 내가 올린 이미지 스티커 — 원본 크기와 상관없이 캔버스 폭에 비례하는 작은 크기 */
   height: auto;
