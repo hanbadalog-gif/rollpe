@@ -277,26 +277,9 @@
 .stThanks { width: 84px; right: -10px; top: -30px; }
 .stFlower { width: 66px; right: -30px; top: 44%; }
 
-/* PC: 파란 배경은 위아래 약 400px로 줄이고, 메모지 (글씨는 모바일과 같은 왼쪽 정렬로 되돌림) */
-@media (min-width: 768px) {
-  .heroPanel {
-    flex: none;
-    height: 400px;
-    padding: 0;
-  }
-}
-
-/* 모바일: 메모지와 스티커 묶음을 화면 폭 안에 맞춰 줄이고 파란 영역도 짧게 (고객 피드백 0.jpg).
-   transform:scale 대신 zoom을 써서 글씨가 처음부터 줄어든 크기로 그려져 흐려지지 않는다 */
-@media (max-width: 480px) {
-  .heroPanel {
-    flex: none;
-    height: 300px;
-    padding: 0;
-  }
-  .heroCards {
-    zoom: 0.78;
-    left: -10px;
-    margin-top: 0;
-  }
+/* 파란 배경 높이 400px — PC·모바일 동일(고객 피드백: 모바일도 웹과 같게) */
+.heroPanel {
+  flex: none;
+  height: 400px;
+  padding: 0;
 }
