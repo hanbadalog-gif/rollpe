@@ -17,6 +17,8 @@ import { downloadCanvasAsImage, PRINT_WIDTH_PX, PRINT_WIDTH_A4_PX } from "@/feat
 import { EnvelopeIntro } from "@/features/recipient/components/EnvelopeIntro";
 import { DownloadIcon, PhotoIcon, WriteIcon, StickerIcon, PaletteIcon } from "@/components/icons";
 import { BgColorPanel } from "@/features/canvas/components/BgColorPanel";
+import { GiftButton, GiftPopup } from "@/features/gift/GiftButton";
+import giftStyles from "@/features/gift/gift.module.css";
 import { OrderPanel } from "@/features/order/components/OrderPanel";
 import { getOwnerToken } from "@/lib/editToken";
 
@@ -37,6 +39,7 @@ export function CanvasPageClient({
   const [downloading, setDownloading] = useState(false);
   const [showEnvelope, setShowEnvelope] = useState(recipientView);
   const [confirmFinish, setConfirmFinish] = useState(false);
+  const [giftOpen, setGiftOpen] = useState(false); // 선물 버튼 팝업
   const [editingId, setEditingId] = useState<string | null>(null); // 수정창에 열려 있는 메모
   const [editingZone, setEditingZone] = useState<Zone | null>(null); // 무드등 고정 칸 입력창
   const canvasExportRef = useRef<HTMLDivElement>(null);
@@ -229,6 +232,13 @@ export function CanvasPageClient({
           onRedo={redo}
           canUndo={canUndo}
           canRedo={canRedo}
+          sideAction={
+            !recipientView && rollpaper.mode === "online" ? (
+              <div className={giftStyles.sideSlot}>
+                <GiftButton active={giftOpen} onClick={() => setGiftOpen(true)} />
+              </div>
+            ) : undefined
+          }
           editableZones={isOwner && !locked}
           onEditZone={(key) => setEditingZone(cfg.zones?.find((z) => z.key === key) ?? null)}
         />
@@ -261,6 +271,8 @@ export function CanvasPageClient({
             </div>
           </div>
         )}
+
+        {giftOpen && <GiftPopup onClose={() => setGiftOpen(false)} />}
 
         {!recipientView && openPanel !== null && (
           <div className={styles.modalBackdrop} onClick={() => setOpenPanel(null)}>

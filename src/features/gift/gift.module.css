@@ -1,0 +1,166 @@
+/* 선물 아이콘 버튼 — 오프 / 마우스 오버 / 활성(팝업이 열린 상태) 3단계 (고객 피드백 4.jpg) */
+.giftBtn {
+  width: 46px;
+  height: 46px;
+  border-radius: 50%;
+  border: 1px solid #c4c8d6;
+  background: #fff;
+  color: #7b8096;
+  display: grid;
+  place-items: center;
+  padding: 0;
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s, color 0.15s;
+}
+.giftBtn:hover {
+  background: #cdd6ec;
+  border-color: #9fb0dc;
+  color: #46508a;
+}
+.giftOn,
+.giftOn:hover {
+  background: #6c7fb7;
+  border-color: #6c7fb7;
+  color: #fff;
+}
+/* 고객이 준 선물 모양 PNG를 마스크로 써서 상태마다 색이 바뀌게 한다 */
+.giftIcon {
+  width: 24px;
+  height: 24px;
+  background: currentColor;
+  -webkit-mask: url("/gift/gift.png") center / contain no-repeat;
+  mask: url("/gift/gift.png") center / contain no-repeat;
+}
+
+.backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  background: rgba(20, 22, 30, 0.55);
+}
+.dialog {
+  position: relative;
+  width: 100%;
+  max-width: 400px;
+  max-height: 92vh;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  padding: 32px 22px 22px;
+  text-align: center;
+  background: #fff;
+  color: #1d1f2a;
+  border-radius: 18px;
+}
+.close {
+  position: absolute;
+  top: 10px;
+  right: 14px;
+  z-index: 2;
+  border: none;
+  background: none;
+  font-size: 18px;
+  color: #444;
+  cursor: pointer;
+}
+.hero {
+  width: 100%;
+  height: 230px;
+  object-fit: cover;
+  object-position: 50% 40%;
+  border-radius: 12px;
+  display: block;
+}
+.title {
+  margin: 4px 0 6px;
+  font-size: 15px;
+  line-height: 1.55;
+  color: #3a3d4c;
+  text-wrap: balance;
+}
+.title b {
+  font-weight: 800;
+}
+.desc {
+  margin: 0;
+  font-size: 13px;
+  line-height: 1.6;
+  color: #6a6f82;
+}
+.primary,
+.secondary {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 14px 10px;
+  border-radius: 10px;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  text-decoration: none;
+  text-align: center;
+}
+.primary {
+  background: #454545;
+  color: #fff;
+  border: none;
+}
+.secondary {
+  background: #fff;
+  color: #46508a;
+  border: 1.5px solid #6c7fb7;
+}
+.check {
+  width: 44px;
+  height: 44px;
+  display: block;
+}
+.links {
+  display: flex;
+  justify-content: center;
+  gap: 26px;
+  margin-top: 8px;
+}
+.links a,
+.links button {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  font-weight: 600;
+  color: #444;
+  text-decoration: none;
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+}
+.links img {
+  width: 56px;
+  height: 56px;
+  border-radius: 12px;
+  display: block;
+  object-fit: cover;
+}
+
+/* 캔버스 옆 위치 — PC는 캔버스 바깥 오른쪽 아래에 붙이고, 모바일은 캔버스 안 오른쪽 아래 */
+.sideSlot {
+  position: absolute;
+  right: 12px;
+  bottom: 12px;
+  z-index: 20;
+}
+@media (min-width: 761px) {
+  .sideSlot {
+    right: auto;
+    left: 100%;
+    bottom: 0;
+    margin-left: 10px; /* 캔버스 오른쪽 선에서 10px 띄워 붙임 */
+  }
+}

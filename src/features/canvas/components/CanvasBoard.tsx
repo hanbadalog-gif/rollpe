@@ -34,6 +34,8 @@ interface Props {
   onRedo?: () => void;
   canUndo?: boolean;
   canRedo?: boolean;
+  /** 캔버스 바로 옆(PC)·안(모바일)에 붙는 버튼 — 이미지 저장에는 들어가지 않는다 */
+  sideAction?: React.ReactNode;
 }
 
 const PAPER_CLASS: Record<PaperSize, string> = {
@@ -85,6 +87,7 @@ export function CanvasBoard({
   onRedo,
   canUndo,
   canRedo,
+  sideAction,
 }: Props) {
   const ownRef = useRef<HTMLDivElement>(null);
   const scrollRef = useRef<HTMLDivElement>(null);
@@ -182,6 +185,7 @@ export function CanvasBoard({
 
   return (
     <div className={styles.canvasScroll} ref={scrollRef}>
+      <div className={`${styles.stage} ${paperSize === "free" ? styles.stageFixed : ""}`}>
       <div
         ref={canvasRef}
         className={`${styles.canvas} ${cfg.locked ? `${styles.canvasLocked} ${CANVAS_CLASS[rollpaper.mode as RollpaperMode] ?? ""}` : ""} ${PAPER_CLASS[paperSize] ? styles[PAPER_CLASS[paperSize]] : ""} ${!cfg.locked && paperSize === "free" ? styles.canvasFree : ""}`}
@@ -248,6 +252,8 @@ export function CanvasBoard({
             onDelete={() => handleDelete(note.id)}
           />
         ))}
+      </div>
+      {sideAction}
       </div>
 
       {selectedNote && (

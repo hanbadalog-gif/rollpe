@@ -11,6 +11,20 @@
   padding: 20px;
 }
 
+/* 캔버스를 감싸는 칸 — 캔버스 옆 버튼(선물 등)의 기준 위치. 위치 잡기(가운데 정렬)는 여기서 한다 */
+.stage {
+  position: relative;
+  margin: auto;
+  max-width: 100%;
+  flex: 0 1 auto;
+  display: flex;
+  flex-direction: column;
+}
+.stageFixed {
+  width: 100%;
+  max-width: 520px;
+}
+
 /* 페이지/3.JPG, 4_1.jpg 레퍼런스 — 플랫한 단색 배경(장식 없음). 사용자가
    배경색을 직접 고르면(CanvasBoard의 inline style) 이 기본색은 덮어써진다. */
 .canvas {

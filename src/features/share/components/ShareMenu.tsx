@@ -73,7 +73,7 @@ export function ShareMenu({ mode, onCopied, canOrder, onOrder, variant }: Props)
                 <MailIcon size={14} /> 주인공에게 전달하기
               </button>
             )}
-            {canOrder && (
+            {canOrder && mode !== "online" && (
               <button
                 className={styles.item}
                 onClick={() => {
@@ -81,7 +81,7 @@ export function ShareMenu({ mode, onCopied, canOrder, onOrder, variant }: Props)
                   onOrder?.();
                 }}
               >
-                <LampIcon size={14} /> {mode === "online" ? "무드등 제작 요청하기" : "글리모리로 전달하기"}
+                <LampIcon size={14} /> 글리모리로 전달하기
               </button>
             )}
           </div>
