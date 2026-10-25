@@ -22,11 +22,13 @@ interface Props {
   readOnly?: boolean;
   /** 무드등 모드(수정/0번 피드백) — 메모지 그림자를 없애 실물 인화/아크릴 느낌에 가깝게 */
   flat?: boolean;
+  /** 글씨·폭을 캔버스 폭에 비례시킨다(무드등·자유 캔버스) */
+  scaled?: boolean;
   /** 메모가 머물 수 있는 영역 — useDraggableNote 참고 */
   bounds?: { right: number; bottom: number };
 }
 
-export function Note({ note, canvasRef, editable, selected, onMoveEnd, onResizeEnd, onRotateEnd, onTap, onDelete, setRef, readOnly, flat, bounds }: Props) {
+export function Note({ note, canvasRef, editable, selected, onMoveEnd, onResizeEnd, onRotateEnd, onTap, onDelete, setRef, readOnly, flat, scaled, bounds }: Props) {
   // 드래그 중에는 서버 왕복 없이 로컬 좌표만 바꿔 즉시 반응하게 한다 (실시간 이동 체감용)
   const [dragPos, setDragPos] = useState<{ x: number; y: number } | null>(null);
   const [dragScale, setDragScale] = useState<number | null>(null);
@@ -170,7 +172,7 @@ export function Note({ note, canvasRef, editable, selected, onMoveEnd, onResizeE
 
   return (
     <div
-      className={`${styles.note} ${selected ? styles.noteSelected : ""} ${pending ? styles.notePending : ""} ${flat ? styles.noteFlat : ""}`}
+      className={`${styles.note} ${selected ? styles.noteSelected : ""} ${pending ? styles.notePending : ""} ${flat ? styles.noteFlat : ""} ${flat || scaled ? styles.noteScaled : ""}`}
       ref={setRefs}
         data-note-id={note.id}
       style={{
@@ -179,7 +181,7 @@ export function Note({ note, canvasRef, editable, selected, onMoveEnd, onResizeE
         color: note.textColor ?? undefined,
         fontFamily: note.font ?? undefined,
         // 무드등(flat)은 캔버스 폭(기준 360px)에 비례해 글씨도 함께 줄고 늘어, 기기마다 메모 크기가 달라 보이지 않게 한다
-        fontSize: note.fontSize ? (flat ? `${note.fontSize / 3.6}cqw` : `${note.fontSize}px`) : undefined,
+        fontSize: note.fontSize ? (flat || scaled ? `${note.fontSize / 3.6}cqw` : `${note.fontSize}px`) : undefined,
         fontWeight: note.bold ? 700 : undefined,
         border: note.borderColor ? `2px solid ${note.borderColor}` : undefined,
       }}

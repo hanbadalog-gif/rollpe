@@ -184,7 +184,7 @@ export function CanvasBoard({
     <div className={styles.canvasScroll} ref={scrollRef}>
       <div
         ref={canvasRef}
-        className={`${styles.canvas} ${cfg.locked ? `${styles.canvasLocked} ${CANVAS_CLASS[rollpaper.mode as RollpaperMode] ?? ""}` : ""} ${PAPER_CLASS[paperSize] ? styles[PAPER_CLASS[paperSize]] : ""}`}
+        className={`${styles.canvas} ${cfg.locked ? `${styles.canvasLocked} ${CANVAS_CLASS[rollpaper.mode as RollpaperMode] ?? ""}` : ""} ${PAPER_CLASS[paperSize] ? styles[PAPER_CLASS[paperSize]] : ""} ${!cfg.locked && paperSize === "free" ? styles.canvasFree : ""}`}
         style={customBg ? { background: customBg } : undefined}
         // 빈 곳을 누르면 선택 해제
         onPointerDown={(e) => {
@@ -238,6 +238,7 @@ export function CanvasBoard({
             editable={!note.id.startsWith("tmp-") && (!!getEditToken(rollpaperId, note.id) || isOwner)}
             readOnly={readOnly}
             flat={cfg.locked}
+            scaled={!cfg.locked}
             bounds={cfg.bounds}
             selected={note.id === selectedNote?.id}
             onMoveEnd={(posX, posY) => moveNote(note.id, posX, posY, note.rotation)}

@@ -123,7 +123,7 @@
   /* 메모지 3장 전체 그룹 좌측 이동 — 레퍼런스(1.jpg)에서는 좌측 카드 "From 이름"이
      다 보이지만, -32px에서는 완전히 잘려나간다는 걸 확인시켜준 뒤에도 사용자가
      -32px로 명시적으로 재확정함(의도된 레퍼런스 이탈) */
-  left: -32px;
+  left: -42px; /* 요청에 따라 -32px에서 10px 더 왼쪽 */
 }
 
 .heroCard {
@@ -277,19 +277,12 @@
 .stThanks { width: 84px; right: -10px; top: -30px; }
 .stFlower { width: 66px; right: -30px; top: 44%; }
 
-/* PC: 파란 배경은 위아래 약 400px로 줄이고, 메모지 글씨는 가운데 정렬 (고객 피드백 1.jpg) */
+/* PC: 파란 배경은 위아래 약 400px로 줄이고, 메모지 (글씨는 모바일과 같은 왼쪽 정렬로 되돌림) */
 @media (min-width: 768px) {
   .heroPanel {
     flex: none;
     height: 400px;
     padding: 0;
-  }
-  .heroCardText {
-    text-align: center;
-  }
-  .heroCardFrom {
-    display: block;
-    text-align: center;
   }
 }
 
@@ -303,7 +296,7 @@
   }
   .heroCards {
     zoom: 0.78;
-    left: 0;
+    left: -10px;
     margin-top: 0;
   }
 }

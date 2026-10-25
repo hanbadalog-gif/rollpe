@@ -27,7 +27,8 @@
   transition: background 0.2s ease, max-width 0.2s ease, aspect-ratio 0.3s ease, flex-basis 0.3s ease;
 }
 
-.canvasLocked {
+.canvasLocked,
+.canvasFree {
   max-width: 520px; /* 유형 A/B 공통 — 폭에 맞춰 글씨도 같이 커진다(.noteFlat 참고). 폰에서는 화면 폭만큼 */
   aspect-ratio: 3 / 4;
   min-height: 0;
@@ -36,7 +37,8 @@
 }
 
 /* 무드등 캔버스는 화면 가장자리까지 넓게 써서 좁은 폰에서도 최대한 크게 */
-.canvasScroll:has(.canvasLocked) {
+.canvasScroll:has(.canvasLocked),
+.canvasScroll:has(.canvasFree) {
   padding: 8px;
 }
 
@@ -203,13 +205,16 @@
 /* 수정/0번 피드백(무드등 전용) — 그림자 없이 평평하게, 실물 인화/아크릴 느낌에 가깝게 */
 .noteFlat {
   box-shadow: none;
+}
+/* 폭·여백·글씨를 캔버스 폭에 비례 — 무드등과 자유 롤링페이퍼 공통(PC·모바일 같은 모양) */
+.noteScaled {
   /* 폭·여백·글씨를 모두 캔버스 폭에 비례시킨다(기준 360px) — 화면 크기가 달라도 메모 모양이 같다 */
   width: 30%;
   padding: 2.4cqw 2.8cqw;
   font-size: 3.1cqw;
   line-height: 1.4;
 }
-.noteFlat .noteFrom {
+.noteScaled .noteFrom {
   font-size: 3.33cqw;
   margin-top: 3cqw;
 }
@@ -221,7 +226,8 @@
   user-select: none;
 }
 
-.canvasLocked .notePhotoOnly {
+.canvasLocked .notePhotoOnly,
+.canvasFree .notePhotoOnly {
   width: 30%;
 }
 
