@@ -5,7 +5,7 @@ import { showToast } from "@/components/Toast";
 import styles from "./gift.module.css";
 
 /** 글리모리 홈페이지(무드등 구경하기·바로가기) */
-export const HOMEPAGE_URL = "https://glimory.com";
+export const HOMEPAGE_URL = "https://glimory.co.kr";
 /** 카카오톡 고객센터 채널 — 주소가 정해지면 여기만 채우면 된다 */
 export const KAKAO_URL = "";
 
