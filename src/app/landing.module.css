@@ -285,7 +285,11 @@
 }
 
 /* 모바일 — 화면 밖으로 나가는 오른쪽 메모지의 스티커를 화면에 보이는 쪽으로 당겨 둔다 */
-@media (max-width: 480px) {
+@media (max-width: 640px) {
   .stThanks { right: auto; left: -20px; top: -34px; }
   .stFlower { right: auto; left: 22px;  top: auto; bottom: -32px; }
+}
+@media (max-width: 420px) {
+  .stThanks { left: -46px; }
+  .stFlower { left: 0; }
 }
